@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSP Systems — Order Form Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1C2E5C;--navy-mid:#243D7A;--navy-card:#162447;
+  --gold:#C8912A;--gold-light:#E0A840;
+  --white:#FFFFFF;--off-white:#F7F6F3;--cream:#EEE9DF;
+  --text:#1A1A1A;--text-mid:#4A4A4A;--muted:#7A7A7A;
+  --border:#DDD9D2;--border-dark:#C8C4BC;
+  --green:#1B7A3A;--red:#B71C1C;
+}
+html{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text);min-height:100vh;display:grid;grid-template-columns:420px 1fr;grid-template-rows:auto 1fr}
+
+/* ── HEADER ── */
+header{
+  grid-column:1/-1;
+  background:var(--navy);
+  padding:18px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:3px solid var(--gold);
+}
+.header-brand{display:flex;align-items:center;gap:14px}
+.header-logo{
+  background:var(--gold);color:var(--navy);
+  font-family:'DM Serif Display',serif;
+  font-size:14px;font-weight:400;
+  padding:6px 10px;border-radius:2px;
+  letter-spacing:0.04em;
+}
+.header-title{font-size:16px;font-weight:600;color:var(--white);letter-spacing:0.02em}
+.header-sub{font-size:12px;color:rgba(255,255,255,0.5);margin-top:1px}
+.header-actions{display:flex;gap:10px}
+.btn-print{
+  background:var(--gold);color:var(--navy);
+  border:none;padding:10px 24px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;border-radius:2px;letter-spacing:0.04em;
+  transition:background 0.2s;
+}
+.btn-print:hover{background:var(--gold-light)}
+.btn-reset{
+  background:transparent;color:rgba(255,255,255,0.6);
+  border:1px solid rgba(255,255,255,0.2);padding:10px 18px;
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  cursor:pointer;border-radius:2px;transition:all 0.2s;
+}
+.btn-reset:hover{border-color:rgba(255,255,255,0.5);color:var(--white)}
+
+/* ── LEFT PANEL ── */
+.panel{
+  background:var(--white);
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  padding:28px;
+  height:calc(100vh - 63px);
+}
+.panel-section{margin-bottom:28px}
+.panel-section-title{
+  font-size:10px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--gold);
+  margin-bottom:14px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:5px}
+.field input,.field select,.field textarea{
+  width:100%;padding:9px 12px;
+  border:1px solid var(--border);border-radius:2px;
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  color:var(--text);background:var(--white);
+  transition:border-color 0.2s;
+  outline:none;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy)}
+.field textarea{resize:vertical;min-height:64px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Service items */
+.service-item{
+  border:1px solid var(--border);border-radius:3px;
+  padding:10px 12px;margin-bottom:8px;
+  display:flex;align-items:flex-start;gap:10px;
+  transition:border-color 0.2s,background 0.2s;
+  cursor:pointer;
+}
+.service-item:hover{border-color:var(--navy);background:var(--off-white)}
+.service-item.active{border-color:var(--navy);background:#EEF2F9}
+.service-item input[type=checkbox]{
+  margin-top:2px;flex-shrink:0;
+  accent-color:var(--navy);
+  width:15px;height:15px;cursor:pointer;
+}
+.service-item-info{flex:1}
+.service-item-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.service-item-desc{font-size:11px;color:var(--muted);line-height:1.4}
+.service-item-price{
+  display:flex;align-items:center;gap:4px;
+  flex-shrink:0;
+}
+.price-input{
+  width:90px!important;padding:5px 8px!important;
+  font-size:12px!important;font-weight:600;
+  text-align:right;border:1px solid var(--border-dark)!important;
+  background:var(--white)!important;
+}
+.price-type{font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* Tier pills */
+.tier-select{display:flex;gap:6px;margin-bottom:16px}
+.tier-pill{
+  flex:1;padding:8px;text-align:center;
+  border:1.5px solid var(--border);border-radius:3px;
+  cursor:pointer;font-size:12px;font-weight:600;
+  color:var(--muted);transition:all 0.2s;
+}
+.tier-pill:hover{border-color:var(--navy);color:var(--navy)}
+.tier-pill.active{border-color:var(--navy);background:var(--navy);color:var(--white)}
+
+/* ── RIGHT PANEL — PREVIEW ── */
+.preview-wrap{
+  overflow-y:auto;
+  background:#888;
+  padding:32px;
+  height:calc(100vh - 63px);
+  display:flex;justify-content:center;
+}
+.doc{
+  background:var(--white);
+  width:816px;min-height:1056px;
+  padding:56px 64px;
+  box-shadow:0 4px 40px rgba(0,0,0,0.25);
+  font-family:'DM Sans',sans-serif;
+}
+
+/* DOC STYLES */
+.doc-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding-bottom:20px;
+  margin-bottom:28px;
+  border-bottom:3px solid var(--gold);
+}
+.doc-brand{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy)}
+.doc-brand span{color:var(--gold)}
+.doc-meta{text-align:right;font-size:11px;color:#444;line-height:1.8}
+.doc-meta strong{color:var(--navy);font-weight:600}
+.doc-title{
+  font-family:'DM Serif Display',serif;
+  font-size:34px;color:var(--navy);
+  margin-bottom:6px;
+}
+.doc-subtitle{font-size:13px;color:#444;margin-bottom:28px}
+
+/* Parties grid */
+.parties-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;margin-bottom:28px;border:1px solid var(--border);
+}
+.party-block{padding:18px 20px}
+.party-block:first-child{border-right:1px solid var(--border);background:var(--navy)}
+.party-block:last-child{background:var(--off-white)}
+.party-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+.party-block:first-child .party-label{color:var(--gold)}
+.party-block:last-child .party-label{color:var(--navy)}
+.party-name{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:4px}
+.party-block:first-child .party-name{color:var(--white)}
+.party-block:last-child .party-name{color:var(--navy)}
+.party-detail{font-size:11px;color:rgba(255,255,255,0.82);line-height:1.7}
+.party-block:last-child .party-detail{color:#444}
+
+/* Section */
+.doc-section{margin-bottom:24px}
+.doc-section-title{
+  font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+
+/* Services table */
+.services-table{width:100%;border-collapse:collapse;font-size:12px}
+.services-table th{
+  background:var(--navy);color:var(--white);
+  padding:9px 12px;text-align:left;
+  font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+}
+.services-table th:last-child{text-align:right}
+.services-table td{
+  padding:10px 12px;border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.services-table tr:nth-child(even) td{background:var(--off-white)}
+.services-table .item-name{font-weight:600;color:var(--text);margin-bottom:2px}
+.services-table .item-desc{font-size:11px;color:#444}
+.services-table .price-cell{text-align:right;font-weight:700;color:var(--navy);white-space:nowrap}
+.subtotal-row td{background:var(--off-white)!important;font-weight:600;font-size:12px;color:var(--navy)}
+.subtotal-row td:last-child{font-weight:700}
+
+/* Total block */
+.total-block{
+  margin-top:16px;
+  border:1px solid var(--border);
+}
+.total-row{
+  display:grid;grid-template-columns:1fr auto;
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+.total-row:last-child{border-bottom:none}
+.total-row.grand{
+  background:var(--navy);
+  padding:14px 16px;
+}
+.total-row.grand .total-label{font-weight:700;font-size:14px;color:var(--white)}
+.total-row.grand .total-amount{font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold)}
+.total-row.monthly{background:var(--off-white)}
+.total-row.monthly .total-label{color:var(--muted);font-size:12px}
+.total-row.monthly .total-amount{font-weight:700;color:var(--text)}
+.total-label{color:var(--text-mid)}
+.total-amount{font-weight:600;color:var(--navy)}
+
+/* Info boxes */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.info-box{border:1px solid var(--border);padding:14px 16px}
+.info-box-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.info-box-value{font-size:12px;color:#1A1A1A;line-height:1.6}
+
+/* Terms */
+.terms-text{font-size:11px;color:#333;line-height:1.7}
+.terms-text strong{color:var(--text);font-weight:600}
+
+/* Sig */
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);margin-top:16px}
+.sig-block{padding:20px 20px 32px}
+.sig-block:first-child{border-right:1px solid var(--border);background:var(--navy)}
+.sig-block:last-child{background:var(--off-white)}
+.sig-party{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px}
+.sig-block:first-child .sig-party{color:var(--gold)}
+.sig-block:last-child .sig-party{color:var(--navy)}
+.sig-line{border-bottom:1px solid;padding-bottom:2px;margin-bottom:6px;height:36px}
+.sig-block:first-child .sig-line{border-color:rgba(255,255,255,0.3)}
+.sig-block:last-child .sig-line{border-color:var(--border-dark)}
+.sig-label{font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:0.06em}
+.sig-block:last-child .sig-label{color:var(--muted)}
+.sig-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.sig-block:first-child .sig-name{color:var(--white)}
+.sig-block:last-child .sig-name{color:var(--navy)}
+
+.doc-footer{
+  margin-top:32px;padding-top:16px;
+  border-top:2px solid var(--gold);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.doc-footer-left{font-size:10px;color:#555}
+.doc-footer-right{font-size:10px;color:#555;text-align:right}
+
+.empty-state{
+  text-align:center;padding:40px 20px;
+  color:var(--muted);font-size:13px;
+  border:2px dashed var(--border);margin:16px 0;
+}
+
+@media print{
+  body{display:block;background:white}
+  header,.panel{display:none}
+  .preview-wrap{padding:0;background:white;height:auto;overflow:visible}
+  .doc{overflow:hidden;box-shadow:none;width:100%;padding:40px 48px;min-height:0!important}
+  @page{margin:0.5in;size:letter}
+  /* Force background colors to print */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  .total-block{page-break-inside:avoid}
+  .doc-section{page-break-inside:avoid}
+  .parties-grid{page-break-inside:avoid}
+  .info-grid{page-break-inside:avoid}
+  .sig-grid{page-break-inside:avoid}
+  .doc-footer{page-break-inside:avoid}
+  .total-row.grand{page-break-before:avoid}
+  .services-table tr{page-break-inside:avoid}
+  /* Kill blank trailing page */
+  .doc{overflow:hidden}
+  .preview-wrap{overflow:hidden}
+  html,body{height:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="header-logo">HSP</div>
+    <div>
+      <div class="header-title">Order Form Generator</div>
+      <div class="header-sub">Fill in the left panel — preview updates live</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-reset" onclick="resetForm()">Reset</button>
+    <button class="btn-print" onclick="window.print()">⬇ Save as PDF</button>
+  </div>
+</header>
+
+<!-- LEFT: INPUTS -->
+<div class="panel">
+
+  <div class="panel-section">
+    <div class="panel-section-title">Client Info</div>
+    <div class="field"><label>Client Legal Name</label><input type="text" id="clientName" placeholder="Bareither Group Consulting LLC" oninput="update()"></div>
+    <div class="field"><label>Business / DBA</label><input type="text" id="clientDBA" placeholder="Bareither Group Consulting" oninput="update()"></div>
+    <div class="field-row">
+      <div class="field"><label>City, State</label><input type="text" id="clientLocation" placeholder="Kalamazoo, MI" oninput="update()"></div>
+      <div class="field"><label>Email</label><input type="email" id="clientEmail" placeholder="chad@bareithergroup.com" oninput="update()"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Effective Date</label><input type="date" id="effectiveDate" oninput="update()"></div>
+      <div class="field"><label>Launch / Billing Start Date</label><input type="date" id="billingDate" oninput="update()"></div>
+    </div>
+    <div class="field"><label>Project Name</label><input type="text" id="projectName" placeholder="Website + CRM Automation System" oninput="update()"></div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-title">Platform Tier (Monthly)</div>
+    <div class="tier-select">
+      <div class="tier-pill" onclick="selectTier('none',0,'')">None</div>
+      <div class="tier-pill" onclick="selectTier('Essential',397,'mo')">Essential<br><small>$397/mo</small></div>
+      <div class="tier-pill active" onclick="selectTier('Growth',597,'mo')">Growth<br><small>$597/mo</small></div>
+      <div class="tier-pill" onclick="selectTier('Priority',997,'mo')">Priority<br><small>$997/mo</small></div>
+    </div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-title">One-Time Setup Services</div>
+    <div id="setupServices"></div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-title">Monthly Add-Ons</div>
+    <div id="monthlyServices"></div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-title">Notes</div>
+    <div class="field"><label>What's Included (custom note)</label><textarea id="includedNote" rows="3" placeholder="Website rebuild, multi-step forms, GHL CRM setup, lead response automations, HubSpot migration, launch support..." oninput="update()"></textarea></div>
+    <div class="field"><label>Special Terms / Notes</label><textarea id="specialNote" rows="2" placeholder="Any phasing, special terms, or client-specific notes..." oninput="update()"></textarea></div>
+  </div>
+
+</div>
+
+<!-- RIGHT: PREVIEW -->
+<div class="preview-wrap">
+  <div class="doc" id="doc">
+
+    <div class="doc-header">
+      <div>
+        <div class="doc-brand">HSP <span>Systems</span></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">hspsystems.io &nbsp;·&nbsp; harley@hspsystems.io &nbsp;·&nbsp; 616-612-1818</div>
+      </div>
+      <div class="doc-meta">
+        <div><strong>Order Form</strong></div>
+        <div id="meta-date">Date: —</div>
+        <div id="meta-project">Project: —</div>
+        <div style="margin-top:4px;font-size:10px">Governed by HSP Systems LLC Master Service Agreement</div>
+      </div>
+    </div>
+
+    <div class="doc-title">Order Form</div>
+    <div class="doc-subtitle" id="doc-subtitle">Statement of Work — HSP Systems</div>
+
+    <div class="parties-grid">
+      <div class="party-block">
+        <div class="party-label">Provider</div>
+        <div class="party-name">HSP Systems LLC</div>
+        <div class="party-detail">Grand Haven, Michigan<br>hspsystems.io<br>harley@hspsystems.io<br>616-612-1818</div>
+      </div>
+      <div class="party-block">
+        <div class="party-label">Client</div>
+        <div class="party-name" id="preview-clientName">—</div>
+        <div class="party-detail" id="preview-clientDetail">—</div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-box">
+        <div class="info-box-label">Effective Date</div>
+        <div class="info-box-value" id="preview-effectiveDate">—</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-label">Launch / Billing Start Date</div>
+        <div class="info-box-value" id="preview-billingDate">—</div>
+      </div>
+    </div>
+
+    <!-- SETUP TABLE -->
+    <div class="doc-section" id="setup-section">
+      <div class="doc-section-title">One-Time Setup</div>
+      <table class="services-table">
+        <thead><tr><th style="width:28%">Item</th><th>Description</th><th style="width:12%">Price</th></tr></thead>
+        <tbody id="setup-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- MONTHLY TABLE -->
+    <div class="doc-section" id="monthly-section">
+      <div class="doc-section-title">Monthly Managed Service</div>
+      <table class="services-table">
+        <thead><tr><th style="width:28%">Item</th><th>Description</th><th style="width:12%">Price</th></tr></thead>
+        <tbody id="monthly-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- TOTALS -->
+    <div class="doc-section">
+      <div class="doc-section-title">Investment Summary</div>
+      <div class="total-block">
+        <div class="total-row"><span class="total-label">One-Time Setup Fee</span><span class="total-amount" id="t-setup">$0</span></div>
+        <div class="total-row"><span class="total-label">First Month Managed Service</span><span class="total-amount" id="t-firstmonth">$0</span></div>
+        <div class="total-row grand"><span class="total-label">Total Due to Begin</span><span class="total-amount" id="t-total">$0</span></div>
+        <div class="total-row monthly"><span class="total-label">Ongoing Monthly (after launch)</span><span class="total-amount" id="t-monthly">$0/mo</span></div>
+      </div>
+    </div>
+
+    <!-- INCLUDED -->
+    <div class="doc-section">
+      <div class="doc-section-title">Included in This Engagement</div>
+      <div class="terms-text" id="preview-included">To be specified.</div>
+    </div>
+
+    <!-- NOT INCLUDED -->
+    <div class="doc-section">
+      <div class="doc-section-title">Not Included</div>
+      <div class="terms-text">Unless added in writing: paid advertising or ad spend, domain purchase or renewal, third-party software subscriptions, excessive SMS/email/call usage beyond platform limits, advanced custom integrations, full website rebrands, major new pages beyond agreed scope, SEO campaigns, or unlimited revisions.</div>
+    </div>
+
+    <!-- PAYMENT TERMS -->
+    <div class="doc-section">
+      <div class="doc-section-title">Payment Terms</div>
+      <div class="terms-text">Setup fee is due in full before work begins. The first monthly payment is due on the launch date — the date the system goes live and is handed off to Client. Monthly service renews automatically on that same date each month until canceled with <strong>30 days' written notice</strong> to harley@hspsystems.io. Invoices not paid within 10 days may result in paused work or suspended access. Balances more than 30 days past due are subject to a 1.5% per month late fee.</div>
+    </div>
+
+    <!-- SPECIAL NOTES -->
+    <div class="doc-section" id="special-section" style="display:none">
+      <div class="doc-section-title">Special Notes</div>
+      <div class="terms-text" id="preview-special"></div>
+    </div>
+
+    <!-- SIGNATURES -->
+    <div class="doc-section">
+      <div class="doc-section-title">Signatures</div>
+      <div class="terms-text" style="margin-bottom:12px">By signing below, both parties agree to the scope, pricing, and terms set forth in this Order Form and the HSP Systems LLC Master Service Agreement.</div>
+      <div class="sig-grid">
+        <div class="sig-block">
+          <div class="sig-party">Provider — HSP Systems LLC</div>
+          <div class="sig-line"></div>
+          <div class="sig-label">Signature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date</div>
+          <div class="sig-name" style="margin-top:12px">Harley Seelbinder</div>
+          <div class="sig-label">Founder, HSP Systems LLC</div>
+        </div>
+        <div class="sig-block">
+          <div class="sig-party">Client</div>
+          <div class="sig-line"></div>
+          <div class="sig-label">Signature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date</div>
+          <div class="sig-name" id="sig-clientName" style="margin-top:12px">—</div>
+          <div class="sig-label" id="sig-clientDBA">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="doc-footer-left">HSP Systems &nbsp;·&nbsp; Grand Haven, MI &nbsp;·&nbsp; hspsystems.io</div>
+      <div class="doc-footer-right" id="footer-project">—</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SETUP_SERVICES = [
+  { id:'ws_strategy', name:'Website Strategy + Structure', desc:'Page structure, conversion flow, CTAs, lead capture strategy', price:750, type:'one' },
+  { id:'ws_rebuild',  name:'Website Rebuild', desc:'Homepage, services, about, case studies, contact/booking pages', price:3500, type:'one' },
+  { id:'ws_funnel',   name:'Funnel + Lead Capture', desc:'Multi-step form, landing page, thank-you page, booking path', price:1250, type:'one' },
+  { id:'crm_setup',   name:'CRM + Pipeline Setup', desc:'Pipeline stages, lead source tracking, form-to-contact, workflow structure', price:1000, type:'one' },
+  { id:'migration',   name:'CRM Migration + Cleanup', desc:'Export/import contacts, organize fields/tags, eliminate manual process', price:750, type:'one' },
+  { id:'automation',  name:'Lead Response Automations', desc:'SMS/email follow-up, internal notifications, nurture sequences, reminders', price:1000, type:'one' },
+  { id:'launch',      name:'Testing + Launch Support', desc:'End-to-end testing, domain connection, launch cleanup, client walkthrough', price:750, type:'one' },
+  { id:'hiring',      name:'Hiring Pipeline', desc:'Application intake, screening automation, onboarding sequences', price:3500, type:'one' },
+  { id:'ops',         name:'Internal Ops Automation', desc:'Internal alerts, workflow logic, paper process elimination', price:1500, type:'one' },
+  { id:'quoting',     name:'Quoting + Intake Tool', desc:'Multi-step embeddable quote form, Stripe card-save, booking redirect', price:2500, type:'one' },
+  { id:'ivr',         name:'Phone Routing / IVR', desc:'Inbound call routing, IVR menu, missed call flows', price:2000, type:'one' },
+  { id:'reviews',     name:'Reviews + Reactivation', desc:'Post-job review requests, negative suppression, old customer win-back', price:1500, type:'one' },
+];
+
+const MONTHLY_SERVICES = [
+  { id:'campaigns', name:'SMS + Email Campaigns', desc:'2–4 campaigns/mo written and sent by HSP, segmented by warmth', price:300, type:'mo' },
+  { id:'hipaa',     name:'HIPAA Compliance Add-On', desc:'HIPAA-compliant infrastructure, BAA, encrypted storage (healthcare only)', price:297, type:'mo' },
+  { id:'ads', name:'Paid Ads Management', desc:'Google / Facebook / LinkedIn — requires clean site/funnel first', type:'dual', setupPrice:0, monthlyPrice:0 },
+];
+
+let tierName = 'Growth', tierPrice = 597;
+let selectedSetup = new Set(['ws_rebuild','crm_setup','automation','launch']);
+let selectedMonthly = new Set();
+let customPrices = {};
+let adsPrices = { setup: 0, monthly: 0 };
+
+function selectTier(name, price, type) {
+  tierName = name; tierPrice = price;
+  document.querySelectorAll('.tier-pill').forEach((p,i)=>{
+    p.classList.remove('active');
+    if((i===0&&name==='none')||(i===1&&name==='Essential')||(i===2&&name==='Growth')||(i===3&&name==='Priority')) p.classList.add('active');
+  });
+  update();
+}
+
+function buildServiceList(services, containerId, selectedSet) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  services.forEach(svc => {
+    const active = selectedSet.has(svc.id);
+    const div = document.createElement('div');
+    div.className = 'service-item' + (active ? ' active' : '');
+    div.onclick = (e) => {
+      if(e.target.tagName === 'INPUT' && e.target.type === 'text') return;
+      const cb = div.querySelector('input[type=checkbox]');
+      cb.checked = !cb.checked;
+      if(cb.checked) selectedSet.add(svc.id); else selectedSet.delete(svc.id);
+      div.classList.toggle('active', cb.checked);
+      update();
+    };
+
+    // Dual pricing for ads
+    if(svc.type === 'dual') {
+      div.innerHTML = `
+        <input type="checkbox" ${active?'checked':''} onchange="toggleService('${svc.id}', this.checked, event, false)">
+        <div class="service-item-info">
+          <div class="service-item-name">${svc.name}</div>
+          <div class="service-item-desc">${svc.desc}</div>
+          <div style="display:flex;gap:16px;margin-top:8px;align-items:center">
+            <div style="display:flex;align-items:center;gap:4px">
+              <span style="font-size:10px;color:var(--muted);white-space:nowrap">Setup $</span>
+              <input type="text" class="price-input" value="${adsPrices.setup||''}" placeholder="0"
+                onclick="event.stopPropagation()"
+                oninput="adsPrices.setup=parseFloat(this.value.replace(/[^0-9.]/g,''))||0;update()"
+                style="width:80px">
+            </div>
+            <div style="display:flex;align-items:center;gap:4px">
+              <span style="font-size:10px;color:var(--muted);white-space:nowrap">Monthly $</span>
+              <input type="text" class="price-input" value="${adsPrices.monthly||''}" placeholder="0"
+                onclick="event.stopPropagation()"
+                oninput="adsPrices.monthly=parseFloat(this.value.replace(/[^0-9.]/g,''))||0;update()"
+                style="width:80px">
+              <span style="font-size:10px;color:var(--muted)">/mo</span>
+            </div>
+            <span style="font-size:10px;color:var(--muted);font-style:italic">+ ad spend</span>
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+      return;
+    }
+
+    const priceDisplay = `$${(customPrices[svc.id]??svc.price).toLocaleString()}`;
+    div.innerHTML = `
+      <input type="checkbox" ${active?'checked':''} onchange="toggleService('${svc.id}', this.checked, event, ${JSON.stringify(selectedSet===selectedSetup)})">
+      <div class="service-item-info">
+        <div class="service-item-name">${svc.name}</div>
+        <div class="service-item-desc">${svc.desc}</div>
+      </div>
+      <div class="service-item-price">
+        ${svc.placeholder ? `<span class="price-type">quoted</span>` : `
+        <span style="font-size:11px;color:var(--muted)">$</span>
+        <input type="text" class="price-input" value="${customPrices[svc.id]??svc.price}" 
+          onclick="event.stopPropagation()" 
+          oninput="setPrice('${svc.id}', this.value)"
+          style="width:80px">
+        <span class="price-type">${svc.type==='mo'?'/mo':''}</span>`}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function toggleService(id, checked, e, isSetup) {
+  e.stopPropagation();
+  const set = isSetup ? selectedSetup : selectedMonthly;
+  if(checked) set.add(id); else set.delete(id);
+  const item = e.target.closest('.service-item');
+  item.classList.toggle('active', checked);
+  update();
+}
+
+function setPrice(id, val) {
+  const num = parseFloat(val.replace(/[^0-9.]/g,''));
+  customPrices[id] = isNaN(num) ? 0 : num;
+  update();
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtDate(d) { if(!d) return '—'; const [y,m,day] = d.split('-'); const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`; }
+
+function update() {
+  const clientName = document.getElementById('clientName').value || '—';
+  const clientDBA = document.getElementById('clientDBA').value || '';
+  const clientLocation = document.getElementById('clientLocation').value || '';
+  const clientEmail = document.getElementById('clientEmail').value || '';
+  const effectiveDate = document.getElementById('effectiveDate').value;
+  const billingDate = document.getElementById('billingDate').value;
+  const projectName = document.getElementById('projectName').value || 'HSP Systems Engagement';
+  const includedNote = document.getElementById('includedNote').value;
+  const specialNote = document.getElementById('specialNote').value;
+
+  // Meta
+  document.getElementById('meta-date').textContent = `Date: ${fmtDate(effectiveDate) || '—'}`;
+  document.getElementById('meta-project').textContent = `Project: ${projectName}`;
+  document.getElementById('doc-subtitle').textContent = `Statement of Work — ${projectName}`;
+  document.getElementById('preview-clientName').textContent = clientName;
+  document.getElementById('preview-clientDetail').innerHTML = [clientDBA, clientLocation, clientEmail].filter(Boolean).join('<br>') || '—';
+  document.getElementById('preview-effectiveDate').textContent = fmtDate(effectiveDate) || '—';
+  document.getElementById('preview-billingDate').textContent = fmtDate(billingDate) || '—';
+  document.getElementById('sig-clientName').textContent = clientName;
+  document.getElementById('sig-clientDBA').textContent = clientDBA || '—';
+  document.getElementById('footer-project').textContent = projectName;
+
+  // Setup table
+  const setupTbody = document.getElementById('setup-tbody');
+  setupTbody.innerHTML = '';
+  let setupTotal = 0;
+  const activeSetup = SETUP_SERVICES.filter(s => selectedSetup.has(s.id));
+  const adsActive = selectedMonthly.has('ads');
+
+  const allSetupRows = [...activeSetup];
+  // Add ads setup row if ads selected and setup price > 0
+  if(adsActive && adsPrices.setup > 0) {
+    allSetupRows.push({ id:'ads_setup', name:'Paid Ads — Campaign Setup', desc:'Ad account setup, campaign structure, creative strategy, tracking, and launch (Google / Facebook / LinkedIn)', price: adsPrices.setup, type:'one', _isAds:true });
+  }
+
+  if(allSetupRows.length === 0) {
+    setupTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;font-size:12px">No setup services selected</td></tr>';
+  } else {
+    allSetupRows.forEach((svc) => {
+      const price = svc._isAds ? svc.price : (customPrices[svc.id] ?? svc.price);
+      setupTotal += price;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><div class="item-name">${svc.name}</div></td><td><div class="item-desc">${svc.desc}</div></td><td class="price-cell">${fmt(price)}</td>`;
+      setupTbody.appendChild(tr);
+    });
+    const sub = document.createElement('tr');
+    sub.className = 'subtotal-row';
+    sub.innerHTML = `<td></td><td style="text-align:right;font-weight:700;color:var(--navy)">Total One-Time Setup</td><td class="price-cell" style="font-size:14px">${fmt(setupTotal)}</td>`;
+    setupTbody.appendChild(sub);
+  }
+
+  // Monthly table
+  const monthlyTbody = document.getElementById('monthly-tbody');
+  monthlyTbody.innerHTML = '';
+  let monthlyAddons = 0;
+
+  const rows = [];
+  if(tierName !== 'none') {
+    const tierDesc = {
+      'Essential': 'CRM access, pipeline, forms, calendars, automations, troubleshooting, 1 edit/mo',
+      'Growth': 'Everything in Essential + 2 campaigns/mo, monthly strategy call, workflow optimization, priority support',
+      'Priority': 'Everything in Growth + unlimited small edits, bi-weekly calls, same-day response, full system management'
+    };
+    rows.push({ name: `Managed Platform — ${tierName}`, desc: tierDesc[tierName], price: tierPrice, isTier: true });
+  }
+  MONTHLY_SERVICES.filter(s => selectedMonthly.has(s.id)).forEach(svc => {
+    if(svc.type === 'dual') {
+      // Ads — show monthly management fee
+      if(adsPrices.monthly > 0) {
+        monthlyAddons += adsPrices.monthly;
+        rows.push({ name: 'Paid Ads Management', desc: 'Google / Facebook / LinkedIn ongoing management, reporting, and optimization. Ad spend billed directly to client.', price: adsPrices.monthly, adsnote: true });
+      } else {
+        rows.push({ name: 'Paid Ads Management', desc: 'Google / Facebook / LinkedIn ongoing management, reporting, and optimization. Ad spend billed directly to client.', price: null, placeholder: 'Quoted' });
+      }
+      return;
+    }
+    const price = customPrices[svc.id] ?? svc.price;
+    monthlyAddons += price;
+    rows.push({ name: svc.name, desc: svc.desc, price });
+
+  });
+
+  if(rows.length === 0) {
+    monthlyTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;font-size:12px">No monthly services selected</td></tr>';
+  } else {
+    rows.forEach((row, i) => {
+      const tr = document.createElement('tr');
+      const priceDisplay = row.placeholder ? 'Quoted' : fmt(row.price);
+      tr.innerHTML = `<td><div class="item-name">${row.name}</div></td><td><div class="item-desc">${row.desc}</div></td><td class="price-cell">${priceDisplay}/mo</td>`;
+      monthlyTbody.appendChild(tr);
+    });
+    const totalMo = (tierName !== 'none' ? tierPrice : 0) + monthlyAddons;
+    const sub = document.createElement('tr');
+    sub.className = 'subtotal-row';
+    sub.innerHTML = `<td></td><td style="text-align:right;font-weight:700;color:var(--navy)">Total Monthly</td><td class="price-cell" style="font-size:14px">${fmt(totalMo)}/mo</td>`;
+    monthlyTbody.appendChild(sub);
+  }
+
+  // Totals
+  const monthlyTotal = (tierName !== 'none' ? tierPrice : 0) + monthlyAddons;
+  document.getElementById('t-setup').textContent = fmt(setupTotal);
+  document.getElementById('t-firstmonth').textContent = fmt(monthlyTotal);
+  document.getElementById('t-total').textContent = fmt(setupTotal + monthlyTotal);
+  document.getElementById('t-monthly').textContent = fmt(monthlyTotal) + '/mo';
+
+  // Notes
+  document.getElementById('preview-included').textContent = includedNote || 'To be specified.';
+  const specialSection = document.getElementById('special-section');
+  if(specialNote.trim()) {
+    specialSection.style.display = 'block';
+    document.getElementById('preview-special').textContent = specialNote;
+  } else {
+    specialSection.style.display = 'none';
+  }
+}
+
+function resetForm() {
+  document.querySelectorAll('input[type=text],input[type=email],input[type=date],textarea').forEach(el => el.value = '');
+  selectedSetup = new Set(['ws_rebuild','crm_setup','automation','launch']);
+  selectedMonthly = new Set();
+  customPrices = {};
+  adsPrices = { setup: 0, monthly: 0 };
+  selectTier('Growth', 597, 'mo');
+  buildServiceList(SETUP_SERVICES, 'setupServices', selectedSetup);
+  buildServiceList(MONTHLY_SERVICES, 'monthlyServices', selectedMonthly);
+  update();
+}
+
+// Init
+buildServiceList(SETUP_SERVICES, 'setupServices', selectedSetup);
+buildServiceList(MONTHLY_SERVICES, 'monthlyServices', selectedMonthly);
+update();
+
+// Set today's date
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('effectiveDate').value = today;
+update();
+</script>
+</body>
+</html>
