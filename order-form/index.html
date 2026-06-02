@@ -662,8 +662,7 @@ function update() {
   document.getElementById('preview-clientDetail').innerHTML = [clientDBA, clientLocation, clientEmail].filter(Boolean).join('<br>') || '—';
   document.getElementById('preview-effectiveDate').textContent = fmtDate(effectiveDate) || '—';
   document.getElementById('preview-billingDate').textContent = fmtDate(billingDate) || '—';
-  document.getElementById('sig-clientName').textContent = clientName;
-  document.getElementById('sig-clientDBA').textContent = clientDBA || '—';
+  document.getElementById('sig-clientDBA') && (document.getElementById('sig-clientDBA').textContent = clientDBA || '—');
   document.getElementById('footer-project').textContent = projectName;
 
   // Setup table
