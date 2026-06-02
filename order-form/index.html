@@ -330,6 +330,7 @@ header{
       <div class="tier-pill active" onclick="selectTier('Growth',597,'mo')">Growth<br><small>$597/mo</small></div>
       <div class="tier-pill" onclick="selectTier('Priority',997,'mo')">Priority<br><small>$997/mo</small></div>
     </div>
+    <div id="tier-detail" style="font-size:11px;color:var(--muted);line-height:1.7;padding:10px 12px;background:var(--off-white);border:1px solid var(--border);border-radius:3px;margin-bottom:8px"></div>
   </div>
 
   <div class="panel-section">
@@ -505,12 +506,44 @@ let selectedMonthly = new Set();
 let customPrices = {};
 let adsPrices = { setup: 0, monthly: 0 };
 
+const TIER_DETAILS = {
+  none: '',
+  Essential: [
+    'GHL sub-account — full platform access',
+    'CRM, pipeline, forms, calendars, and automations running',
+    'System monitoring — if something breaks, HSP fixes it',
+    '1 minor workflow edit or update per month',
+    'Email support — response within 48 hours',
+  ],
+  Growth: [
+    'GHL sub-account — full platform access',
+    'CRM, pipeline, forms, calendars, and automations running',
+    'System monitoring — if something breaks, HSP fixes it',
+    'Up to 3 workflow edits or updates per month',
+    '30-min monthly strategy call',
+    'Priority email support — response within 24 hours',
+  ],
+  Priority: [
+    'GHL sub-account — full platform access',
+    'CRM, pipeline, forms, calendars, and automations running',
+    'System monitoring — if something breaks, HSP fixes it',
+    'Unlimited small edits and updates',
+    'Two 30-min calls per month',
+    'Same-day response',
+    'First priority for any new builds or add-ons',
+  ]
+};
+
 function selectTier(name, price, type) {
   tierName = name; tierPrice = price;
   document.querySelectorAll('.tier-pill').forEach((p,i)=>{
     p.classList.remove('active');
     if((i===0&&name==='none')||(i===1&&name==='Essential')||(i===2&&name==='Growth')||(i===3&&name==='Priority')) p.classList.add('active');
   });
+  const detail = document.getElementById('tier-detail');
+  const items = TIER_DETAILS[name] || [];
+  detail.style.display = items.length ? 'block' : 'none';
+  detail.innerHTML = items.map(i => `<div style="padding:2px 0">✓ ${i}</div>`).join('');
   update();
 }
 
@@ -660,9 +693,9 @@ function update() {
   const rows = [];
   if(tierName !== 'none') {
     const tierDesc = {
-      'Essential': 'CRM access, pipeline, forms, calendars, automations, troubleshooting, 1 edit/mo',
-      'Growth': 'Everything in Essential + 2 campaigns/mo, monthly strategy call, workflow optimization, priority support',
-      'Priority': 'Everything in Growth + unlimited small edits, bi-weekly calls, same-day response, full system management'
+      'Essential': 'GHL sub-account access · CRM, pipeline, forms, calendars, and automations running · System monitoring — if something breaks, HSP fixes it · 1 minor workflow edit or update per month · Email support, response within 48 hours',
+      'Growth': 'GHL sub-account access · CRM, pipeline, forms, calendars, and automations running · System monitoring — if something breaks, HSP fixes it · Up to 3 workflow edits or updates per month · 30-min monthly strategy call · Priority email support, response within 24 hours',
+      'Priority': 'GHL sub-account access · CRM, pipeline, forms, calendars, and automations running · System monitoring — if something breaks, HSP fixes it · Unlimited small edits and updates · Two 30-min calls per month · Same-day response · First priority for any new builds or add-ons'
     };
     rows.push({ name: `Managed Platform — ${tierName}`, desc: tierDesc[tierName], price: tierPrice, isTier: true });
   }
@@ -732,7 +765,7 @@ function resetForm() {
 // Init
 buildServiceList(SETUP_SERVICES, 'setupServices', selectedSetup);
 buildServiceList(MONTHLY_SERVICES, 'monthlyServices', selectedMonthly);
-update();
+selectTier('Growth', 597, 'mo');
 
 // Set today's date
 const today = new Date().toISOString().split('T')[0];
