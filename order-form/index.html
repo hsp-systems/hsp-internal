@@ -276,7 +276,8 @@ header{
   .total-block{page-break-inside:avoid}
   .doc-section{page-break-inside:avoid}
   .parties-grid{page-break-inside:avoid}
-  .info-grid{page-break-inside:avoid}
+  .info-grid{page-break-inside:avoid;page-break-after:avoid}
+  #setup-section{page-break-before:avoid}
   .sig-grid{page-break-inside:avoid}
   .doc-footer{page-break-inside:avoid}
   .total-row.grand{page-break-before:avoid}
@@ -471,8 +472,10 @@ header{
           <div class="sig-party">Client</div>
           <div class="sig-line"></div>
           <div class="sig-label">Signature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date</div>
-          <div class="sig-name" id="sig-clientName" style="margin-top:12px">—</div>
-          <div class="sig-label" id="sig-clientDBA">—</div>
+          <div style="margin-top:14px;border-bottom:1px solid var(--border-dark);padding-bottom:3px;margin-bottom:4px"></div>
+          <div class="sig-label">Printed Name</div>
+          <div style="margin-top:10px;border-bottom:1px solid var(--border-dark);padding-bottom:3px;margin-bottom:4px"></div>
+          <div class="sig-label">Title &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Company: <span id="sig-clientDBA" style="font-weight:600;color:var(--navy)">—</span></div>
         </div>
       </div>
     </div>
