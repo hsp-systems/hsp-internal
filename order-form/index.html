@@ -269,7 +269,9 @@ header{
   body{display:block;background:white}
   header,.panel{display:none}
   .preview-wrap{padding:0;background:white;height:auto;overflow:visible}
-  .doc{overflow:hidden;box-shadow:none;width:100%;padding:40px 48px;min-height:0!important}
+  .doc{overflow:hidden;box-shadow:none!important;border:none!important;outline:none!important;width:100%;padding:40px 48px;min-height:0!important}
+  body,html{box-shadow:none!important;border:none!important;background:white!important}
+  .preview-wrap{box-shadow:none!important;border:none!important;background:white!important}
   @page{margin:0.5in;size:letter}
   /* Force background colors to print */
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
