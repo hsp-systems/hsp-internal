@@ -133,9 +133,9 @@ header{
 }
 .doc{
   background:var(--white);
-  width:816px;min-height:1056px;
+  width:816px;
   padding:56px 64px;
-  box-shadow:0 4px 40px rgba(0,0,0,0.25);
+  
   font-family:'DM Sans',sans-serif;
 }
 
@@ -266,10 +266,12 @@ header{
 }
 
 @media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{background:white!important;margin:0!important;padding:0!important}
   body{display:block;background:white}
   header,.panel{display:none}
-  .preview-wrap{padding:0;background:white;height:auto;overflow:visible}
-  .doc{overflow:hidden;box-shadow:none!important;border:none!important;outline:none!important;width:100%;padding:40px 48px;min-height:0!important}
+  .preview-wrap{padding:0!important;background:white!important;height:auto!important;overflow:visible!important;margin:0!important}
+  .doc{overflow:visible!important;box-shadow:none!important;border:none!important;outline:none!important;width:100%!important;max-width:100%!important;padding:20px 48px!important;min-height:0!important;height:auto!important}
   body,html{box-shadow:none!important;border:none!important;background:white!important}
   .preview-wrap{box-shadow:none!important;border:none!important;background:white!important}
   @page{margin:0.5in;size:letter}
