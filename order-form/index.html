@@ -286,9 +286,8 @@ header{
   .doc-footer{page-break-inside:avoid}
   .total-row.grand{page-break-before:avoid}
   .services-table tr{page-break-inside:avoid}
-  /* Kill blank trailing page */
-  .doc{overflow:hidden}
-  .preview-wrap{overflow:hidden}
+  .doc{overflow:visible}
+  .preview-wrap{overflow:visible}
   html,body{height:auto!important}
 }
 </style>
@@ -494,28 +493,74 @@ header{
 
 <script>
 const SETUP_SERVICES = [
-  { id:'ws_strategy', name:'Website Strategy + Structure', desc:'Page structure, conversion flow, CTAs, lead capture strategy', price:750, type:'one' },
-  { id:'ws_rebuild',  name:'Website Rebuild', desc:'Homepage, services, about, case studies, contact/booking pages', price:3500, type:'one' },
-  { id:'ws_funnel',   name:'Funnel + Lead Capture', desc:'Multi-step form, landing page, thank-you page, booking path', price:1250, type:'one' },
-  { id:'crm_setup',   name:'CRM + Pipeline Setup', desc:'Pipeline stages, lead source tracking, form-to-contact, workflow structure', price:1000, type:'one' },
-  { id:'migration',   name:'CRM Migration + Cleanup', desc:'Export/import contacts, organize fields/tags, eliminate manual process', price:750, type:'one' },
-  { id:'automation',  name:'Lead Response Automations', desc:'SMS/email follow-up, internal notifications, nurture sequences, reminders', price:1000, type:'one' },
-  { id:'launch',      name:'Testing + Launch Support', desc:'End-to-end testing, domain connection, launch cleanup, client walkthrough', price:750, type:'one' },
-  { id:'hiring',      name:'Hiring Pipeline', desc:'Application intake, screening automation, onboarding sequences', price:3500, type:'one' },
-  { id:'ops',         name:'Internal Ops Automation', desc:'Internal alerts, workflow logic, paper process elimination', price:1500, type:'one' },
-  { id:'quoting',     name:'Quoting + Intake Tool', desc:'Multi-step embeddable quote form, Stripe card-save, booking redirect', price:2500, type:'one' },
-  { id:'ivr',         name:'Phone Routing / IVR', desc:'Inbound call routing, IVR menu, missed call flows', price:2000, type:'one' },
-  { id:'reviews',     name:'Reviews + Reactivation', desc:'Post-job review requests, negative suppression, old customer win-back', price:1500, type:'one' },
+  // ── Core Engagement Items ──────────────────────────────────────
+  { id:'website_rebuild', name:'Website Rebuild',
+    desc:'Site structure, all pages, conversion flow, multi-step lead capture forms, landing page, booking flow, thank-you page. Strategy and copy guidance included.',
+    price:4500, type:'one' },
+  { id:'crm_system', name:'CRM + Automation System',
+    desc:'GHL sub-account setup, pipeline configuration, lead response automations, SMS/email follow-up sequences, internal notifications, contact migration and cleanup, testing, and launch support.',
+    price:3000, type:'one' },
+
+  // ── Lead Response System (home service core) ──────────────────
+  { id:'lead_response', name:'Lead Response System',
+    desc:'Missed-call text-back, contact form automation, instant follow-up sequences, lead pipeline, owner alerts. Core system for home service businesses.',
+    price:1500, type:'one' },
+
+  // ── Add-On Modules ────────────────────────────────────────────
+  { id:'reviews',   name:'Reviews + Reactivation',
+    desc:'Post-job review requests, negative feedback suppression (routes complaints privately first), old customer win-back sequences.',
+    price:1500, type:'one' },
+  { id:'quoting',   name:'Quoting + Intake Tool',
+    desc:'Multi-step embeddable quote form, Stripe card-save (no charge at booking), booking redirect, Zapier webhook to field software.',
+    price:2000, type:'one' },
+  { id:'ivr',       name:'Phone Routing',
+    desc:'Smart inbound call routing, after-hours logic, voicemail-to-text transcription, internal team alerts. No dead ends.',
+    price:1800, type:'one' },
+  { id:'hiring',    name:'Hiring Pipeline',
+    desc:'Application intake, automated screening, interview scheduling, team notifications, onboarding handoff. Full applicant flow without manual work.',
+    price:2500, type:'one' },
+  { id:'onboarding',name:'Employee Onboarding + Training',
+    desc:'Document collection, training sequences, task checklists, manager notifications, new hire follow-up cadence.',
+    price:2000, type:'one' },
+  { id:'hr',        name:'HR Management System',
+    desc:'Time-off requests, approval routing, attendance incident logging, raise workflows, birthday recognition automations.',
+    price:2800, type:'one' },
+  { id:'retention', name:'Customer Retention System',
+    desc:'Contract renewal sequences, price increase automations, upsell campaigns, lapsed-customer win-back flows.',
+    price:2500, type:'one' },
+  { id:'ops',       name:'Internal Ops Automation',
+    desc:'Internal alerts, approval workflows, paper process elimination, team handoffs, operational task triggers.',
+    price:1500, type:'one' },
+  { id:'reporting', name:'Operations + Reporting',
+    desc:'Daily, weekly, and monthly KPI reports auto-sent to owner. Includes QuickBooks sync and operational performance alerts.',
+    price:2800, type:'one' },
+
+  // ── Integrations ──────────────────────────────────────────────
+  { id:'qb',        name:'QuickBooks Integration',
+    desc:'QuickBooks ↔ GHL two-way sync. Invoice triggers, payment status automation, job-completion handoffs.',
+    price:1200, type:'one' },
+  { id:'jobber',    name:'Jobber Sync',
+    desc:'Jobber ↔ GHL two-way sync. Job status triggers, appointment automations, field-to-CRM data flow.',
+    price:1500, type:'one' },
+  { id:'adattr',    name:'Ad Attribution + Tracking',
+    desc:'Meta and Google ad attribution, UTM tracking to GHL custom fields, custom audiences, retargeting triggers, lead source reporting.',
+    price:1500, type:'one' },
 ];
 
 const MONTHLY_SERVICES = [
-  { id:'campaigns', name:'SMS + Email Campaigns', desc:'2–4 campaigns/mo written and sent by HSP, segmented by warmth', price:300, type:'mo' },
-  { id:'hipaa',     name:'HIPAA Compliance Add-On', desc:'HIPAA-compliant infrastructure, BAA, encrypted storage (healthcare only)', price:297, type:'mo' },
-  { id:'ads', name:'Paid Ads Management', desc:'Google / Facebook / LinkedIn — requires clean site/funnel first', type:'dual', setupPrice:0, monthlyPrice:0 },
+  { id:'campaigns', name:'SMS + Email Campaigns',
+    desc:'2–4 campaigns/month written and sent by HSP — segmented by lead warmth, service type, or season.',
+    price:300, type:'mo' },
+  { id:'hipaa',     name:'HIPAA Compliance Add-On',
+    desc:'HIPAA-compliant infrastructure, Business Associate Agreement, encrypted storage. Healthcare clients only.',
+    price:297, type:'mo' },
+  { id:'ads',       name:'Paid Ads Management (Tucker)',
+    desc:'Google / Meta / LinkedIn ongoing management, reporting, and optimization. Ad spend billed directly to client. Requires clean site + funnel first.',
+    type:'dual', setupPrice:0, monthlyPrice:0 },
 ];
 
 let tierName = 'Growth', tierPrice = 597;
-let selectedSetup = new Set(['ws_rebuild','crm_setup','automation','launch']);
+let selectedSetup = new Set(['website_rebuild','crm_system']);
 let selectedMonthly = new Set();
 let customPrices = {};
 let adsPrices = { setup: 0, monthly: 0 };
@@ -533,7 +578,7 @@ const TIER_DETAILS = {
     'GHL sub-account — full platform access',
     'CRM, pipeline, forms, calendars, and automations running',
     'System monitoring — if something breaks, HSP fixes it',
-    'Up to 3 workflow edits or updates per month',
+    'Ongoing system management and monthly optimization',
     '30-min monthly strategy call',
     'Priority email support — response within 24 hours',
   ],
@@ -718,7 +763,7 @@ function update() {
   if(tierName !== 'none') {
   const tierDesc = {
     'Essential': ['GHL sub-account — full platform access','CRM, pipeline, forms, calendars, and automations running','System monitoring — if something breaks, HSP fixes it','1 minor workflow edit or update per month','Email support — response within 48 hours'],
-    'Growth':    ['GHL sub-account — full platform access','CRM, pipeline, forms, calendars, and automations running','System monitoring — if something breaks, HSP fixes it','Up to 3 workflow edits or updates per month','30-min monthly strategy call','Priority email support — response within 24 hours'],
+    'Growth':    ['GHL sub-account — full platform access','CRM, pipeline, forms, calendars, and automations running','System monitoring — if something breaks, HSP fixes it','Ongoing system management and monthly optimization','30-min monthly strategy call','Priority email support — response within 24 hours'],
     'Priority':  ['GHL sub-account — full platform access','CRM, pipeline, forms, calendars, and automations running','System monitoring — if something breaks, HSP fixes it','Unlimited small edits and updates','Two 30-min calls per month','Same-day response','First priority for any new builds or add-ons']
   };
   const descHtml = (tierDesc[tierName] || []).map(i => `<div style="display:flex;gap:6px;align-items:flex-start;margin-bottom:3px"><span style="color:#1B7A3A;font-weight:700;flex-shrink:0">✓</span><span>${i}</span></div>`).join('');
@@ -777,7 +822,7 @@ function update() {
 
 function resetForm() {
   document.querySelectorAll('input[type=text],input[type=email],input[type=date],textarea').forEach(el => el.value = '');
-  selectedSetup = new Set(['ws_rebuild','crm_setup','automation','launch']);
+  selectedSetup = new Set(['website_rebuild','crm_system']);
   selectedMonthly = new Set();
   customPrices = {};
   adsPrices = { setup: 0, monthly: 0 };
