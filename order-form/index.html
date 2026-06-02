@@ -339,6 +339,15 @@ header{
   </div>
 
   <div class="panel-section">
+    <div class="panel-section-title">Bundle Discount (optional)</div>
+    <div class="field">
+      <label>Bundled Project Price ($)</label>
+      <input type="text" id="bundleDiscount" placeholder="e.g. 7500" oninput="update()">
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:-8px">Type your bundled price — discount calculates automatically from line item total.</div>
+  </div>
+
+  <div class="panel-section">
     <div class="panel-section-title">Monthly Add-Ons</div>
     <div id="monthlyServices"></div>
   </div>
@@ -417,10 +426,8 @@ header{
     <div class="doc-section">
       <div class="doc-section-title">Investment Summary</div>
       <div class="total-block">
-        <div class="total-row"><span class="total-label">One-Time Setup Fee</span><span class="total-amount" id="t-setup">$0</span></div>
-        <div class="total-row"><span class="total-label">First Month Managed Service</span><span class="total-amount" id="t-firstmonth">$0</span></div>
         <div class="total-row grand"><span class="total-label">Total Due to Begin</span><span class="total-amount" id="t-total">$0</span></div>
-        <div class="total-row monthly"><span class="total-label">Ongoing Monthly (after launch)</span><span class="total-amount" id="t-monthly">$0/mo</span></div>
+        <div class="total-row monthly"><span class="total-label">Monthly Service — begins on launch date</span><span class="total-amount" id="t-monthly">$0/mo</span></div>
       </div>
     </div>
 
@@ -439,7 +446,7 @@ header{
     <!-- PAYMENT TERMS -->
     <div class="doc-section">
       <div class="doc-section-title">Payment Terms</div>
-      <div class="terms-text">Setup fee is due in full before work begins. The first monthly payment is due on the launch date — the date the system goes live and is handed off to Client. Monthly service renews automatically on that same date each month until canceled with <strong>30 days' written notice</strong> to harley@hspsystems.io. Invoices not paid within 10 days may result in paused work or suspended access. Balances more than 30 days past due are subject to a 1.5% per month late fee.</div>
+      <div class="terms-text">Setup fee is due in full before work begins. The first monthly payment is due on the agreed launch date — the date the system goes live and is handed off to Client. Monthly service renews automatically on that same date each month until canceled with <strong>30 days' written notice</strong> to harley@hspsystems.io. Invoices not paid within 10 days may result in paused work or suspended access. Balances more than 30 days past due are subject to a 1.5% per month late fee.</div>
     </div>
 
     <!-- SPECIAL NOTES -->
@@ -662,9 +669,9 @@ function update() {
   let setupTotal = 0;
   const activeSetup = SETUP_SERVICES.filter(s => selectedSetup.has(s.id));
   const adsActive = selectedMonthly.has('ads');
+  const bundledPrice = parseFloat((document.getElementById('bundleDiscount')?.value || '').replace(/[^0-9.]/g,'')) || 0;
 
   const allSetupRows = [...activeSetup];
-  // Add ads setup row if ads selected and setup price > 0
   if(adsActive && adsPrices.setup > 0) {
     allSetupRows.push({ id:'ads_setup', name:'Paid Ads — Campaign Setup', desc:'Ad account setup, campaign structure, creative strategy, tracking, and launch (Google / Facebook / LinkedIn)', price: adsPrices.setup, type:'one', _isAds:true });
   }
@@ -672,16 +679,27 @@ function update() {
   if(allSetupRows.length === 0) {
     setupTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;font-size:12px">No setup services selected</td></tr>';
   } else {
+    let lineItemTotal = 0;
     allSetupRows.forEach((svc) => {
       const price = svc._isAds ? svc.price : (customPrices[svc.id] ?? svc.price);
-      setupTotal += price;
+      lineItemTotal += price;
       const tr = document.createElement('tr');
       tr.innerHTML = `<td><div class="item-name">${svc.name}</div></td><td><div class="item-desc">${svc.desc}</div></td><td class="price-cell">${fmt(price)}</td>`;
       setupTbody.appendChild(tr);
     });
+    // Bundle discount row — calculated from line item total minus bundled price
+    if(bundledPrice > 0 && bundledPrice < lineItemTotal) {
+      const discount = lineItemTotal - bundledPrice;
+      const discRow = document.createElement('tr');
+      discRow.innerHTML = `<td></td><td style="text-align:right;color:#1B7A3A;font-weight:600">Bundle Discount</td><td class="price-cell" style="color:#1B7A3A">-${fmt(discount)}</td>`;
+      setupTbody.appendChild(discRow);
+      setupTotal = bundledPrice;
+    } else {
+      setupTotal = lineItemTotal;
+    }
     const sub = document.createElement('tr');
     sub.className = 'subtotal-row';
-    sub.innerHTML = `<td></td><td style="text-align:right;font-weight:700;color:var(--navy)">Total One-Time Setup</td><td class="price-cell" style="font-size:14px">${fmt(setupTotal)}</td>`;
+    sub.innerHTML = `<td></td><td style="text-align:right;font-weight:700;color:var(--navy)">${bundledPrice > 0 && bundledPrice < lineItemTotal ? 'Bundled Project Price' : 'Total One-Time Setup'}</td><td class="price-cell" style="font-size:14px">${fmt(setupTotal)}</td>`;
     setupTbody.appendChild(sub);
   }
 
@@ -692,12 +710,13 @@ function update() {
 
   const rows = [];
   if(tierName !== 'none') {
-    const tierDesc = {
-      'Essential': 'GHL sub-account access · CRM, pipeline, forms, calendars, and automations running · System monitoring — if something breaks, HSP fixes it · 1 minor workflow edit or update per month · Email support, response within 48 hours',
-      'Growth': 'GHL sub-account access · CRM, pipeline, forms, calendars, and automations running · System monitoring — if something breaks, HSP fixes it · Up to 3 workflow edits or updates per month · 30-min monthly strategy call · Priority email support, response within 24 hours',
-      'Priority': 'GHL sub-account access · CRM, pipeline, forms, calendars, and automations running · System monitoring — if something breaks, HSP fixes it · Unlimited small edits and updates · Two 30-min calls per month · Same-day response · First priority for any new builds or add-ons'
-    };
-    rows.push({ name: `Managed Platform — ${tierName}`, desc: tierDesc[tierName], price: tierPrice, isTier: true });
+  const tierDesc = {
+    'Essential': ['GHL sub-account — full platform access','CRM, pipeline, forms, calendars, and automations running','System monitoring — if something breaks, HSP fixes it','1 minor workflow edit or update per month','Email support — response within 48 hours'],
+    'Growth':    ['GHL sub-account — full platform access','CRM, pipeline, forms, calendars, and automations running','System monitoring — if something breaks, HSP fixes it','Up to 3 workflow edits or updates per month','30-min monthly strategy call','Priority email support — response within 24 hours'],
+    'Priority':  ['GHL sub-account — full platform access','CRM, pipeline, forms, calendars, and automations running','System monitoring — if something breaks, HSP fixes it','Unlimited small edits and updates','Two 30-min calls per month','Same-day response','First priority for any new builds or add-ons']
+  };
+  const descHtml = (tierDesc[tierName] || []).map(i => `<div style="display:flex;gap:6px;align-items:flex-start;margin-bottom:3px"><span style="color:#1B7A3A;font-weight:700;flex-shrink:0">✓</span><span>${i}</span></div>`).join('');
+  rows.push({ name: `Managed Platform — ${tierName}`, descHtml, price: tierPrice, isTier: true });
   }
   MONTHLY_SERVICES.filter(s => selectedMonthly.has(s.id)).forEach(svc => {
     if(svc.type === 'dual') {
@@ -722,7 +741,8 @@ function update() {
     rows.forEach((row, i) => {
       const tr = document.createElement('tr');
       const priceDisplay = row.placeholder ? 'Quoted' : fmt(row.price);
-      tr.innerHTML = `<td><div class="item-name">${row.name}</div></td><td><div class="item-desc">${row.desc}</div></td><td class="price-cell">${priceDisplay}/mo</td>`;
+      const descContent = row.descHtml ? row.descHtml : `<div class="item-desc">${row.desc}</div>`;
+      tr.innerHTML = `<td><div class="item-name">${row.name}</div></td><td>${descContent}</td><td class="price-cell">${priceDisplay}/mo</td>`;
       monthlyTbody.appendChild(tr);
     });
     const totalMo = (tierName !== 'none' ? tierPrice : 0) + monthlyAddons;
@@ -734,9 +754,8 @@ function update() {
 
   // Totals
   const monthlyTotal = (tierName !== 'none' ? tierPrice : 0) + monthlyAddons;
-  document.getElementById('t-setup').textContent = fmt(setupTotal);
-  document.getElementById('t-firstmonth').textContent = fmt(monthlyTotal);
-  document.getElementById('t-total').textContent = fmt(setupTotal + monthlyTotal);
+  document.getElementById('t-setup') && (document.getElementById('t-setup').textContent = fmt(setupTotal)); // already discounted
+  document.getElementById('t-total').textContent = fmt(setupTotal);
   document.getElementById('t-monthly').textContent = fmt(monthlyTotal) + '/mo';
 
   // Notes
