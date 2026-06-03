@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSP Systems — Live Demo</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Serif+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1C2E5C; --navy-dark:#131f3e; --navy-mid:#243D7A; --navy-card:#162447;
+  --gold:#C8912A; --gold-light:#E0A840;
+  --white:#FFFFFF; --off-white:#F7F6F3; --cream:#EEE9DF;
+  --text:#1A1A1A; --text-mid:#4A4A4A; --muted:#7A7A7A;
+  --border:#DDD9D2; --border-dark:#C8C4BC;
+  --green:#1B7A3A; --green-bg:#E8F5ED;
+  --card-shadow:0 2px 16px rgba(0,0,0,0.09);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text);padding-top:62px}
+.hidden{display:none!important}
+
+/* ====================================================
+   PRESENTER BAR
+   ==================================================== */
+#presenter-bar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:var(--navy-dark);border-bottom:2px solid var(--gold);
+  height:62px;display:flex;align-items:center;gap:16px;padding:0 20px;
+}
+.pb-brand{
+  font-family:'Bebas Neue',sans-serif;color:var(--gold);
+  font-size:15px;letter-spacing:0.12em;white-space:nowrap;flex-shrink:0;
+  border-right:1px solid rgba(255,255,255,0.12);padding-right:16px;
+}
+.pb-controls{display:flex;align-items:center;gap:12px;flex:1;flex-wrap:wrap}
+.pb-field{display:flex;align-items:center;gap:6px}
+.pb-field label{
+  font-size:10px;color:rgba(255,255,255,0.38);
+  text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;
+}
+.pb-field input,.pb-field select{
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);
+  color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;
+  padding:5px 9px;border-radius:4px;outline:none;transition:border-color 0.2s;
+}
+.pb-field input{width:170px}
+.pb-field input:focus,.pb-field select:focus{border-color:var(--gold)}
+.pb-field input::placeholder{color:rgba(255,255,255,0.28)}
+.pb-field select option{background:#1a2a50;color:var(--white)}
+.pb-reset{
+  background:transparent;color:rgba(255,255,255,0.45);
+  border:1px solid rgba(255,255,255,0.18);font-family:'DM Sans',sans-serif;
+  font-size:12px;padding:5px 11px;border-radius:4px;cursor:pointer;
+  white-space:nowrap;transition:all 0.2s;flex-shrink:0;
+}
+.pb-reset:hover{border-color:var(--gold);color:var(--gold)}
+.pb-nav{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
+.pb-nav a{
+  font-size:12px;color:rgba(255,255,255,0.45);text-decoration:none;
+  padding:5px 10px;border-radius:4px;transition:all 0.2s;white-space:nowrap;
+}
+.pb-nav a:hover{color:var(--white);background:rgba(255,255,255,0.08)}
+
+/* ====================================================
+   SECTION SHARED
+   ==================================================== */
+.section-header{text-align:center;padding:64px 24px 40px;max-width:680px;margin:0 auto}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;
+}
+.eyebrow-line{width:22px;height:1px;background:var(--gold)}
+.sec-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,5vw,52px);line-height:1.02;color:var(--navy);margin-bottom:14px}
+.sec-h2.light{color:var(--white)}
+.sec-sub{font-size:15px;color:var(--text-mid);line-height:1.7}
+.sec-sub.light{color:rgba(255,255,255,0.55)}
+.divider{height:1px;background:rgba(255,255,255,0.08);margin:52px 24px}
+
+/* ====================================================
+   SECTION 1 — FUNNEL DEMO
+   ==================================================== */
+#section-funnel{background:#ECEEF5;padding-bottom:64px}
+
+.funnel-banner{
+  background:var(--navy);color:rgba(255,255,255,0.65);
+  text-align:center;padding:9px 20px;font-size:12px;letter-spacing:0.06em;
+}
+.funnel-banner strong{color:var(--gold)}
+
+.funnel-site-header{
+  background:white;border-bottom:3px solid var(--gold);
+  padding:18px 36px;display:flex;align-items:center;gap:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+.funnel-site-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;
+  color:var(--navy);letter-spacing:0.04em;
+}
+.funnel-site-tagline{
+  font-size:13px;color:var(--muted);
+  border-left:2px solid var(--border);padding-left:16px;
+}
+
+/* Step progress */
+.step-progress{
+  display:flex;align-items:center;justify-content:center;
+  padding:32px 24px 20px;max-width:480px;margin:0 auto;
+}
+.step-dot{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:white;border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:600;color:var(--muted);transition:all 0.3s;
+}
+.step-dot.active{background:var(--navy);border-color:var(--navy);color:white}
+.step-dot.done{background:var(--green);border-color:var(--green);color:white}
+.step-line{flex:1;height:2px;background:var(--border);max-width:80px;transition:background 0.3s}
+.step-line.done{background:var(--green)}
+
+/* Form card */
+.form-card{
+  background:white;border-radius:14px;box-shadow:var(--card-shadow);
+  max-width:560px;margin:0 auto 24px;padding:36px 40px;
+}
+.form-card-header{margin-bottom:26px}
+.step-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;font-weight:600}
+.form-card-header h2{font-size:22px;font-weight:700;color:var(--text);margin-bottom:7px}
+.form-card-header p{font-size:14px;color:var(--muted);line-height:1.6}
+
+.form-fields{display:flex;flex-direction:column;gap:15px;margin-bottom:24px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-field label{display:block;font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:5px}
+.form-field input,.form-field select,.form-field textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:8px;
+  padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:15px;
+  color:var(--text);background:white;outline:none;transition:border-color 0.2s;
+}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--navy)}
+.form-field textarea{resize:vertical;min-height:76px}
+
+.form-options{display:flex;gap:8px;flex-wrap:wrap}
+.opt-btn{
+  padding:8px 15px;border-radius:6px;border:1.5px solid var(--border);
+  background:white;color:var(--text-mid);font-family:'DM Sans',sans-serif;
+  font-size:13px;cursor:pointer;transition:all 0.2s;
+}
+.opt-btn.selected{border-color:var(--navy);background:var(--navy);color:white}
+.opt-btn:hover:not(.selected){border-color:var(--navy-mid);color:var(--navy)}
+
+.form-cta{
+  width:100%;padding:14px;background:var(--navy);color:white;
+  border:none;border-radius:8px;font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s;letter-spacing:0.02em;
+}
+.form-cta:hover:not(:disabled){background:var(--navy-mid)}
+.form-cta:disabled{opacity:0.45;cursor:not-allowed}
+.form-trust{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+
+.form-btn-row{display:flex;gap:10px}
+.form-btn-row .form-cta{flex:1}
+.form-back{
+  padding:14px 18px;background:transparent;color:var(--text-mid);
+  border:1.5px solid var(--border);border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s;
+}
+.form-back:hover{border-color:var(--navy);color:var(--navy)}
+
+.prefill-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green-bg);color:var(--green);
+  font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;margin-bottom:2px;
+}
+
+/* Calendar */
+.cal-month{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.1em}
+.cal-times{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.cal-slot{
+  padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;
+  background:white;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;
+  text-align:left;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;
+}
+.cal-slot::before{content:'🗓';font-size:15px}
+.cal-slot:hover{border-color:var(--navy);background:#F4F6FC}
+.cal-slot.selected{border-color:var(--navy);background:var(--navy);color:white}
+
+/* Checkout */
+.checkout-summary{background:var(--off-white);border-radius:8px;padding:18px;margin-bottom:20px}
+.checkout-line{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;
+}
+.checkout-line:last-child{border:none;font-weight:700;font-size:15px;padding-top:12px;color:var(--navy)}
+
+/* Confirm */
+.confirm-card{text-align:center;padding:40px}
+.confirm-icon{
+  width:68px;height:68px;background:var(--green);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;color:white;margin:0 auto 20px;
+}
+.confirm-card h2{font-size:26px;font-weight:700;color:var(--text);margin-bottom:8px}
+.confirm-card p{font-size:15px;color:var(--text-mid);margin-bottom:6px;line-height:1.6}
+.confirm-next{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+.next-item{
+  display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-mid);
+  background:var(--off-white);padding:10px 14px;border-radius:8px;
+}
+.confirm-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+
+/* ====================================================
+   SECTION 2 — WHAT HAPPENS NEXT
+   ==================================================== */
+#section-backend{background:var(--navy-dark);padding-bottom:72px}
+
+.flow-diagram{max-width:880px;margin:0 auto;padding:0 24px}
+.flow-row{display:flex;align-items:stretch;justify-content:center;gap:14px;margin-bottom:0}
+.flow-node{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;padding:18px 16px;text-align:center;flex:1;max-width:200px;
+  transition:border-color 0.3s;
+}
+.flow-node:hover{border-color:rgba(200,145,42,0.5)}
+.flow-node-icon{font-size:26px;margin-bottom:8px}
+.flow-node-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:5px;line-height:1.3}
+.flow-node-sub{font-size:11px;color:rgba(255,255,255,0.42);line-height:1.5}
+.flow-arrow{font-size:18px;color:var(--gold);flex-shrink:0;align-self:center}
+.flow-arrow-down{text-align:center;font-size:20px;color:var(--gold);padding:10px 0}
+.flow-branches{display:flex;gap:24px;justify-content:center;max-width:720px;margin:0 auto}
+.flow-branch{flex:1;max-width:220px}
+.branch-label{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:8px}
+
+/* ====================================================
+   SECTION 3 — CRM BACKEND
+   ==================================================== */
+#section-crm{background:var(--navy);padding-bottom:80px}
+
+/* Pipeline */
+.pipeline-wrap{overflow-x:auto;padding:0 24px 8px}
+.pipeline-board{display:flex;gap:12px;min-width:max-content;padding:4px 0 12px}
+.pipeline-col{background:rgba(255,255,255,0.04);border-radius:8px;width:210px;flex-shrink:0;overflow:hidden}
+.pipeline-col-head{
+  background:rgba(0,0,0,0.2);padding:11px 13px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.pipeline-col-title{font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px}
+.pipeline-col-meta{font-size:11px;color:rgba(255,255,255,0.38)}
+.pipeline-cards{padding:9px;display:flex;flex-direction:column;gap:7px}
+.pipeline-card{
+  background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.08);
+  border-radius:6px;padding:11px;transition:border-color 0.2s;cursor:default;
+}
+.pipeline-card:hover{border-color:rgba(200,145,42,0.35)}
+.pipeline-card.won{background:rgba(27,122,58,0.14);border-color:rgba(27,122,58,0.28)}
+.pc-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:5px}
+.pc-meta{font-size:11px;color:rgba(255,255,255,0.38);margin-bottom:3px}
+.pc-value{font-size:12px;color:var(--gold);font-weight:600}
+.pc-actions{display:flex;gap:7px;margin-top:7px;font-size:13px;opacity:0.45}
+.won-badge{
+  display:inline-block;background:var(--green);color:white;
+  font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;
+}
+
+/* Automation suites */
+.suites-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+  gap:18px;max-width:1080px;margin:0 auto;padding:0 24px;
+}
+.suite-card{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;padding:26px;transition:border-color 0.3s,transform 0.2s;
+}
+.suite-card:hover{border-color:rgba(200,145,42,0.38);transform:translateY(-2px)}
+.suite-icon{font-size:30px;margin-bottom:12px}
+.suite-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:7px}
+.suite-desc{font-size:12px;color:rgba(255,255,255,0.48);line-height:1.6;margin-bottom:12px}
+.suite-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.suite-list li{font-size:12px;color:rgba(255,255,255,0.58);display:flex;align-items:flex-start;gap:7px;line-height:1.4}
+.suite-list li::before{content:'→';color:var(--gold);flex-shrink:0}
+
+/* Comparison */
+.comp-wrap{max-width:820px;margin:0 auto;padding:0 24px;overflow-x:auto}
+.comp-table{width:100%;border-collapse:collapse;min-width:580px}
+.comp-table th{
+  padding:12px 18px;text-align:left;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.comp-table th.col-hsp{color:var(--gold)}
+.comp-table td{
+  padding:13px 18px;font-size:13px;color:rgba(255,255,255,0.6);
+  border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;line-height:1.4;
+}
+.comp-table td.col-label{color:rgba(255,255,255,0.38);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em}
+.comp-table td.col-hsp{color:var(--white);font-weight:500}
+.comp-table tr:last-child td{border:none}
+.bad{color:rgba(255,90,90,0.7)!important}
+.good{color:#4ADE80!important;font-weight:600!important}
+
+/* ====================================================
+   SECTION 4 — HSP DIFFERENCE
+   ==================================================== */
+#section-hsp{background:var(--navy-dark);padding:0 24px 80px}
+.hsp-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;max-width:980px;margin:0 auto;
+}
+.hsp-card{border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:26px}
+.hsp-card-icon{font-size:26px;margin-bottom:10px}
+.hsp-card-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:7px}
+.hsp-card-body{font-size:13px;color:rgba(255,255,255,0.52);line-height:1.7}
+
+.biz-tags-section{max-width:760px;margin:52px auto 0;text-align:center}
+.biz-tags-label{font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.3);margin-bottom:18px}
+.biz-tags{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.biz-tag{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;padding:7px 15px;font-size:13px;color:rgba(255,255,255,0.58);
+}
+
+/* ====================================================
+   RESPONSIVE
+   ==================================================== */
+@media(max-width:640px){
+  #presenter-bar{flex-wrap:wrap;height:auto;padding:8px 14px;gap:8px}
+  .pb-brand{border:none;padding:0}
+  .pb-nav{display:none}
+  .pb-field input{width:130px}
+  .form-card{padding:24px 20px}
+  .form-row{grid-template-columns:1fr}
+  .funnel-site-header{padding:14px 20px}
+  .flow-row{flex-wrap:wrap}
+  .flow-arrow{display:none}
+  .flow-branches{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ==========================================
+     PRESENTER BAR
+     ========================================== -->
+<div id="presenter-bar">
+  <div class="pb-brand">HSP · DEMO</div>
+  <div class="pb-controls">
+    <div class="pb-field">
+      <label>Business</label>
+      <input type="text" id="biz-input" placeholder="e.g. Bareither Group" oninput="updateBizName()">
+    </div>
+    <div class="pb-field">
+      <label>Steps</label>
+      <select id="flow-select" onchange="setFlow()">
+        <option value="2">2-Step</option>
+        <option value="3" selected>3-Step</option>
+        <option value="4">4-Step</option>
+      </select>
+    </div>
+    <div class="pb-field">
+      <label>End</label>
+      <select id="end-select" onchange="setEndState()">
+        <option value="book">Book Appointment</option>
+        <option value="checkout">Checkout Page</option>
+      </select>
+    </div>
+    <button class="pb-reset" onclick="resetDemo()">↺ Reset</button>
+  </div>
+  <nav class="pb-nav">
+    <a href="#section-funnel">① Form Demo</a>
+    <a href="#section-backend">② What Happens Next</a>
+    <a href="#section-crm">③ CRM Backend</a>
+    <a href="#section-hsp">④ HSP Difference</a>
+  </nav>
+</div>
+
+<!-- ==========================================
+     SECTION 1 — THE FORM FUNNEL
+     ========================================== -->
+<section id="section-funnel">
+
+  <div class="funnel-banner">
+    👆 <strong>What your prospects see</strong> — this is your live HSP lead funnel, running on your website
+  </div>
+
+  <div class="funnel-site-header">
+    <div class="funnel-site-logo" id="funnel-biz-name">Your Business</div>
+    <div class="funnel-site-tagline">Professional Service You Can Trust</div>
+  </div>
+
+  <!-- Step dots -->
+  <div class="step-progress">
+    <div class="step-dot active" id="dot-1">1</div>
+    <div class="step-line" id="line-12"></div>
+    <div class="step-dot" id="dot-2">2</div>
+    <div class="step-line" id="line-23"></div>
+    <div class="step-dot" id="dot-3">3</div>
+    <div class="step-line hidden" id="line-34"></div>
+    <div class="step-dot hidden" id="dot-4">4</div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="form-card" id="step-1">
+    <div class="form-card-header">
+      <div class="step-label" id="label-1">Step 1 of 3</div>
+      <h2>Let's get you a quote</h2>
+      <p>Takes less than 2 minutes. We'll reach out same day.</p>
+    </div>
+    <div class="form-fields">
+      <div class="form-row">
+        <div class="form-field">
+          <label>First Name</label>
+          <input type="text" id="f-first" placeholder="Sarah" oninput="saveStep1()">
+        </div>
+        <div class="form-field">
+          <label>Last Name</label>
+          <input type="text" id="f-last" placeholder="Miller" oninput="saveStep1()">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Email Address</label>
+        <input type="email" id="f-email" placeholder="sarah@example.com" oninput="saveStep1()">
+      </div>
+      <div class="form-field">
+        <label>Phone Number</label>
+        <input type="tel" id="f-phone" placeholder="(616) 555-0123" oninput="saveStep1()">
+      </div>
+      <div class="form-field">
+        <label>What service are you looking for?</label>
+        <select id="f-service" onchange="saveStep1()">
+          <option value="">Select a service...</option>
+          <option>Recurring Maintenance</option>
+          <option>One-Time Service</option>
+          <option>Post-Construction / Move-In</option>
+          <option>Commercial Contract</option>
+          <option>Large Project / Estimate</option>
+        </select>
+      </div>
+    </div>
+    <button class="form-cta" onclick="goToStep(2)">Continue →</button>
+    <div class="form-trust">🔒 Your information is never sold or shared.</div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="form-card hidden" id="step-2">
+    <div class="form-card-header">
+      <div class="step-label" id="label-2">Step 2 of 3</div>
+      <h2>Tell us about your property</h2>
+      <span class="prefill-pill hidden" id="prefill-pill">✓ Your info from Step 1 is saved</span>
+    </div>
+    <div class="form-fields">
+      <div class="form-field">
+        <label>Property Type</label>
+        <div class="form-options" id="opts-proptype">
+          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">Residential</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">Commercial</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">Industrial</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">HOA / Multi-Unit</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Approx. Square Footage</label>
+          <input type="text" id="f-sqft" placeholder="e.g. 2,400 sq ft">
+        </div>
+        <div class="form-field">
+          <label>Number of Areas / Rooms</label>
+          <input type="text" id="f-areas" placeholder="e.g. 8">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>How soon are you looking to start?</label>
+        <select id="f-timeline">
+          <option value="">Select timeframe...</option>
+          <option>ASAP — this week</option>
+          <option>Within the next 2 weeks</option>
+          <option>Within the month</option>
+          <option>Just getting quotes for now</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Anything we should know upfront?</label>
+        <textarea id="f-notes" placeholder="E.g. pets on property, eco-friendly products preferred, gate code needed..." rows="3"></textarea>
+      </div>
+    </div>
+    <div class="form-btn-row">
+      <button class="form-back" onclick="goToStep(1)">← Back</button>
+      <button class="form-cta" onclick="advanceFromStep2()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 EXTRA (4-step only) -->
+  <div class="form-card hidden" id="step-3-extra">
+    <div class="form-card-header">
+      <div class="step-label">Step 3 of 4</div>
+      <h2>A few more details</h2>
+      <p>Helps us prepare before your walkthrough so we're not wasting your time.</p>
+    </div>
+    <div class="form-fields">
+      <div class="form-field">
+        <label>Estimated Budget Range</label>
+        <div class="form-options" id="opts-budget">
+          <button class="opt-btn" onclick="selectOpt(this,'opts-budget')">Under $500</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-budget')">$500–$2,000</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-budget')">$2,000–$10,000</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-budget')">$10,000+</button>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Service Frequency</label>
+        <div class="form-options" id="opts-freq">
+          <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">One-Time</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Weekly</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Bi-Weekly</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Monthly</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Seasonal</button>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Who is the primary decision-maker?</label>
+        <div class="form-options" id="opts-dm">
+          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">Me</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">My Spouse / Partner</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">Property Manager</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">Business / Org Owner</button>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Have you used a similar service before?</label>
+        <div class="form-options" id="opts-prev">
+          <button class="opt-btn" onclick="selectOpt(this,'opts-prev')">Yes</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-prev')">No — first time</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-btn-row">
+      <button class="form-back" onclick="goToStep(2)">← Back</button>
+      <button class="form-cta" onclick="showFinalStep()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- FINAL STEP -->
+  <div class="form-card hidden" id="step-final">
+
+    <!-- BOOK APPOINTMENT -->
+    <div id="end-book">
+      <div class="form-card-header">
+        <div class="step-label" id="label-final">Last Step</div>
+        <h2>Pick your walkthrough time</h2>
+        <p>A quick on-site visit (or video call) to confirm details and get your exact quote. No commitment.</p>
+      </div>
+      <div class="cal-month">June 2026</div>
+      <div class="cal-times">
+        <button class="cal-slot" onclick="selectSlot(this)">Mon, Jun 8 — 9:00 AM</button>
+        <button class="cal-slot" onclick="selectSlot(this)">Mon, Jun 8 — 1:00 PM</button>
+        <button class="cal-slot" onclick="selectSlot(this)">Tue, Jun 9 — 10:30 AM</button>
+        <button class="cal-slot" onclick="selectSlot(this)">Wed, Jun 10 — 2:00 PM</button>
+        <button class="cal-slot" onclick="selectSlot(this)">Thu, Jun 11 — 9:00 AM</button>
+        <button class="cal-slot" onclick="selectSlot(this)">Fri, Jun 12 — 11:00 AM</button>
+      </div>
+      <button class="form-cta" id="confirm-book-btn" onclick="confirmBooking()" disabled>Select a time above to confirm</button>
+    </div>
+
+    <!-- CHECKOUT -->
+    <div id="end-checkout" class="hidden">
+      <div class="form-card-header">
+        <div class="step-label" id="label-final-checkout">Last Step</div>
+        <h2>Review & confirm your service</h2>
+        <p>You're one step away from getting started.</p>
+      </div>
+      <div class="checkout-summary">
+        <div class="checkout-line"><span>Recurring Bi-Weekly Service</span><span>$249/visit</span></div>
+        <div class="checkout-line"><span>First Visit Deep Clean</span><span>$349</span></div>
+        <div class="checkout-line"><span>Supplies & Products</span><span>Included</span></div>
+        <div class="checkout-line"><span>Total Due Today</span><span>$349</span></div>
+      </div>
+      <div class="form-fields" style="margin-bottom:20px">
+        <div class="form-field">
+          <label>Card Number</label>
+          <input type="text" placeholder="4242 4242 4242 4242">
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div>
+          <div class="form-field"><label>CVC</label><input type="text" placeholder="•••"></div>
+        </div>
+      </div>
+      <button class="form-cta" onclick="confirmCheckout()">Pay $349 & Schedule Service →</button>
+    </div>
+
+    <div style="margin-top:10px">
+      <button class="form-back" onclick="goBackFromFinal()">← Back</button>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION -->
+  <div class="form-card hidden confirm-card" id="step-confirm">
+    <div class="confirm-icon">✓</div>
+    <h2 id="confirm-headline">You're booked!</h2>
+    <p id="confirm-line1"></p>
+    <p>Confirmation sent to <strong id="confirm-email-display"></strong></p>
+    <div class="confirm-next">
+      <div class="next-item">📱 Text confirmation sent to your phone</div>
+      <div class="next-item">📧 Email with all details on its way</div>
+      <div class="next-item" id="confirm-next-3">📅 Calendar invite sent — see you soon!</div>
+    </div>
+    <div class="confirm-footer">Need to reschedule? Reply to your confirmation email or text us directly.</div>
+  </div>
+
+</section>
+
+<!-- ==========================================
+     SECTION 2 — WHAT HAPPENS NEXT
+     ========================================== -->
+<section id="section-backend">
+
+  <div class="section-header">
+    <div class="eyebrow"><span class="eyebrow-line"></span>Behind the scenes<span class="eyebrow-line"></span></div>
+    <h2 class="sec-h2 light">What Happens The Moment They Hit Submit</h2>
+    <p class="sec-sub light">Your prospect doesn't wait. Neither does your system. Every step below fires automatically — no one on your team has to trigger it.</p>
+  </div>
+
+  <div class="flow-diagram">
+
+    <div class="flow-row">
+      <div class="flow-node">
+        <div class="flow-node-icon">📋</div>
+        <div class="flow-node-title">Step 1 Submitted</div>
+        <div class="flow-node-sub">Name, email, phone, and service captured in seconds</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-node-icon">📱</div>
+        <div class="flow-node-title">Instant SMS to You</div>
+        <div class="flow-node-sub">"New lead: Sarah M. — Commercial — (616) 555-0123"</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-node-icon">🗂️</div>
+        <div class="flow-node-title">Contact Created in GHL</div>
+        <div class="flow-node-sub">Full record, tagged by source, pipeline stage set automatically</div>
+      </div>
+    </div>
+
+    <div class="flow-arrow-down">↓</div>
+
+    <div class="flow-row">
+      <div class="flow-node">
+        <div class="flow-node-icon">🤖</div>
+        <div class="flow-node-title">AI Follow-Up Fires</div>
+        <div class="flow-node-sub">Text + email nudge to complete Step 2 within minutes of abandonment</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-node-icon">✅</div>
+        <div class="flow-node-title">Steps 2 & 3 Completed</div>
+        <div class="flow-node-sub">Qualification data captured, pipeline auto-advances to next stage</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-node-icon">📅</div>
+        <div class="flow-node-title">Booking or Checkout</div>
+        <div class="flow-node-sub">Walkthrough booked or payment collected — your call based on the service</div>
+      </div>
+    </div>
+
+    <div class="flow-arrow-down">↓</div>
+
+    <div class="flow-branches">
+      <div class="flow-branch">
+        <div class="branch-label">If no response</div>
+        <div class="flow-node" style="max-width:100%">
+          <div class="flow-node-icon">🔁</div>
+          <div class="flow-node-title">Automated Follow-Up Sequence</div>
+          <div class="flow-node-sub">Day 0 text → Day 1 email → Day 2 call reminder to your team. No lead falls through the cracks.</div>
+        </div>
+      </div>
+      <div class="flow-branch">
+        <div class="branch-label">Appointment booked</div>
+        <div class="flow-node" style="max-width:100%">
+          <div class="flow-node-icon">🔔</div>
+          <div class="flow-node-title">Reminders Fire Both Ways</div>
+          <div class="flow-node-sub">24-hour and 2-hour reminders to the prospect. Alert to your team. Quote stage queued automatically.</div>
+        </div>
+      </div>
+      <div class="flow-branch">
+        <div class="branch-label">After walkthrough</div>
+        <div class="flow-node" style="max-width:100%">
+          <div class="flow-node-icon">💼</div>
+          <div class="flow-node-title">Quote → Contract → Job</div>
+          <div class="flow-node-sub">Quote sent via Jobber, approval tracked, contract e-signed, job drops onto your calendar.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==========================================
+     SECTION 3 — CRM BACKEND
+     ========================================== -->
+<section id="section-crm">
+
+  <!-- Pipeline -->
+  <div class="section-header">
+    <div class="eyebrow"><span class="eyebrow-line"></span>Lead Pipeline<span class="eyebrow-line"></span></div>
+    <h2 class="sec-h2 light">Every Lead. Every Stage. Nothing Lost.</h2>
+    <p class="sec-sub light">Your full pipeline in GHL — custom-built for your business. Every card is a real opportunity. Every stage is automated to push toward closed.</p>
+  </div>
+
+  <div class="pipeline-wrap">
+    <div class="pipeline-board">
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Microform Submitted</div>
+          <div class="pipeline-col-meta">4 leads · $6,750</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Johnson Residence</div>
+            <div class="pc-meta">Source: Website Front Page</div>
+            <div class="pc-value">$1,500.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Northside Office Park</div>
+            <div class="pc-meta">Source: Website Front Page</div>
+            <div class="pc-value">$2,800.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Rivera Family</div>
+            <div class="pc-meta">Source: Commercial Page</div>
+            <div class="pc-value">$950.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Lakewood Apartments</div>
+            <div class="pc-meta">Source: Referral</div>
+            <div class="pc-value">$1,500.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">2nd Form Submitted</div>
+          <div class="pipeline-col-meta">2 leads · $3,200</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Maple Street Complex</div>
+            <div class="pc-meta">Source: Website Front Page</div>
+            <div class="pc-value">$1,800.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Anderson LLC</div>
+            <div class="pc-meta">Source: Referral</div>
+            <div class="pc-value">$1,400.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Walkthrough Booked</div>
+          <div class="pipeline-col-meta">2 leads · $3,400</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Lakeview Industrial</div>
+            <div class="pc-meta">Source: Website Front Page</div>
+            <div class="pc-value">$1,900.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card won">
+            <div class="pc-name">Sunrise HOA <span class="won-badge">WON</span></div>
+            <div class="pc-meta">Source: Referral</div>
+            <div class="pc-value">$1,500.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Quote Sent</div>
+          <div class="pipeline-col-meta">3 leads · $8,700</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Clearview Office Suites</div>
+            <div class="pc-meta">Source: Jobber</div>
+            <div class="pc-value">$3,200.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Harborview Medical Bldg</div>
+            <div class="pc-meta">Source: Jobber</div>
+            <div class="pc-value">$4,100.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Post-Renovation Unit 4B</div>
+            <div class="pc-meta">Source: Website</div>
+            <div class="pc-value">$1,400.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Quote Approved</div>
+          <div class="pipeline-col-meta">1 lead · $3,874</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Elm Park Property Mgmt</div>
+            <div class="pc-meta">Source: Referral</div>
+            <div class="pc-value">$3,874.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Contract Sent</div>
+          <div class="pipeline-col-meta">1 lead · $3,874</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Wellspring Lutheran Org</div>
+            <div class="pc-meta">Source: Referral</div>
+            <div class="pc-value">$3,874.00</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Contract Signed ✅</div>
+          <div class="pipeline-col-meta">4 deals · $45,061</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card won">
+            <div class="pc-name">Weekly Office Contract <span class="won-badge">WON</span></div>
+            <div class="pc-meta">Source: Jobber</div>
+            <div class="pc-value">$10,577.00/yr</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card won">
+            <div class="pc-name">West Industrial Site <span class="won-badge">WON</span></div>
+            <div class="pc-meta">Source: Referral</div>
+            <div class="pc-value">$9,823.00/yr</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card won">
+            <div class="pc-name">Bi-Weekly Residence <span class="won-badge">WON</span></div>
+            <div class="pc-meta">Source: Website</div>
+            <div class="pc-value">$5,988.00/yr</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card won">
+            <div class="pc-name">St. Martin Campus <span class="won-badge">WON</span></div>
+            <div class="pc-meta">Source: Referral</div>
+            <div class="pc-value">$18,673.00/yr</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Scheduled</div>
+          <div class="pipeline-col-meta">2 jobs confirmed</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card won">
+            <div class="pc-name">West Industrial — Jun 9</div>
+            <div class="pc-meta">Recurring · Weekly</div>
+            <div class="pc-value">Active contract</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+          <div class="pipeline-card won">
+            <div class="pc-name">Bi-Weekly Residence — Jun 10</div>
+            <div class="pc-meta">Recurring · Bi-weekly</div>
+            <div class="pc-value">Active contract</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Automation Suites -->
+  <div class="section-header">
+    <div class="eyebrow"><span class="eyebrow-line"></span>Automation Suites<span class="eyebrow-line"></span></div>
+    <h2 class="sec-h2 light">Every System Your Business Runs On — Automated.</h2>
+    <p class="sec-sub light">Pre-built and custom-configured for your operation. Unlimited automations, unlimited contacts, unlimited users. Not templates — a diagnosis of exactly where your business needs to improve.</p>
+  </div>
+
+  <div class="suites-grid">
+
+    <div class="suite-card">
+      <div class="suite-icon">🎯</div>
+      <div class="suite-title">Lead Response System</div>
+      <div class="suite-desc">The foundation. Every lead gets contacted in seconds, not hours. No one falls through the cracks — ever.</div>
+      <ul class="suite-list">
+        <li>Instant SMS + email to owner on new lead</li>
+        <li>Auto follow-up if form not completed (Day 0 / 1 / 2)</li>
+        <li>Appointment reminder sequences (prospect + team)</li>
+        <li>Salesperson task queue and pipeline stage alerts</li>
+      </ul>
+    </div>
+
+    <div class="suite-card">
+      <div class="suite-icon">⚙️</div>
+      <div class="suite-title">Operations & Task Management</div>
+      <div class="suite-desc">No team member forgets a task. No job gets missed. Every process has an automated reminder and a named owner.</div>
+      <ul class="suite-list">
+        <li>Job scheduling and dispatch automation</li>
+        <li>Pre-job and post-job task checklists</li>
+        <li>SOP compliance reminders per service line</li>
+        <li>Automated client communication before and after service</li>
+      </ul>
+    </div>
+
+    <div class="suite-card">
+      <div class="suite-icon">👥</div>
+      <div class="suite-title">Hiring & Onboarding Pipeline</div>
+      <div class="suite-desc">From job post to first day — fully automated. Built for service businesses that hire seasonally or at scale.</div>
+      <ul class="suite-list">
+        <li>Application capture and AI resume screening</li>
+        <li>Automated interview scheduling</li>
+        <li>Background check triggers and hire paperwork</li>
+        <li>Training quizzes and full onboarding workflow</li>
+      </ul>
+    </div>
+
+    <div class="suite-card">
+      <div class="suite-icon">🏢</div>
+      <div class="suite-title">Employee Management</div>
+      <div class="suite-desc">PTO requests, attendance, performance reviews, birthdays — all running on autopilot so you're managing outcomes, not processes.</div>
+      <ul class="suite-list">
+        <li>PTO and time-off request workflows</li>
+        <li>Attendance incident tracking and documentation</li>
+        <li>Performance review scheduling and paperwork automation</li>
+        <li>Birthday e-gift cards and employee recognition</li>
+      </ul>
+    </div>
+
+    <div class="suite-card">
+      <div class="suite-icon">📞</div>
+      <div class="suite-title">Call Routing & Reception</div>
+      <div class="suite-desc">Never miss a call. Route correctly by time of day. Missed call text-back fires in seconds — most leads book from that alone.</div>
+      <ul class="suite-list">
+        <li>Business hours vs. after-hours routing</li>
+        <li>IVR menu (press 1 for quotes, 2 for scheduling…)</li>
+        <li>Missed call auto text-back within seconds</li>
+        <li>AI receptionist option available for high-volume inbound</li>
+      </ul>
+    </div>
+
+    <div class="suite-card">
+      <div class="suite-icon">📚</div>
+      <div class="suite-title">Company Knowledge Base</div>
+      <div class="suite-desc">A living FAQ and SOP library your whole team can access instantly — employees, managers, and even customers via chatbot.</div>
+      <ul class="suite-list">
+        <li>Employee FAQ chatbot (no more "ask your manager")</li>
+        <li>Management SOP and policy document library</li>
+        <li>Training video library and compliance tracking</li>
+        <li>Customer-facing FAQ chatbot embedded on your site</li>
+      </ul>
+    </div>
+
+    <div class="suite-card">
+      <div class="suite-icon">📣</div>
+      <div class="suite-title">Marketing & Reactivation</div>
+      <div class="suite-desc">Your existing customer list is a goldmine. Reactivate past clients, collect 5-star reviews, and run campaigns — automatically.</div>
+      <ul class="suite-list">
+        <li>Email and SMS campaign builder (bulk + drip)</li>
+        <li>Post-job Google review request automation</li>
+        <li>Old customer reactivation and upsell sequences</li>
+        <li>Referral program automation and tracking</li>
+      </ul>
+    </div>
+
+    <div class="suite-card">
+      <div class="suite-icon">📊</div>
+      <div class="suite-title">Paid Ads & Attribution</div>
+      <div class="suite-desc">Once your funnel is dialed in, ads become a lever — not a gamble. Every dollar tracked to a source. No more guessing.</div>
+      <ul class="suite-list">
+        <li>Google and Facebook pixel integration with your funnel</li>
+        <li>Funnel-level conversion tracking per source and campaign</li>
+        <li>ROI attribution by ad, keyword, and audience</li>
+        <li>Retargeting audiences built directly from your CRM contacts</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Comparison -->
+  <div class="section-header">
+    <div class="eyebrow"><span class="eyebrow-line"></span>Platform Comparison<span class="eyebrow-line"></span></div>
+    <h2 class="sec-h2 light">More Power. Less Cost. Built For Your Business.</h2>
+    <p class="sec-sub light">Enterprise CRM capabilities — without the enterprise price tag or the 6-month DIY setup that still doesn't fit your operation.</p>
+  </div>
+
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>HubSpot</th>
+          <th>Salesforce</th>
+          <th class="col-hsp">HSP + GHL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-label">Monthly Cost</td>
+          <td class="bad">$800 – $3,200+</td>
+          <td class="bad">$1,000 – $5,000+</td>
+          <td class="col-hsp good">Included in HSP plan</td>
+        </tr>
+        <tr>
+          <td class="col-label">Users</td>
+          <td class="bad">Pay per seat</td>
+          <td class="bad">Pay per seat</td>
+          <td class="col-hsp good">Unlimited</td>
+        </tr>
+        <tr>
+          <td class="col-label">Automations</td>
+          <td class="bad">Capped by tier</td>
+          <td class="bad">Limited, complex setup</td>
+          <td class="col-hsp good">Unlimited</td>
+        </tr>
+        <tr>
+          <td class="col-label">Contacts</td>
+          <td class="bad">Pay per 1,000</td>
+          <td class="bad">Pay per record</td>
+          <td class="col-hsp good">Unlimited</td>
+        </tr>
+        <tr>
+          <td class="col-label">Setup</td>
+          <td class="bad">DIY / generic templates</td>
+          <td class="bad">Requires developer or consultant</td>
+          <td class="col-hsp good">Custom-built for your operation</td>
+        </tr>
+        <tr>
+          <td class="col-label">Support</td>
+          <td>Ticketed / slow</td>
+          <td>Ticketed / expensive add-on</td>
+          <td class="col-hsp good">Direct access to your builder</td>
+        </tr>
+        <tr>
+          <td class="col-label">HIPAA Compliant</td>
+          <td>Enterprise plan only</td>
+          <td>Enterprise plan only</td>
+          <td class="col-hsp good">Yes — available on all HSP plans</td>
+        </tr>
+        <tr>
+          <td class="col-label">Built for Service Businesses</td>
+          <td class="bad">No — built for SaaS / sales orgs</td>
+          <td class="bad">No — enterprise B2B focus</td>
+          <td class="col-hsp good">Yes — cleaning, landscaping, trades, medical, product businesses</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- ==========================================
+     SECTION 4 — HSP DIFFERENCE
+     ========================================== -->
+<section id="section-hsp">
+
+  <div class="section-header">
+    <div class="eyebrow"><span class="eyebrow-line"></span>The HSP Difference<span class="eyebrow-line"></span></div>
+    <h2 class="sec-h2 light">Not a Template. A Diagnosis.</h2>
+    <p class="sec-sub light">Most CRM companies hand you a login and a library of generic workflows. HSP Systems starts by understanding your specific operation — and builds to match it exactly.</p>
+  </div>
+
+  <div class="hsp-grid">
+    <div class="hsp-card">
+      <div class="hsp-card-icon">🔬</div>
+      <div class="hsp-card-title">Systems Engineering Approach</div>
+      <div class="hsp-card-body">Built by an industrial and systems engineer. Every process gets mapped, diagnosed, and redesigned — not just digitized. If something slows you down or costs you money, we find it and fix it.</div>
+    </div>
+    <div class="hsp-card">
+      <div class="hsp-card-icon">🛠️</div>
+      <div class="hsp-card-title">Custom Builds, Not Templates</div>
+      <div class="hsp-card-body">Expert Cleaning Services got a custom commercial outreach system. Wenke Landscaping got a custom PTO and job scheduling logic. Honey Girl Granola got a product fulfillment pipeline. Every business is different — and your system will be too.</div>
+    </div>
+    <div class="hsp-card">
+      <div class="hsp-card-icon">🤖</div>
+      <div class="hsp-card-title">AI-Native, Not AI-Adjacent</div>
+      <div class="hsp-card-body">AI isn't a feature bolted onto HSP — it's woven into every system. From AI resume screening to AI-assisted follow-up sequences, your business runs smarter around the clock.</div>
+    </div>
+    <div class="hsp-card">
+      <div class="hsp-card-icon">📈</div>
+      <div class="hsp-card-title">Priority Access on Higher Tiers</div>
+      <div class="hsp-card-body">Higher subscription tiers get first access to new automation builds as they're released — advanced scheduling logic, commercial outreach systems, new integrations. You grow with the platform.</div>
+    </div>
+    <div class="hsp-card">
+      <div class="hsp-card-icon">🏆</div>
+      <div class="hsp-card-title">Proven in Real Businesses First</div>
+      <div class="hsp-card-body">Every system HSP sells was battle-tested in live operations before it was ever offered to clients. Expert Cleaning Services and Wenke Landscaping ran these systems first. This isn't theory — it's working today.</div>
+    </div>
+    <div class="hsp-card">
+      <div class="hsp-card-icon">⚡</div>
+      <div class="hsp-card-title">The AI Age Is Already Here</div>
+      <div class="hsp-card-body">Your competitors are automating. Your customers expect instant responses. Every process you're still doing manually is a compounding competitive disadvantage. The question isn't whether to automate — it's whether you do it before or after the business next door does.</div>
+    </div>
+  </div>
+
+  <div class="biz-tags-section">
+    <div class="biz-tags-label">Built for industries including</div>
+    <div class="biz-tags">
+      <span class="biz-tag">Landscaping & Outdoor Living</span>
+      <span class="biz-tag">Residential Cleaning</span>
+      <span class="biz-tag">Commercial Cleaning</span>
+      <span class="biz-tag">Post-Construction</span>
+      <span class="biz-tag">Medical & HIPAA-Compliant</span>
+      <span class="biz-tag">Product Businesses</span>
+      <span class="biz-tag">HOA & Property Management</span>
+      <span class="biz-tag">Trade Services</span>
+      <span class="biz-tag">Multi-Location Operations</span>
+    </div>
+  </div>
+
+</section>
+
+<script>
+// ---- State ----
+let currentStep = 1;
+let totalSteps = 3;
+let endState = 'book';
+let selectedSlot = null;
+
+// ---- Helpers ----
+function show(id){ document.getElementById(id).classList.remove('hidden') }
+function hide(id){ document.getElementById(id).classList.add('hidden') }
+function hideAllSteps(){
+  ['step-1','step-2','step-3-extra','step-final','step-confirm'].forEach(hide);
+}
+function scrollToFunnel(){
+  const top = document.getElementById('section-funnel').offsetTop - 70;
+  window.scrollTo({top, behavior:'smooth'});
+}
+
+// ---- Init ----
+function initDemo(){
+  const keys = ['demo_first','demo_last','demo_email','demo_phone','demo_service'];
+  const ids  = ['f-first',  'f-last',  'f-email',  'f-phone',  'f-service'];
+  keys.forEach((k,i) => {
+    const v = localStorage.getItem(k);
+    if(v){ const el = document.getElementById(ids[i]); if(el) el.value = v; }
+  });
+}
+
+// ---- Save Step 1 ----
+function saveStep1(){
+  const map = {
+    'demo_first':'f-first','demo_last':'f-last',
+    'demo_email':'f-email','demo_phone':'f-phone','demo_service':'f-service'
+  };
+  for(const [k,id] of Object.entries(map)){
+    const el = document.getElementById(id);
+    if(el) localStorage.setItem(k, el.value);
+  }
+}
+
+// ---- Business Name ----
+function updateBizName(){
+  const name = document.getElementById('biz-input').value.trim() || 'Your Business';
+  document.getElementById('funnel-biz-name').textContent = name;
+}
+
+// ---- Flow ----
+function setFlow(){
+  totalSteps = parseInt(document.getElementById('flow-select').value);
+
+  // dots and lines visibility
+  const show3 = totalSteps >= 3;
+  const show4 = totalSteps === 4;
+  document.getElementById('dot-3').classList.toggle('hidden', !show3);
+  document.getElementById('line-23').classList.toggle('hidden', !show3);
+  document.getElementById('dot-4').classList.toggle('hidden', !show4);
+  document.getElementById('line-34').classList.toggle('hidden', !show4);
+
+  // step labels
+  document.getElementById('label-1').textContent = `Step 1 of ${totalSteps}`;
+  document.getElementById('label-2').textContent = `Step 2 of ${totalSteps}`;
+  document.getElementById('label-final').textContent = `Step ${totalSteps} of ${totalSteps}`;
+  document.getElementById('label-final-checkout').textContent = `Step ${totalSteps} of ${totalSteps}`;
+
+  goToStep(1);
+}
+
+// ---- End State ----
+function setEndState(){
+  endState = document.getElementById('end-select').value;
+  if(currentStep === 'final') renderEndState();
+}
+function renderEndState(){
+  if(endState === 'book'){
+    document.getElementById('end-book').style.display = '';
+    hide('end-checkout');
+  } else {
+    document.getElementById('end-book').style.display = 'none';
+    show('end-checkout');
+  }
+}
+
+// ---- Navigation ----
+function goToStep(step){
+  hideAllSteps();
+  currentStep = step;
+
+  if(step === 1){
+    show('step-1');
+    setDots(1);
+
+  } else if(step === 2){
+    if(totalSteps === 2){
+      showFinalStep(); return;
+    }
+    show('step-2');
+    updatePrefillPill();
+    setDots(2);
+
+  } else if(step === 3){
+    if(totalSteps <= 3){
+      showFinalStep(); return;
+    }
+    show('step-3-extra');
+    setDots(3);
+
+  } else if(step === 'final'){
+    showFinalStep();
+  }
+
+  scrollToFunnel();
+}
+
+function advanceFromStep2(){
+  if(totalSteps === 4) goToStep(3);
+  else showFinalStep();
+}
+
+function showFinalStep(){
+  currentStep = 'final';
+  show('step-final');
+  renderEndState();
+  setDots(totalSteps);
+  scrollToFunnel();
+}
+
+function goBackFromFinal(){
+  if(totalSteps === 4) goToStep(3);
+  else if(totalSteps === 3) goToStep(2);
+  else goToStep(1);
+}
+
+// ---- Step dots ----
+function setDots(active){
+  for(let i = 1; i <= 4; i++){
+    const dot = document.getElementById('dot-' + i);
+    if(!dot || dot.classList.contains('hidden')) continue;
+    dot.classList.remove('active','done');
+    if(i < active) dot.classList.add('done');
+    else if(i === active) dot.classList.add('active');
+  }
+  const lineIds = ['line-12','line-23','line-34'];
+  lineIds.forEach((id, idx) => {
+    const el = document.getElementById(id);
+    if(!el || el.classList.contains('hidden')) return;
+    el.classList.toggle('done', idx + 1 < active);
+  });
+}
+
+// ---- Option buttons ----
+function selectOpt(el, groupId){
+  document.getElementById(groupId).querySelectorAll('.opt-btn')
+    .forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ---- Calendar ----
+function selectSlot(el){
+  document.querySelectorAll('.cal-slot').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSlot = el.textContent.replace('🗓','').trim();
+  const btn = document.getElementById('confirm-book-btn');
+  btn.disabled = false;
+  btn.textContent = `Confirm — ${selectedSlot} →`;
+}
+
+// ---- Confirm booking ----
+function confirmBooking(){
+  if(!selectedSlot) return;
+  const email = document.getElementById('f-email').value || 'your email';
+  const first = document.getElementById('f-first').value;
+  document.getElementById('confirm-headline').textContent = first ? `You're booked, ${first}!` : 'You\'re booked!';
+  document.getElementById('confirm-line1').textContent = `We'll see you ${selectedSlot}.`;
+  document.getElementById('confirm-email-display').textContent = email;
+  document.getElementById('confirm-next-3').textContent = '📅 Calendar invite on its way — see you soon!';
+  hide('step-final');
+  show('step-confirm');
+}
+
+// ---- Confirm checkout ----
+function confirmCheckout(){
+  const email = document.getElementById('f-email').value || 'your email';
+  const first = document.getElementById('f-first').value;
+  document.getElementById('confirm-headline').textContent = first ? `All set, ${first}!` : 'You\'re all set!';
+  document.getElementById('confirm-line1').textContent = 'Your service is confirmed and scheduled.';
+  document.getElementById('confirm-email-display').textContent = email;
+  document.getElementById('confirm-next-3').textContent = '🗓️ Service date confirmed — we\'ll reach out 24 hours before.';
+  hide('step-final');
+  show('step-confirm');
+}
+
+// ---- Pre-fill pill ----
+function updatePrefillPill(){
+  const first = document.getElementById('f-first').value;
+  const pill = document.getElementById('prefill-pill');
+  if(first){
+    pill.textContent = `✓ Welcome back, ${first} — your info from Step 1 is saved`;
+    pill.classList.remove('hidden');
+  } else {
+    pill.classList.add('hidden');
+  }
+}
+
+// ---- Reset ----
+function resetDemo(){
+  ['demo_first','demo_last','demo_email','demo_phone','demo_service']
+    .forEach(k => localStorage.removeItem(k));
+
+  ['f-first','f-last','f-email','f-phone','f-sqft','f-areas','f-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  ['f-service','f-timeline'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.selectedIndex = 0;
+  });
+
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.cal-slot').forEach(b => b.classList.remove('selected'));
+  selectedSlot = null;
+
+  const btn = document.getElementById('confirm-book-btn');
+  btn.disabled = true;
+  btn.textContent = 'Select a time above to confirm';
+
+  totalSteps = parseInt(document.getElementById('flow-select').value);
+  goToStep(1);
+}
+
+// ---- Run on load ----
+initDemo();
+</script>
+
+</body>
+</html>
