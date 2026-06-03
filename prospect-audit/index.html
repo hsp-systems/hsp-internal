@@ -438,7 +438,28 @@ function extractBizName(html, url) {
       .trim();
   }
 
-  // 1. og:site_name — most reliable, already the brand name
+  // 1. JSON-LD structured data — most accurate for local businesses
+  //    e.g. <script type="application/ld+json">{"@type":"LocalBusiness","name":"Vollink Eye Care"...}
+  const jsonLdBlocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
+  for (const block of jsonLdBlocks) {
+    try {
+      const raw  = block.replace(/<script[^>]*>/i,'').replace(/<\/script>/i,'');
+      const data = JSON.parse(raw);
+      const entities = Array.isArray(data) ? data : [data];
+      for (const e of entities) {
+        // Direct entity name
+        if (e.name && typeof e.name === 'string' && e.name.trim().length > 1) return decode(e.name.trim());
+        // @graph array (common in WordPress SEO plugins)
+        if (Array.isArray(e['@graph'])) {
+          for (const g of e['@graph']) {
+            if (g.name && typeof g.name === 'string' && g.name.trim().length > 1) return decode(g.name.trim());
+          }
+        }
+      }
+    } catch(_) {}
+  }
+
+  // 2. og:site_name
   const ogSite = html.match(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']+)["']/i)?.[1]
               || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:site_name["']/i)?.[1];
   if (ogSite?.trim()) return decode(ogSite);
@@ -503,61 +524,65 @@ async function runAudit() {
   let html = '', isHTTPS = targetUrl.startsWith('https'), finalUrl = targetUrl;
   let workerLive = false, gmb = { found: false };
 
-  try {
-    const domainGuess = new URL(targetUrl).hostname.replace(/^www\./, '').split('.')[0];
-    const wr = await fetch(
-      `${WORKER_URL}?url=${encodeURIComponent(targetUrl)}&biz=${encodeURIComponent(domainGuess)}`,
-      { signal: AbortSignal.timeout(12000) }
-    );
-    if (wr.ok) {
-      const wd = await wr.json();
-      html      = wd.html      || '';
-      isHTTPS   = wd.isHTTPS  ?? isHTTPS;
-      finalUrl  = wd.finalUrl || finalUrl;
-      gmb       = wd.gmb      || { found: false };
-      workerLive = true;
-    }
-  } catch (_) {}
+  // ── Run HTML fetch AND PageSpeed in parallel ──────────────────
+  // PSI can take 20-40s; running sequentially would cause "(est.)" timeouts.
+  const domainGuess = new URL(targetUrl).hostname.replace(/^www\./, '').split('.')[0];
 
-  // Fallback: allorigins CORS proxy
-  if (!html) {
-    try {
-      const pr = await fetch(PROXY_URL + encodeURIComponent(targetUrl),
-        { signal: AbortSignal.timeout(10000) });
-      if (pr.ok) html = await pr.text();
-    } catch (_) {}
+  const [htmlResult, psiResult] = await Promise.allSettled([
+    // HTML: Worker → allorigins fallback
+    (async () => {
+      let h = '', iH = targetUrl.startsWith('https'), fU = targetUrl, wL = false, g = { found:false };
+      try {
+        const wr = await fetch(`${WORKER_URL}?url=${encodeURIComponent(targetUrl)}&biz=${encodeURIComponent(domainGuess)}`,
+          { signal: AbortSignal.timeout(12000) });
+        if (wr.ok) { const wd = await wr.json(); h=wd.html||''; iH=wd.isHTTPS??iH; fU=wd.finalUrl||fU; g=wd.gmb||g; wL=true; }
+      } catch(_) {}
+      if (!h) {
+        try {
+          const pr = await fetch(PROXY_URL + encodeURIComponent(targetUrl), { signal: AbortSignal.timeout(10000) });
+          if (pr.ok) h = await pr.text();
+        } catch(_) {}
+      }
+      return { html:h, isHTTPS:iH, finalUrl:fU, gmb:g, workerLive:wL };
+    })(),
+
+    // PageSpeed: always called directly from browser — CORS-enabled, free
+    (async () => {
+      try {
+        const r = await fetch(
+          `https://www.googleapis.com/pagespeedonline/v5/runPagespeed` +
+          `?url=${encodeURIComponent(targetUrl)}&strategy=mobile` +
+          `&category=performance&category=seo&category=best-practices&category=accessibility`,
+          { signal: AbortSignal.timeout(45000) }
+        );
+        if (r.ok) return await r.json();
+      } catch(_) {}
+      return null;
+    })(),
+  ]);
+
+  if (htmlResult.status === 'fulfilled' && htmlResult.value) {
+    const v = htmlResult.value;
+    html = v.html; isHTTPS = v.isHTTPS; finalUrl = v.finalUrl; gmb = v.gmb; workerLive = v.workerLive;
   }
-  setStep(1, html ? 'done' : 'error');
+  let psiData = psiResult.status === 'fulfilled' ? psiResult.value : null;
 
-  // Extract biz name from HTML now that we have it
+  setStep(1, html ? 'done' : 'error');
+  setStep(2, psiData?.lighthouseResult ? 'done' : 'error');
+
+  // Extract biz name from HTML
   const bizName = extractBizName(html, finalUrl);
   document.getElementById('loading-biz-name').textContent = 'Analyzing ' + bizName + '...';
 
-  // If Worker is live but used domain guess for GMB, re-query with real name
+  // Re-query Worker with real biz name for better GMB detection
   if (workerLive && bizName && bizName !== 'This Business') {
     try {
-      const wr2 = await fetch(
-        `${WORKER_URL}?url=${encodeURIComponent(finalUrl)}&biz=${encodeURIComponent(bizName)}`,
-        { signal: AbortSignal.timeout(8000) }
-      );
+      const wr2 = await fetch(`${WORKER_URL}?url=${encodeURIComponent(finalUrl)}&biz=${encodeURIComponent(bizName)}`,
+        { signal: AbortSignal.timeout(8000) });
       if (wr2.ok) { const wd2 = await wr2.json(); gmb = wd2.gmb || gmb; }
     } catch (_) {}
   }
   setStep(3, 'done');
-
-  // ── Step 2: PageSpeed API — always called directly from browser ──
-  // PSI is CORS-enabled by Google; never depends on the Worker.
-  let psiData = null;
-  try {
-    const psiRes = await fetch(
-      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed` +
-      `?url=${encodeURIComponent(finalUrl)}&strategy=mobile` +
-      `&category=performance&category=seo&category=best-practices&category=accessibility`,
-      { signal: AbortSignal.timeout(25000) }
-    );
-    if (psiRes.ok) psiData = await psiRes.json();
-  } catch (_) {}
-  setStep(2, psiData ? 'done' : 'error');
 
   // ── Step 4: Score ───────────────────────────────────
   setStep(4, 'active');
@@ -668,18 +693,36 @@ function analyzeHTML(html, urlStr) {
   const formTypeUnknown = hasGHLForm && !hasStepMarkers && !hasMultiStepBtn && !hasSingleStepBtn &&
     !hasMultiStepLang && !hasSingleStepLang;
 
-  // Booking — broad net including scheduling language
-  const bookingKw = [
-    'book now','book online','book a ','book your',
-    'schedule now','schedule online','schedule a call','schedule a meeting',
-    'schedule a consultation','schedule your','schedule time',
-    'get a quote','get quote','instant quote','free quote',
-    'free estimate','get estimate','request a quote','request quote',
-    'book a demo','book a call','book a free',
-    'calendly','acuityscheduling','booksy','jobber','housecall',
-    'servicetitan','workiz','schedule.once','savvycal','cal.com',
+  // Auto-booking / instant quote — requires a real booking platform OR
+  // explicit "book online" language. "Schedule an appointment" alone is NOT
+  // enough — that just means "call us." We need evidence of actual automation.
+  const bookingPlatforms = [
+    // Scheduling tools
+    'calendly.com','acuityscheduling.com','booksy.com','setmore.com',
+    'simplybook.me','appointy.com','schedule.once','savvycal.com','cal.com',
+    'tidycal.com','oncehub.com','youcanbook.me',
+    // Field service / home service
+    'jobber.com','housecallpro.com','servicetitan.com','workiz.com',
+    'serviceautopilot.com','yardbook.com','mhelpdesk.com','bookingkoala.com',
+    'launch27.com','responsibid.com',
+    // Medical booking
+    'zocdoc.com','nexhealth.com','kareo.com','athenahealth.com',
+    'healthgrades.com','drchrono.com','opendental.com',
+    // Beauty / wellness
+    'vagaro.com','mindbody.io','fresha.com','square.site',
+    // General
+    'opentable.com','resy.com','trafft.com',
   ];
-  const hasBooking = bookingKw.some(k => lower.includes(k));
+  const hasBookingPlatform = bookingPlatforms.some(p => lower.includes(p));
+  // Explicit online-booking language (not just "schedule an appointment")
+  const hasBookingLang = [
+    'book online now','book now','book online','book in minutes',
+    '24/7 booking','instant booking','online booking available',
+    'book your appointment online','schedule online today',
+    'get an instant quote','instant quote','get your free quote now',
+    'request a free quote','get a free estimate','instant estimate',
+  ].some(k => lower.includes(k));
+  const hasBooking = hasBookingPlatform || hasBookingLang;
 
   // CTA above fold — check first 8000 chars; also pass if GHL form present (always has CTA)
   const top8k = lower.slice(0, 8000);
@@ -695,11 +738,19 @@ function analyzeHTML(html, urlStr) {
   // Phone
   const hasPhone = /\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}/.test(bodyText + html);
 
-  // Social
-  const hasFacebook  = lower.includes('facebook.com/');
-  const hasInstagram = lower.includes('instagram.com/');
-  const hasLinkedIn  = lower.includes('linkedin.com/');
-  const hasYouTube   = lower.includes('youtube.com/');
+  // Social — profile links only, not share buttons / video embeds / SDK scripts
+  // e.g. youtube.com/embed/ is a video embed, NOT a social profile
+  const nonProfileFB  = ['sharer','plugins','tr?','dialog/','share?','facebook.net'];
+  const nonProfileLI  = ['share?','shareArticle','sharing/'];
+  const hasFacebook  = linkHrefs.some(h => h.includes('facebook.com/') && !nonProfileFB.some(x => h.includes(x)));
+  const hasInstagram = linkHrefs.some(h => h.includes('instagram.com/') && !h.includes('/share'));
+  const hasLinkedIn  = linkHrefs.some(h => h.includes('linkedin.com/') && !nonProfileLI.some(x => h.includes(x)));
+  // YouTube: must be a channel/user link, not an embedded video
+  const hasYouTube   = linkHrefs.some(h =>
+    h.includes('youtube.com/@') || h.includes('youtube.com/c/') ||
+    h.includes('youtube.com/channel/') || h.includes('youtube.com/user/'));
+  const hasTikTok    = linkHrefs.some(h => h.includes('tiktok.com/@'));
+  const hasTwitterX  = linkHrefs.some(h => h.includes('twitter.com/') || h.includes('x.com/'));
 
   // Chat
   const chatKw = ['intercom','drift.com','crisp.chat','tawk.to','livechat.com',
@@ -746,7 +797,9 @@ function analyzeHTML(html, urlStr) {
     hasCareersPage, hasEmailHiring, hasTestimonials,
     hasAboutPage, hasServicePage, hasBlog, hasGHLForm,
     hasViewport, hasMetaDesc, hasTitle,
-    socialCount: [hasFacebook, hasInstagram, hasLinkedIn, hasYouTube].filter(Boolean).length,
+    socialCount: [hasFacebook, hasInstagram, hasLinkedIn, hasYouTube, hasTikTok, hasTwitterX].filter(Boolean).length,
+    socialNames: [hasFacebook&&'Facebook', hasInstagram&&'Instagram', hasLinkedIn&&'LinkedIn',
+                  hasYouTube&&'YouTube', hasTikTok&&'TikTok', hasTwitterX&&'X/Twitter'].filter(Boolean),
     isHTTPS: urlStr.startsWith('https'),
   };
 }
@@ -804,10 +857,20 @@ function calculateScores(psi, html, gmb) {
   if (html.hasReviewWidget) { pp += 15; pf.push([true, 'Review widget on site']); }
   else if (html.hasYelp)    { pp += 8;  pf.push([true, 'Yelp linked on site']); }
   else                       {           pf.push([false, 'No review platform linked']); }
-  const socials = [html.hasFacebook && 'Facebook', html.hasInstagram && 'Instagram',
-                   html.hasLinkedIn && 'LinkedIn',  html.hasYouTube  && 'YouTube'].filter(Boolean);
-  if (socials.length) { pp += Math.min(50, socials.length * 13); pf.push([true, 'Social: ' + socials.join(', ')]); }
-  else                { pf.push([false, 'No social media linked on site']); }
+  // Social — scored and labeled by count. 1 = weak, 2-3 = moderate, 4+ = strong.
+  const socials = html.socialNames || [];
+  if (socials.length === 0) {
+    pf.push([false, 'No social media profiles linked on site']);
+  } else if (socials.length === 1) {
+    pp += 10; // weak — only one platform
+    pf.push([false, `Only ${socials[0]} — limited social reach`]);
+  } else if (socials.length <= 3) {
+    pp += Math.min(35, socials.length * 14);
+    pf.push([true, `Social: ${socials.join(', ')}`]);
+  } else {
+    pp += 50;
+    pf.push([true, `Strong social presence: ${socials.join(', ')}`]);
+  }
   const presScore = Math.min(100, pp);
 
   // ── Site Foundation ───────────────────────────────
@@ -817,7 +880,7 @@ function calculateScores(psi, html, gmb) {
   else              ff.push([false, 'No SSL — browsers show "Not Secure"']);
   if (hasVP)        ff.push([true,  'Mobile-responsive design']);
   else              ff.push([false, 'Not fully mobile-responsive']);
-  ff.push([perf >= 50, `Mobile speed: ${perf}/100${!hasPSI ? ' (est.)' : perf < 50 ? ' — slow load loses leads' : ''}`]);
+  ff.push([perf >= 50, `Mobile speed: ${perf}/100${perf < 50 ? ' — slow load loses leads' : ''}${!hasPSI ? ' (could not fetch — retry for live score)' : ''}`]);
   if (access >= 70) ff.push([true, `Accessibility: ${access}/100`]);
   const foundScore = Math.round(
     (html.isHTTPS ? 20 : 0) + (hasVP ? 20 : 0) + perf * 0.50 + access * 0.10
@@ -830,7 +893,7 @@ function calculateScores(psi, html, gmb) {
     [hasTit,  hasTit  ? 'Page title set correctly'                       : 'Missing or weak page title'],
     [hasMD,   hasMD   ? 'Meta description present'                       : 'No meta description'],
     [html.hasBlog, html.hasBlog ? 'Blog / content section found'         : 'No blog — missed SEO opportunity'],
-    [seoLH >= 70, `SEO score: ${seoLH}/100${!hasPSI ? ' (est.)' : ''}`],
+    [seoLH >= 70, `SEO score: ${seoLH}/100${!hasPSI ? ' (retry for live score)' : ''}`],
   ];
   const seoScore = seoLH;
 
