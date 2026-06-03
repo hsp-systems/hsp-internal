@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSP — Business Audit Tool</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & tokens ─────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1C2E5C; --navy-dark:#131f3e; --navy-mid:#243D7A;
+  --gold:#C8912A; --gold-light:#E0A840;
+  --white:#fff; --off:#F7F6F3; --border:#DDD9D2;
+  --text:#1A1A1A; --muted:#6b7280;
+  --green:#16a34a; --green-bg:#dcfce7; --green-ring:#22c55e;
+  --amber:#d97706; --amber-bg:#fef3c7; --amber-ring:#f59e0b;
+  --red:#dc2626;   --red-bg:#fee2e2;   --red-ring:#ef4444;
+  --card-shadow:0 1px 10px rgba(0,0,0,.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh}
+.hidden{display:none!important}
+button{cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* ─── Top bar ────────────────────────────────────── */
+header{
+  background:var(--navy-dark);border-bottom:2px solid var(--gold);
+  padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;
+  position:sticky;top:0;z-index:50;
+}
+.hdr-brand{
+  font-family:'Bebas Neue',sans-serif;color:var(--gold);
+  font-size:15px;letter-spacing:.12em;white-space:nowrap;
+  border-right:1px solid rgba(255,255,255,.12);padding-right:14px;
+}
+.hdr-title{font-size:13px;color:rgba(255,255,255,.55);flex:1}
+.hdr-links{display:flex;gap:6px}
+.hdr-links a{
+  font-size:12px;color:rgba(255,255,255,.4);text-decoration:none;
+  padding:4px 10px;border-radius:4px;transition:all .2s;
+}
+.hdr-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
+
+/* ─── INPUT SCREEN ───────────────────────────────── */
+#screen-input{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-height:calc(100vh - 56px);padding:40px 20px;
+}
+.input-card{
+  background:white;border-radius:16px;box-shadow:var(--card-shadow);
+  width:100%;max-width:520px;padding:44px 40px;
+}
+.input-eyebrow{
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:12px;font-weight:600;
+}
+.input-card h1{
+  font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;
+  color:var(--navy);margin-bottom:8px;
+}
+.input-card p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:28px}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px}
+.field input{
+  width:100%;border:1.5px solid var(--border);border-radius:8px;
+  padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:15px;
+  color:var(--text);outline:none;transition:border-color .2s;
+}
+.field input:focus{border-color:var(--navy)}
+.field input::placeholder{color:#9ca3af}
+
+.run-btn{
+  width:100%;padding:14px;background:var(--navy);color:white;
+  border:none;border-radius:8px;font-size:15px;font-weight:700;
+  letter-spacing:.03em;transition:background .2s;margin-top:4px;
+}
+.run-btn:hover{background:var(--navy-mid)}
+
+.input-note{
+  font-size:11px;color:var(--muted);text-align:center;margin-top:14px;
+}
+
+/* ─── LOADING SCREEN ─────────────────────────────── */
+#screen-loading{padding:40px 24px}
+.loading-hdr{text-align:center;padding:20px 0 32px}
+.loading-hdr h2{
+  font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--navy);
+}
+.loading-hdr p{font-size:14px;color:var(--muted);margin-top:6px}
+.loading-steps{
+  display:flex;flex-direction:column;gap:8px;max-width:360px;
+  margin:0 auto 40px;
+}
+.lstep{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;color:var(--muted);padding:8px 14px;
+  background:white;border-radius:8px;box-shadow:var(--card-shadow);
+}
+.lstep-icon{font-size:16px;width:20px;text-align:center}
+.lstep.done{color:var(--green)}
+.lstep.active{color:var(--navy);font-weight:600}
+
+.skel-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  max-width:980px;margin:0 auto;
+}
+.skel-card{
+  background:white;border-radius:12px;
+  box-shadow:var(--card-shadow);padding:24px;height:200px;
+  overflow:hidden;position:relative;
+}
+.skel-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(200,200,200,.25) 50%,transparent 100%);
+  animation:shimmer 1.4s infinite;
+}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.skel-line{background:#e5e7eb;border-radius:4px;margin-bottom:10px}
+
+/* ─── RESULTS SCREEN ─────────────────────────────── */
+#screen-results{padding:32px 24px 60px}
+
+.results-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:980px;margin:0 auto 28px;flex-wrap:wrap;gap:12px;
+}
+.results-biz{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--navy);
+  letter-spacing:.04em;
+}
+.results-url{font-size:13px;color:var(--muted)}
+.results-meta{font-size:12px;color:var(--muted)}
+.results-actions{display:flex;gap:8px}
+.btn-sm{
+  padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;
+  border:1.5px solid var(--border);background:white;color:var(--text);
+  transition:all .2s;
+}
+.btn-sm:hover{border-color:var(--navy);color:var(--navy)}
+.btn-sm.primary{background:var(--navy);color:white;border-color:var(--navy)}
+.btn-sm.primary:hover{background:var(--navy-mid)}
+
+/* Overall score */
+.overall-wrap{
+  display:flex;align-items:center;justify-content:center;gap:32px;
+  background:white;border-radius:16px;box-shadow:var(--card-shadow);
+  padding:32px 40px;max-width:980px;margin:0 auto 28px;flex-wrap:wrap;
+}
+.ring-wrap{position:relative;width:130px;height:130px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;
+}
+.ring-num{
+  font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;
+}
+.ring-denom{font-size:12px;color:var(--muted);font-weight:500}
+.overall-info{flex:1;min-width:200px}
+.overall-verdict{
+  font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;
+  margin-bottom:8px;
+}
+.overall-summary{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.gap-badges{display:flex;gap:6px;flex-wrap:wrap}
+.gap-badge{
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;
+  text-transform:uppercase;letter-spacing:.07em;
+}
+.gap-badge.red{background:var(--red-bg);color:var(--red)}
+.gap-badge.amber{background:var(--amber-bg);color:var(--amber)}
+.gap-badge.green{background:var(--green-bg);color:var(--green)}
+
+/* Category cards */
+.cat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;max-width:980px;margin:0 auto;
+}
+.cat-card{
+  background:white;border-radius:12px;
+  box-shadow:var(--card-shadow);padding:22px;
+  border-top:4px solid transparent;
+  display:flex;flex-direction:column;gap:0;
+}
+.cat-card.green{border-top-color:var(--green-ring)}
+.cat-card.amber{border-top-color:var(--amber-ring)}
+.cat-card.red{border-top-color:var(--red-ring)}
+
+.cat-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cat-icon{font-size:22px}
+.cat-name{font-size:13px;font-weight:700;color:var(--text);flex:1}
+.cat-pct{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;
+}
+.cat-pct.green{color:var(--green)}
+.cat-pct.amber{color:var(--amber)}
+.cat-pct.red{color:var(--red)}
+
+.cat-bar{
+  height:6px;background:#f3f4f6;border-radius:3px;margin-bottom:14px;overflow:hidden;
+}
+.cat-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.cat-bar-fill.green{background:var(--green-ring)}
+.cat-bar-fill.amber{background:var(--amber-ring)}
+.cat-bar-fill.red{background:var(--red-ring)}
+
+.cat-findings{list-style:none;display:flex;flex-direction:column;gap:5px;flex:1}
+.cat-findings li{
+  font-size:12px;line-height:1.4;
+  display:flex;align-items:flex-start;gap:6px;
+}
+.cat-findings li .fi{flex-shrink:0;font-size:11px;margin-top:1px}
+
+.cat-badge{
+  margin-top:12px;display:inline-block;
+  font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 9px;border-radius:8px;
+}
+.cat-badge.opp{background:rgba(200,145,42,.12);color:var(--gold)}
+
+/* ─── CTA footer ─────────────────────────────────── */
+.results-footer{
+  max-width:980px;margin:28px auto 0;
+  background:var(--navy-dark);border-radius:12px;
+  padding:28px 32px;display:flex;align-items:center;
+  justify-content:space-between;gap:20px;flex-wrap:wrap;
+}
+.results-footer h3{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;color:white;
+  letter-spacing:.04em;margin-bottom:4px;
+}
+.results-footer p{font-size:13px;color:rgba(255,255,255,.5)}
+.footer-cta{
+  padding:12px 24px;background:var(--gold);color:var(--navy-dark);
+  border:none;border-radius:8px;font-size:14px;font-weight:700;
+  white-space:nowrap;transition:background .2s;text-decoration:none;
+  display:inline-block;
+}
+.footer-cta:hover{background:var(--gold-light)}
+
+/* ─── Print ──────────────────────────────────────── */
+@media print{
+  header,#screen-input,#screen-loading,.results-actions,.results-footer{display:none!important}
+  body{background:white}
+  .cat-grid{grid-template-columns:repeat(3,1fr)!important}
+}
+
+/* ─── Responsive ─────────────────────────────────── */
+@media(max-width:740px){
+  .cat-grid,.skel-grid{grid-template-columns:1fr}
+  .overall-wrap{flex-direction:column;text-align:center}
+  .gap-badges{justify-content:center}
+  .input-card{padding:28px 22px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-brand">HSP</div>
+  <div class="hdr-title">Business Audit Tool</div>
+  <nav class="hdr-links">
+    <a href="../system-demo/">System Demo</a>
+    <a href="../order-form/">Order Form</a>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════
+     INPUT SCREEN
+     ═══════════════════════════ -->
+<div id="screen-input">
+  <div class="input-card">
+    <div class="input-eyebrow">HSP Internal Tool</div>
+    <h1>Business Audit</h1>
+    <p>Enter the prospect's business name and website. The audit runs automatically — takes about 15 seconds.</p>
+
+    <div class="field">
+      <label>Business Name</label>
+      <input type="text" id="inp-biz" placeholder="e.g. Bareither Group" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Website URL</label>
+      <input type="url" id="inp-url" placeholder="https://example.com" autocomplete="off">
+    </div>
+
+    <button class="run-btn" onclick="runAudit()">Run Audit →</button>
+    <p class="input-note">🔒 Internal use only — not indexed or shared</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     LOADING SCREEN
+     ═══════════════════════════ -->
+<div id="screen-loading" class="hidden">
+  <div class="loading-hdr">
+    <h2 id="loading-biz-name">Analyzing Business...</h2>
+    <p id="loading-url-display"></p>
+  </div>
+
+  <div class="loading-steps">
+    <div class="lstep" id="lstep-1"><span class="lstep-icon">⏳</span>Fetching website...</div>
+    <div class="lstep" id="lstep-2"><span class="lstep-icon">⏳</span>Running speed & SEO analysis...</div>
+    <div class="lstep" id="lstep-3"><span class="lstep-icon">⏳</span>Checking online presence...</div>
+    <div class="lstep" id="lstep-4"><span class="lstep-icon">⏳</span>Calculating scores...</div>
+  </div>
+
+  <div class="skel-grid">
+    <div class="skel-card">
+      <div class="skel-line" style="height:16px;width:60%;margin-bottom:16px"></div>
+      <div class="skel-line" style="height:10px;width:100%"></div>
+      <div class="skel-line" style="height:10px;width:85%"></div>
+      <div class="skel-line" style="height:10px;width:90%"></div>
+      <div class="skel-line" style="height:10px;width:70%"></div>
+    </div>
+    <div class="skel-card">
+      <div class="skel-line" style="height:16px;width:60%;margin-bottom:16px"></div>
+      <div class="skel-line" style="height:10px;width:100%"></div>
+      <div class="skel-line" style="height:10px;width:80%"></div>
+      <div class="skel-line" style="height:10px;width:95%"></div>
+      <div class="skel-line" style="height:10px;width:65%"></div>
+    </div>
+    <div class="skel-card">
+      <div class="skel-line" style="height:16px;width:60%;margin-bottom:16px"></div>
+      <div class="skel-line" style="height:10px;width:100%"></div>
+      <div class="skel-line" style="height:10px;width:75%"></div>
+      <div class="skel-line" style="height:10px;width:90%"></div>
+      <div class="skel-line" style="height:10px;width:60%"></div>
+    </div>
+    <div class="skel-card">
+      <div class="skel-line" style="height:16px;width:60%;margin-bottom:16px"></div>
+      <div class="skel-line" style="height:10px;width:100%"></div>
+      <div class="skel-line" style="height:10px;width:88%"></div>
+      <div class="skel-line" style="height:10px;width:72%"></div>
+    </div>
+    <div class="skel-card">
+      <div class="skel-line" style="height:16px;width:60%;margin-bottom:16px"></div>
+      <div class="skel-line" style="height:10px;width:100%"></div>
+      <div class="skel-line" style="height:10px;width:82%"></div>
+      <div class="skel-line" style="height:10px;width:68%"></div>
+    </div>
+    <div class="skel-card">
+      <div class="skel-line" style="height:16px;width:60%;margin-bottom:16px"></div>
+      <div class="skel-line" style="height:10px;width:100%"></div>
+      <div class="skel-line" style="height:10px;width:78%"></div>
+      <div class="skel-line" style="height:10px;width:85%"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     RESULTS SCREEN
+     ═══════════════════════════ -->
+<div id="screen-results" class="hidden">
+
+  <div class="results-topbar">
+    <div>
+      <div class="results-biz" id="res-biz-name"></div>
+      <div class="results-url" id="res-url"></div>
+    </div>
+    <div class="results-actions">
+      <span class="results-meta" id="res-date"></span>
+      <button class="btn-sm" onclick="window.print()">🖨 Print</button>
+      <button class="btn-sm" onclick="resetAudit()">↺ New Audit</button>
+    </div>
+  </div>
+
+  <!-- Overall score -->
+  <div class="overall-wrap">
+    <div class="ring-wrap">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle cx="65" cy="65" r="54" fill="none" stroke="#f3f4f6" stroke-width="13"/>
+        <circle id="ring-fill" cx="65" cy="65" r="54" fill="none"
+          stroke="#22c55e" stroke-width="13" stroke-linecap="round"
+          stroke-dasharray="339.3" stroke-dashoffset="339.3"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-num" id="ring-num" style="color:#22c55e">0</div>
+        <div class="ring-denom">/100</div>
+      </div>
+    </div>
+    <div class="overall-info">
+      <div class="overall-verdict" id="overall-verdict">—</div>
+      <div class="overall-summary" id="overall-summary"></div>
+      <div class="gap-badges" id="gap-badges"></div>
+    </div>
+  </div>
+
+  <!-- Category cards -->
+  <div class="cat-grid" id="cat-grid"></div>
+
+  <!-- Footer CTA -->
+  <div class="results-footer">
+    <div>
+      <h3>Ready to Address These Gaps?</h3>
+      <p>HSP Systems builds the systems that fix every red on this scorecard.</p>
+    </div>
+    <a href="https://hspsystems.io" target="_blank" class="footer-cta">Book a Strategy Call →</a>
+  </div>
+
+</div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────
+// Update this after deploying the Worker: wrangler deploy (from audit-worker/)
+const WORKER_URL = 'https://hsp-audit.hsp-systems.workers.dev/audit';
+
+// ─── SCREENS ────────────────────────────────────────────────────
+const screens = {
+  input:   document.getElementById('screen-input'),
+  loading: document.getElementById('screen-loading'),
+  results: document.getElementById('screen-results'),
+};
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.add('hidden'));
+  screens[name].classList.remove('hidden');
+}
+
+// ─── LOADING STEPS ──────────────────────────────────────────────
+function setStep(n, state) { // state: 'active' | 'done' | 'error'
+  const el = document.getElementById('lstep-' + n);
+  if (!el) return;
+  el.classList.remove('done', 'active', 'error');
+  el.classList.add(state);
+  const icon = el.querySelector('.lstep-icon');
+  if (icon) icon.textContent = state === 'done' ? '✓' : state === 'error' ? '✗' : '⏳';
+}
+
+// ─── MAIN AUDIT FLOW ────────────────────────────────────────────
+async function runAudit() {
+  const bizRaw = document.getElementById('inp-biz').value.trim();
+  const urlRaw = document.getElementById('inp-url').value.trim();
+
+  if (!bizRaw || !urlRaw) { alert('Please enter both a business name and website URL.'); return; }
+
+  let targetUrl = urlRaw;
+  if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
+
+  // Show loading screen
+  document.getElementById('loading-biz-name').textContent = 'Analyzing ' + bizRaw + '...';
+  document.getElementById('loading-url-display').textContent = targetUrl;
+  showScreen('loading');
+  setStep(1, 'active');
+  setStep(2, 'active');
+  setStep(3, 'active');
+  setStep(4, 'active');
+
+  let workerData = null;
+  try {
+    const res = await fetch(
+      `${WORKER_URL}?url=${encodeURIComponent(targetUrl)}&biz=${encodeURIComponent(bizRaw)}`,
+      { signal: AbortSignal.timeout(30000) }
+    );
+    workerData = await res.json();
+    setStep(1, workerData.html ? 'done' : 'error');
+    setStep(2, workerData.pagespeed ? 'done' : 'error');
+    setStep(3, 'done');
+  } catch (e) {
+    setStep(1, 'error');
+    setStep(2, 'error');
+    setStep(3, 'error');
+    workerData = { ok: false, html: '', pagespeed: null, gmb: { found: false }, isHTTPS: targetUrl.startsWith('https') };
+  }
+
+  setStep(4, 'active');
+  const htmlData = analyzeHTML(workerData.html || '', targetUrl);
+  htmlData.isHTTPS = workerData.isHTTPS ?? targetUrl.startsWith('https');
+
+  const scores = calculateScores(workerData.pagespeed, htmlData, workerData.gmb || {});
+  setStep(4, 'done');
+
+  await new Promise(r => setTimeout(r, 600)); // brief pause so user sees all ✓
+  renderResults(bizRaw, targetUrl, scores);
+  showScreen('results');
+}
+
+// ─── HTML ANALYSIS ──────────────────────────────────────────────
+function analyzeHTML(html, urlStr) {
+  let doc;
+  try {
+    doc = new DOMParser().parseFromString(html, 'text/html');
+  } catch(e) {
+    doc = document.implementation.createHTMLDocument('');
+  }
+  const lower = html.toLowerCase();
+  const bodyText = doc.body ? (doc.body.textContent || '') : '';
+
+  const allLinks = Array.from(doc.querySelectorAll('a[href]'));
+  const linkHrefs = allLinks.map(a => (a.getAttribute('href') || '').toLowerCase());
+  const linkTexts = allLinks.map(a => (a.textContent || '').toLowerCase().trim());
+
+  function hasLink(hrefPart, textPart) {
+    return linkHrefs.some(h => h.includes(hrefPart)) ||
+           (textPart ? linkTexts.some(t => t.includes(textPart)) : false);
+  }
+
+  // Forms
+  const formCount = (html.match(/<form[\s>]/gi) || []).length;
+  const hasMultiStep =
+    lower.includes('step 1') || lower.includes('step-1') || lower.includes('step 2') ||
+    lower.includes('wizard') || lower.includes('multi-step') || lower.includes('multistep') ||
+    formCount > 2;
+
+  // Booking
+  const bookingKw = ['book now','book online','book a ','book your','schedule now',
+    'schedule online','get a quote','get quote','instant quote','free quote',
+    'free estimate','get estimate','request a quote','request quote','calendly',
+    'acuityscheduling','booksy','jobber','housecall','servicetitan','workiz'];
+  const hasBooking = bookingKw.some(k => lower.includes(k));
+
+  // CTA above fold (first 3000 chars)
+  const top3k = lower.slice(0, 3000);
+  const ctaKw = ['get started','book now','call now','contact us','get quote',
+    'free quote','schedule','get estimate','book free','get started'];
+  const hasCTAAboveFold = ctaKw.some(k => top3k.includes(k));
+
+  // Phone
+  const hasPhone = /\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}/.test(bodyText + html);
+
+  // Social
+  const hasFacebook  = lower.includes('facebook.com/');
+  const hasInstagram = lower.includes('instagram.com/');
+  const hasLinkedIn  = lower.includes('linkedin.com/');
+  const hasYouTube   = lower.includes('youtube.com/');
+
+  // Chat
+  const chatKw = ['intercom','drift.com','crisp.chat','tawk.to','livechat.com',
+    'hubspot','freshchat','zopim','zendesk','tidio','olark','smartsupp','chatlio'];
+  const hasChatWidget = chatKw.some(k => lower.includes(k));
+
+  // GMB / reviews
+  const hasGMBLink = lower.includes('google.com/maps/place') || lower.includes('g.page/') ||
+                     lower.includes('goo.gl/maps') ||
+                     linkHrefs.some(h => h.includes('google.com/maps') || h.includes('g.page'));
+  const reviewKw = ['trustpilot','birdeye','podium','grade.us','reviewtrackers',
+    'reputation.com','yotpo','reviews.io'];
+  const hasReviewWidget = reviewKw.some(k => lower.includes(k)) ||
+                          lower.includes('google review');
+  const hasYelp = lower.includes('yelp.com/biz/') || lower.includes('yelp.com/');
+
+  // Hiring
+  const hasCareersPage =
+    linkHrefs.some(h => /\/career|\/jobs|\/hiring|\/apply|\/work-with-us/.test(h)) ||
+    linkTexts.some(t => ['careers','jobs','we\'re hiring','join us','join our team','work with us','now hiring'].includes(t));
+  const hasEmailHiring =
+    lower.includes('send resume') || lower.includes('email your resume') ||
+    lower.includes('email resume') ||
+    (lower.includes('resume') && /[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/.test(lower));
+
+  // Trust
+  const hasTestimonials = lower.includes('testimonial') || lower.includes('what our clients') ||
+    lower.includes('what our customers') || lower.includes('hear from') ||
+    lower.includes('★') || lower.includes('⭐') ||
+    (lower.includes('review') && (lower.includes('star') || lower.includes('rating')));
+  const hasAboutPage  = hasLink('/about', 'about us') || hasLink('/about', 'about');
+  const hasServicePage = hasLink('/service', 'services') || hasLink('/pricing', 'pricing');
+  const hasBlog = hasLink('/blog', 'blog') || hasLink('/news', 'news') || hasLink('/resources', 'resources');
+
+  // Meta
+  const hasViewport = !!doc.querySelector('meta[name="viewport"]');
+  const hasMetaDesc = !!(doc.querySelector('meta[name="description"]')?.content?.trim());
+  const hasTitle    = !!(doc.querySelector('title')?.textContent?.trim());
+
+  return {
+    formCount, hasMultiStep, hasBooking, hasCTAAboveFold, hasPhone,
+    hasFacebook, hasInstagram, hasLinkedIn, hasYouTube,
+    hasChatWidget, hasGMBLink, hasReviewWidget, hasYelp,
+    hasCareersPage, hasEmailHiring, hasTestimonials,
+    hasAboutPage, hasServicePage, hasBlog,
+    hasViewport, hasMetaDesc, hasTitle,
+    socialCount: [hasFacebook, hasInstagram, hasLinkedIn, hasYouTube].filter(Boolean).length,
+    isHTTPS: urlStr.startsWith('https'),
+  };
+}
+
+// ─── SCORING ────────────────────────────────────────────────────
+function calculateScores(psi, html, gmb) {
+  const audits = psi?.lighthouseResult?.audits || {};
+  const cats   = psi?.lighthouseResult?.categories || {};
+  const perf   = Math.round((cats.performance?.score  ?? 0) * 100);
+  const seoLH  = Math.round((cats.seo?.score          ?? 0) * 100);
+  const access = Math.round((cats.accessibility?.score ?? 0) * 100);
+
+  // ── Lead Capture ──────────────────────────────────
+  let lp = 0; const lf = [];
+  if (html.formCount > 0) {
+    lp += 15;
+    if (html.hasMultiStep) {
+      lp += 20; lf.push([true, 'Multi-step form detected']);
+    } else {
+      lf.push([false, 'Basic single form — low conversion rate']);
+    }
+  } else {
+    lf.push([false, 'No lead capture form found']);
+  }
+  if (html.hasBooking) { lp += 30; lf.push([true, 'Auto-booking or instant quote detected']); }
+  else { lf.push([false, 'No auto-booking or instant quote system']); }
+  if (html.hasCTAAboveFold) { lp += 20; lf.push([true, 'Clear CTA above the fold']); }
+  else { lf.push([false, 'No strong CTA visible above the fold']); }
+  if (html.hasPhone) { lp += 10; lf.push([true, 'Phone number on page']); }
+  else { lf.push([false, 'Phone number not found']); }
+  if (html.hasChatWidget) { lp += 5; lf.push([true, 'Chat widget present']); }
+  const leadScore = Math.min(100, lp);
+
+  // ── Online Presence ───────────────────────────────
+  let pp = 0; const pf = [];
+  if (gmb?.found) {
+    pp += 35;
+    const detail = [
+      gmb.rating ? `${gmb.rating}★` : '',
+      gmb.reviewCount ? `${gmb.reviewCount} reviews` : '',
+    ].filter(Boolean).join(' · ');
+    pf.push([true, 'Google Business Profile found' + (detail ? ' — ' + detail : '')]);
+  } else if (html.hasGMBLink) {
+    pp += 20; pf.push([true, 'Google Maps link on site']);
+  } else {
+    pf.push([false, 'No Google Business Profile detected']);
+  }
+  if (html.hasReviewWidget) { pp += 15; pf.push([true, 'Review widget on site']); }
+  else if (html.hasYelp)    { pp += 8;  pf.push([true, 'Yelp linked on site']); }
+  else                       {           pf.push([false, 'No review platform linked']); }
+  const socials = [html.hasFacebook && 'Facebook', html.hasInstagram && 'Instagram',
+                   html.hasLinkedIn && 'LinkedIn',  html.hasYouTube  && 'YouTube'].filter(Boolean);
+  if (socials.length) { pp += Math.min(50, socials.length * 13); pf.push([true, 'Social: ' + socials.join(', ')]); }
+  else                { pf.push([false, 'No social media linked on site']); }
+  const presScore = Math.min(100, pp);
+
+  // ── Site Foundation ───────────────────────────────
+  const hasVP = audits['viewport']?.score === 1 || html.hasViewport;
+  const ff = [];
+  if (html.isHTTPS) ff.push([true,  'Secure HTTPS / SSL']);
+  else              ff.push([false, 'No SSL — browsers show "Not Secure"']);
+  if (hasVP)        ff.push([true,  'Mobile-responsive design']);
+  else              ff.push([false, 'Not fully mobile-responsive']);
+  ff.push([perf >= 50, `Mobile speed score: ${perf}/100${perf < 50 ? ' — slow load loses leads' : ''}`]);
+  if (access >= 70) ff.push([true, `Accessibility: ${access}/100`]);
+  const foundScore = Math.round(
+    (html.isHTTPS ? 20 : 0) + (hasVP ? 20 : 0) + perf * 0.50 + access * 0.10
+  );
+
+  // ── SEO ───────────────────────────────────────────
+  const hasMD    = audits['meta-description']?.score === 1 || html.hasMetaDesc;
+  const hasTit   = audits['document-title']?.score   === 1 || html.hasTitle;
+  const sf = [
+    [hasTit,  hasTit  ? 'Page title set correctly'                       : 'Missing or weak page title'],
+    [hasMD,   hasMD   ? 'Meta description present'                       : 'No meta description'],
+    [html.hasBlog, html.hasBlog ? 'Blog / content section found'         : 'No blog — missed SEO opportunity'],
+    [seoLH >= 70, `Lighthouse SEO score: ${seoLH}/100`],
+  ];
+  const seoScore = seoLH;
+
+  // ── Trust & Conversion ────────────────────────────
+  let cp = 0; const cf = [];
+  if (html.hasTestimonials) { cp += 35; cf.push([true,  'Testimonials or reviews on page']); }
+  else                      {           cf.push([false, 'No social proof visible']); }
+  if (html.hasAboutPage)    { cp += 25; cf.push([true,  'About or team page found']); }
+  else                      {           cf.push([false, 'No about page']); }
+  if (html.hasServicePage)  { cp += 25; cf.push([true,  'Service / pricing pages found']); }
+  else                      {           cf.push([false, 'Service pages not detected']); }
+  if (html.hasChatWidget)   { cp += 15; }
+  const convScore = Math.min(100, cp);
+
+  // ── Hiring Pipeline ───────────────────────────────
+  let hp = 0; const hf = [];
+  if (html.hasCareersPage) {
+    hp += 40; hf.push([true, 'Careers or jobs page found']);
+    if (html.hasEmailHiring) { hf.push([false, '"Email your resume" — no automated pipeline']); }
+    else                     { hp += 40; hf.push([true, 'Application form (not email-only)']); }
+    hp += 20; hf.push([true, 'Hiring process publicly visible']);
+  } else {
+    hf.push([false, 'No careers or jobs page']);
+    hf.push([false, 'No clear applicant entry point']);
+    hf.push([false, 'Hiring is likely manual / untracked']);
+  }
+  const hireScore = Math.min(100, hp);
+
+  // ── Overall ───────────────────────────────────────
+  const overall = Math.round(
+    leadScore  * .25 + presScore  * .20 + foundScore * .20 +
+    seoScore   * .15 + convScore  * .10 + hireScore  * .10
+  );
+
+  return {
+    overall,
+    categories: [
+      { id:'lead',  icon:'🎯', label:'Lead Capture',    score:leadScore,  findings:lf, weight:'25%' },
+      { id:'pres',  icon:'🌐', label:'Online Presence', score:presScore,  findings:pf, weight:'20%' },
+      { id:'found', icon:'⚡', label:'Site Foundation', score:foundScore, findings:ff, weight:'20%' },
+      { id:'seo',   icon:'🔍', label:'SEO',             score:seoScore,   findings:sf, weight:'15%' },
+      { id:'conv',  icon:'🏆', label:'Trust & Close',   score:convScore,  findings:cf, weight:'10%' },
+      { id:'hire',  icon:'👥', label:'Hiring Pipeline', score:hireScore,  findings:hf, weight:'10%' },
+    ],
+  };
+}
+
+// ─── RENDER ─────────────────────────────────────────────────────
+function colorClass(score) {
+  if (score >= 70) return 'green';
+  if (score >= 40) return 'amber';
+  return 'red';
+}
+
+function renderResults(biz, url, scores) {
+  // Topbar
+  document.getElementById('res-biz-name').textContent = biz;
+  document.getElementById('res-url').textContent = url;
+  document.getElementById('res-date').textContent =
+    'Audited ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+
+  // Overall ring
+  const ov  = scores.overall;
+  const col = ov >= 70 ? 'var(--green-ring)' : ov >= 40 ? 'var(--amber-ring)' : 'var(--red-ring)';
+  const circ = 339.3;
+  const offset = circ * (1 - ov / 100);
+
+  const ringFill = document.getElementById('ring-fill');
+  ringFill.style.stroke = col;
+  // Animate
+  setTimeout(() => { ringFill.style.strokeDashoffset = offset; }, 100);
+
+  const ringNum = document.getElementById('ring-num');
+  ringNum.style.color = col;
+  // Count up
+  let n = 0;
+  const ticker = setInterval(() => {
+    n = Math.min(n + 2, ov);
+    ringNum.textContent = n;
+    if (n >= ov) clearInterval(ticker);
+  }, 20);
+
+  // Verdict
+  const verdicts = [[80,'Strong Foundation'],[60,'Room to Grow'],[40,'Needs Attention'],[0,'Major Gaps']];
+  const verdict = verdicts.find(([t]) => ov >= t)[1];
+  document.getElementById('overall-verdict').textContent = verdict;
+  document.getElementById('overall-verdict').style.color = col;
+
+  const reds   = scores.categories.filter(c => c.score <  40).length;
+  const ambers = scores.categories.filter(c => c.score >= 40 && c.score < 70).length;
+  const greens = scores.categories.filter(c => c.score >= 70).length;
+  document.getElementById('overall-summary').textContent =
+    `${reds} critical gap${reds !== 1 ? 's' : ''}, ${ambers} area${ambers !== 1 ? 's' : ''} to improve, ${greens} solid`;
+
+  const badgesEl = document.getElementById('gap-badges');
+  badgesEl.innerHTML = scores.categories
+    .filter(c => c.score < 70)
+    .map(c => `<span class="gap-badge ${colorClass(c.score)}">${c.icon} ${c.label}</span>`)
+    .join('');
+
+  // Category cards
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = '';
+  scores.categories.forEach(cat => {
+    const cls = colorClass(cat.score);
+    const isWeak = cat.score < 70;
+    const card = document.createElement('div');
+    card.className = `cat-card ${cls}`;
+    card.innerHTML = `
+      <div class="cat-head">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-name">${cat.label}</span>
+        <span class="cat-pct ${cls}">${cat.score}%</span>
+      </div>
+      <div class="cat-bar">
+        <div class="cat-bar-fill ${cls}" style="width:0%" data-w="${cat.score}%"></div>
+      </div>
+      <ul class="cat-findings">
+        ${cat.findings.slice(0, 4).map(([good, text]) => `
+          <li>
+            <span class="fi">${good ? '✅' : '❌'}</span>
+            <span>${text}</span>
+          </li>`).join('')}
+      </ul>
+      ${isWeak ? `<span class="cat-badge opp">HSP can address this</span>` : ''}
+    `;
+    grid.appendChild(card);
+  });
+
+  // Animate bars after paint
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.cat-bar-fill[data-w]').forEach(el => {
+      setTimeout(() => { el.style.width = el.dataset.w; }, 200);
+    });
+  });
+}
+
+// ─── RESET ──────────────────────────────────────────────────────
+function resetAudit() {
+  document.getElementById('inp-biz').value = '';
+  document.getElementById('inp-url').value = '';
+  ['1','2','3','4'].forEach(n => setStep(n, 'active'));
+  showScreen('input');
+}
+
+// ─── ENTER KEY ──────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && screens.input && !screens.input.classList.contains('hidden')) {
+    runAudit();
+  }
+});
+</script>
+</body>
+</html>
