@@ -776,136 +776,210 @@ function analyzeHTML(html, urlStr) {
     lower.includes('email resume') ||
     (lower.includes('resume') && /[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/.test(lower));
 
-  // Trust
+  // Trust & conversion
   const hasTestimonials = lower.includes('testimonial') || lower.includes('what our clients') ||
     lower.includes('what our customers') || lower.includes('hear from') ||
     lower.includes('★') || lower.includes('⭐') ||
     (lower.includes('review') && (lower.includes('star') || lower.includes('rating')));
-  const hasAboutPage  = hasLink('/about', 'about us') || hasLink('/about', 'about');
+  const hasAboutPage   = hasLink('/about', 'about us') || hasLink('/about', 'about');
   const hasServicePage = hasLink('/service', 'services') || hasLink('/pricing', 'pricing');
-  const hasBlog = hasLink('/blog', 'blog') || hasLink('/news', 'news') || hasLink('/resources', 'resources');
+  const hasBlog        = hasLink('/blog', 'blog') || hasLink('/news', 'news') || hasLink('/resources', 'resources');
+  // Video on site
+  const hasVideo = lower.includes('youtube.com/embed') || lower.includes('vimeo.com/video') ||
+    !!doc.querySelector('video') || lower.includes('wistia') || lower.includes('loom.com');
+  // Physical address visible (street number + street type)
+  const hasAddress = /\b\d{2,5}\s+[A-Za-z].{2,30}(St\.?|Ave\.?|Dr\.?|Blvd\.?|Rd\.?|Ln\.?|Way|Ct\.?|Circle|Pkwy|Hwy)\b/i.test(bodyText)
+    || !!doc.querySelector('[itemprop="streetAddress"],[class*="address"],[class*="location"]');
+  // Visible business email on page (not in hidden scripts)
+  const emailMatches = bodyText.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g) || [];
+  const hasEmail = emailMatches.some(e => !e.includes('example') && !e.includes('noreply') &&
+    !e.includes('sentry') && !e.includes('@2x') && !e.includes('.png'));
+  // Trust badges / certifications
+  const hasTrustBadge = lower.includes('bbb') || lower.includes('better business bureau') ||
+    lower.includes('licensed') || lower.includes('insured') || lower.includes('certified') ||
+    lower.includes('accredited') || lower.includes('award');
+  // Newsletter / email list capture (separate from main contact form)
+  const hasNewsletter = lower.includes('subscribe') || lower.includes('newsletter') ||
+    lower.includes('join our list') || lower.includes('email list') || lower.includes('sign up for');
+
+  // Schema / structured data completeness
+  const hasLocalBizSchema = jsonLdBlocks.some(b => {
+    try {
+      const d = JSON.parse(b.replace(/<script[^>]*>/i,'').replace(/<\/script>/i,''));
+      const check = e => e?.['@type'] && (
+        e['@type'] === 'LocalBusiness' || e['@type'].includes('Business') ||
+        e['@type'].includes('Organization') || e['@type'].includes('MedicalBusiness') ||
+        e['@type'].includes('HomeAndConstructionBusiness')
+      );
+      return check(d) || (Array.isArray(d['@graph']) && d['@graph'].some(check));
+    } catch(_) { return false; }
+  });
+  // OG image for social sharing
+  const hasOGImage = !!html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["'][^"']+["']/i);
 
   // Meta
   const hasViewport = !!doc.querySelector('meta[name="viewport"]');
   const hasMetaDesc = !!(doc.querySelector('meta[name="description"]')?.content?.trim());
   const hasTitle    = !!(doc.querySelector('title')?.textContent?.trim());
 
+  // Which chat provider
+  const chatProviderName = (() => {
+    if (lower.includes('intercom')) return 'Intercom';
+    if (lower.includes('drift.com')) return 'Drift';
+    if (lower.includes('crisp.chat')) return 'Crisp';
+    if (lower.includes('tawk.to')) return 'Tawk.to';
+    if (lower.includes('tidio')) return 'Tidio';
+    if (lower.includes('hubspot')) return 'HubSpot Chat';
+    if (lower.includes('freshchat')) return 'Freshchat';
+    if (lower.includes('leadconnectorhq.com')) return 'HSP Chat Widget';
+    if (lower.includes('zendesk') || lower.includes('zopim')) return 'Zendesk Chat';
+    if (lower.includes('olark')) return 'Olark';
+    return 'chat widget';
+  })();
+
   return {
     formCount, hasMultiStep, formTypeUnknown, hasBooking, hasCTAAboveFold, hasPhone,
-    hasFacebook, hasInstagram, hasLinkedIn, hasYouTube,
-    hasChatWidget, hasGMBLink, hasReviewWidget, hasYelp,
+    hasChatWidget, chatProviderName,
+    hasEmail, hasAddress, hasNewsletter, hasTrustBadge, hasVideo,
+    hasFacebook, hasInstagram, hasLinkedIn, hasYouTube, hasTikTok, hasTwitterX,
+    hasGMBLink, hasReviewWidget, hasYelp,
     hasCareersPage, hasEmailHiring, hasTestimonials,
     hasAboutPage, hasServicePage, hasBlog, hasGHLForm,
+    hasLocalBizSchema, hasOGImage,
     hasViewport, hasMetaDesc, hasTitle,
-    socialCount: [hasFacebook, hasInstagram, hasLinkedIn, hasYouTube, hasTikTok, hasTwitterX].filter(Boolean).length,
-    socialNames: [hasFacebook&&'Facebook', hasInstagram&&'Instagram', hasLinkedIn&&'LinkedIn',
-                  hasYouTube&&'YouTube', hasTikTok&&'TikTok', hasTwitterX&&'X/Twitter'].filter(Boolean),
+    socialCount: [hasFacebook,hasInstagram,hasLinkedIn,hasYouTube,hasTikTok,hasTwitterX].filter(Boolean).length,
+    socialNames: [hasFacebook&&'Facebook',hasInstagram&&'Instagram',hasLinkedIn&&'LinkedIn',
+                  hasYouTube&&'YouTube',hasTikTok&&'TikTok',hasTwitterX&&'X/Twitter'].filter(Boolean),
     isHTTPS: urlStr.startsWith('https'),
   };
 }
 
 // ─── SCORING ────────────────────────────────────────────────────
 function calculateScores(psi, html, gmb) {
-  const audits  = psi?.lighthouseResult?.audits || {};
-  const cats    = psi?.lighthouseResult?.categories || {};
-  const hasPSI  = !!psi?.lighthouseResult;
-  // When PSI is unavailable use neutral 50 so the tool doesn't falsely score 0
-  const perf   = hasPSI ? Math.round((cats.performance?.score  ?? 0) * 100) : 50;
-  const seoLH  = hasPSI ? Math.round((cats.seo?.score          ?? 0) * 100) : 50;
-  const access = hasPSI ? Math.round((cats.accessibility?.score ?? 0) * 100) : 50;
+  const audits = psi?.lighthouseResult?.audits || {};
+  const cats   = psi?.lighthouseResult?.categories || {};
+  const hasPSI = !!psi?.lighthouseResult;
+
+  // Real PSI scores — null when PSI unavailable, never a fake number
+  const perf   = hasPSI ? Math.round((cats.performance?.score  ?? 0) * 100) : null;
+  const seoLH  = hasPSI ? Math.round((cats.seo?.score          ?? 0) * 100) : null;
+  const access = hasPSI ? Math.round((cats.accessibility?.score ?? 0) * 100) : null;
+  const bp     = hasPSI ? Math.round((cats['best-practices']?.score ?? 0) * 100) : null;
+
+  // Specific timing metrics from PSI (in seconds, 1 decimal)
+  const lcpMs  = audits['largest-contentful-paint']?.numericValue;
+  const fcpMs  = audits['first-contentful-paint']?.numericValue;
+  const lcpS   = lcpMs  ? (lcpMs/1000).toFixed(1)  : null;
+  const fcpS   = fcpMs  ? (fcpMs/1000).toFixed(1)  : null;
 
   // ── Lead Capture ──────────────────────────────────
   let lp = 0; const lf = [];
   if (html.formCount > 0) {
     lp += 15;
     if (html.hasMultiStep) {
-      lp += 20;
-      lf.push([true, 'Multi-step form detected']);
+      lp += 20; lf.push([true, 'Multi-step form detected — higher conversion']);
     } else if (html.formTypeUnknown) {
-      // Embedded iframe form (GHL/3rd party) — step count not readable cross-origin
-      lp += 5; // small credit for uncertainty; not penalizing, not rewarding
-      lf.push([null, 'Embedded form found — step count unverifiable (test manually)']);
+      lp += 5;
+      lf.push([null, 'Embedded form found — test manually to confirm step count']);
     } else {
-      lf.push([false, 'Basic single form — low conversion rate']);
+      lf.push([false, 'Basic single form — typically low conversion rate']);
     }
   } else {
-    lf.push([false, 'No lead capture form found']);
+    lf.push([false, 'No lead capture form found on page']);
   }
-  if (html.hasBooking) { lp += 30; lf.push([true, 'Auto-booking or instant quote detected']); }
-  else { lf.push([false, 'No auto-booking or instant quote system']); }
-  if (html.hasCTAAboveFold) { lp += 20; lf.push([true, 'Clear CTA above the fold']); }
+  if (html.hasBooking) { lp += 28; lf.push([true, 'Online booking or instant quote system detected']); }
+  else { lf.push([false, 'No online booking or instant quote system']); }
+  if (html.hasCTAAboveFold) { lp += 15; lf.push([true, 'Call-to-action visible above the fold']); }
   else { lf.push([false, 'No strong CTA visible above the fold']); }
-  if (html.hasPhone) { lp += 10; lf.push([true, 'Phone number on page']); }
+  if (html.hasPhone) { lp += 8; lf.push([true, 'Phone number on page']); }
   else { lf.push([false, 'Phone number not found']); }
-  if (html.hasChatWidget) { lp += 5; lf.push([true, 'Chat widget present']); }
+  if (html.hasEmail) { lp += 4; lf.push([true, 'Email address visible on page']); }
+  if (html.hasChatWidget) {
+    lp += 10;
+    lf.push([true, `${html.chatProviderName} — captures leads 24/7`]);
+  } else {
+    lf.push([false, 'No chat widget — missed after-hours visitors']);
+  }
+  if (html.hasNewsletter) { lp += 5; lf.push([true, 'Email list / newsletter signup']); }
   const leadScore = Math.min(100, lp);
 
   // ── Online Presence ───────────────────────────────
   let pp = 0; const pf = [];
   if (gmb?.found) {
     pp += 35;
-    const detail = [
-      gmb.rating ? `${gmb.rating}★` : '',
-      gmb.reviewCount ? `${gmb.reviewCount} reviews` : '',
-    ].filter(Boolean).join(' · ');
+    const detail = [gmb.rating ? `${gmb.rating}★` : '', gmb.reviewCount ? `${gmb.reviewCount} reviews` : ''].filter(Boolean).join(' · ');
     pf.push([true, 'Google Business Profile found' + (detail ? ' — ' + detail : '')]);
   } else if (html.hasGMBLink) {
     pp += 20; pf.push([true, 'Google Maps link on site']);
   } else {
     pf.push([false, 'No Google Business Profile detected']);
   }
-  if (html.hasReviewWidget) { pp += 15; pf.push([true, 'Review widget on site']); }
-  else if (html.hasYelp)    { pp += 8;  pf.push([true, 'Yelp linked on site']); }
-  else                       {           pf.push([false, 'No review platform linked']); }
-  // Social — scored and labeled by count. 1 = weak, 2-3 = moderate, 4+ = strong.
+  if (html.hasReviewWidget) { pp += 15; pf.push([true, 'Review widget embedded on site']); }
+  else if (html.hasYelp)    { pp += 8;  pf.push([true, 'Yelp profile linked']); }
+  else                       {           pf.push([false, 'No review platform linked or embedded']); }
   const socials = html.socialNames || [];
-  if (socials.length === 0) {
-    pf.push([false, 'No social media profiles linked on site']);
-  } else if (socials.length === 1) {
-    pp += 10; // weak — only one platform
-    pf.push([false, `Only ${socials[0]} — limited social reach`]);
-  } else if (socials.length <= 3) {
-    pp += Math.min(35, socials.length * 14);
-    pf.push([true, `Social: ${socials.join(', ')}`]);
-  } else {
-    pp += 50;
-    pf.push([true, `Strong social presence: ${socials.join(', ')}`]);
-  }
+  if      (socials.length === 0) { pf.push([false, 'No social media profiles linked']); }
+  else if (socials.length === 1) { pp += 10; pf.push([false, `Only ${socials[0]} — limited social reach`]); }
+  else if (socials.length <= 3)  { pp += socials.length * 14; pf.push([true, `Social: ${socials.join(', ')}`]); }
+  else                            { pp += 50; pf.push([true, `Strong social: ${socials.join(', ')}`]); }
   const presScore = Math.min(100, pp);
 
   // ── Site Foundation ───────────────────────────────
   const hasVP = audits['viewport']?.score === 1 || html.hasViewport;
   const ff = [];
-  if (html.isHTTPS) ff.push([true,  'Secure HTTPS / SSL']);
+  if (html.isHTTPS) ff.push([true,  'Secure HTTPS / SSL certificate']);
   else              ff.push([false, 'No SSL — browsers show "Not Secure"']);
-  if (hasVP)        ff.push([true,  'Mobile-responsive design']);
-  else              ff.push([false, 'Not fully mobile-responsive']);
-  ff.push([perf >= 50, `Mobile speed: ${perf}/100${perf < 50 ? ' — slow load loses leads' : ''}${!hasPSI ? ' (could not fetch — retry for live score)' : ''}`]);
-  if (access >= 70) ff.push([true, `Accessibility: ${access}/100`]);
-  const foundScore = Math.round(
-    (html.isHTTPS ? 20 : 0) + (hasVP ? 20 : 0) + perf * 0.50 + access * 0.10
-  );
+  if (hasVP)        ff.push([true,  'Mobile-responsive design confirmed']);
+  else              ff.push([false, 'Not mobile-responsive']);
+  if (perf !== null) {
+    ff.push([perf >= 60, `Performance score: ${perf}/100${perf < 60 ? ' — slow sites lose leads' : ''}`]);
+  } else {
+    ff.push([null, 'Performance score: could not fetch — retry audit']);
+  }
+  if (lcpS !== null) {
+    const lcpGood = parseFloat(lcpS) < 2.5;
+    ff.push([lcpGood, `LCP: ${lcpS}s${!lcpGood ? ' — main content loads too slow (target < 2.5s)' : ' — good'}`]);
+  }
+  if (fcpS !== null) {
+    const fcpGood = parseFloat(fcpS) < 1.8;
+    ff.push([fcpGood, `FCP: ${fcpS}s${!fcpGood ? ' — slow first paint (target < 1.8s)' : ' — good'}`]);
+  }
+  if (access !== null && access < 80) ff.push([false, `Accessibility: ${access}/100 — may exclude users`]);
+  const foundScore = perf !== null
+    ? Math.round((html.isHTTPS?20:0) + (hasVP?20:0) + perf*0.50 + (access??50)*0.10)
+    : Math.round((html.isHTTPS?40:0) + (hasVP?60:0));
 
   // ── SEO ───────────────────────────────────────────
-  const hasMD    = audits['meta-description']?.score === 1 || html.hasMetaDesc;
-  const hasTit   = audits['document-title']?.score   === 1 || html.hasTitle;
-  const sf = [
-    [hasTit,  hasTit  ? 'Page title set correctly'                       : 'Missing or weak page title'],
-    [hasMD,   hasMD   ? 'Meta description present'                       : 'No meta description'],
-    [html.hasBlog, html.hasBlog ? 'Blog / content section found'         : 'No blog — missed SEO opportunity'],
-    [seoLH >= 70, `SEO score: ${seoLH}/100${!hasPSI ? ' (retry for live score)' : ''}`],
-  ];
-  const seoScore = seoLH;
+  const hasMD  = audits['meta-description']?.score === 1 || html.hasMetaDesc;
+  const hasTit = audits['document-title']?.score   === 1 || html.hasTitle;
+  const sf = [];
+  sf.push([hasTit,  hasTit ? 'Page title set correctly' : 'Missing or weak page title']);
+  sf.push([hasMD,   hasMD  ? 'Meta description present' : 'No meta description — hurts click-through rate']);
+  sf.push([html.hasBlog, html.hasBlog ? 'Blog / content section present' : 'No blog — missed SEO content opportunity']);
+  if (seoLH !== null) {
+    sf.push([seoLH >= 70, `Lighthouse SEO score: ${seoLH}/100`]);
+  } else {
+    sf.push([null, 'SEO score: retry audit for live Lighthouse score']);
+  }
+  sf.push([html.hasLocalBizSchema, html.hasLocalBizSchema ? 'LocalBusiness structured data (JSON-LD)' : 'No LocalBusiness schema — weaker local SEO']);
+  sf.push([html.hasOGImage, html.hasOGImage ? 'Open Graph image set (social sharing looks good)' : 'No OG image — social shares show blank preview']);
+  const seoScore = seoLH !== null
+    ? Math.round(seoLH * 0.6 + [hasMD,hasTit,html.hasBlog,html.hasLocalBizSchema].filter(Boolean).length * 10)
+    : Math.round([hasMD,hasTit,html.hasBlog,html.hasLocalBizSchema].filter(Boolean).length * 25);
+  const seoScoreCapped = Math.min(100, seoScore);
 
   // ── Trust & Conversion ────────────────────────────
   let cp = 0; const cf = [];
-  if (html.hasTestimonials) { cp += 35; cf.push([true,  'Testimonials or reviews on page']); }
-  else                      {           cf.push([false, 'No social proof visible']); }
-  if (html.hasAboutPage)    { cp += 25; cf.push([true,  'About or team page found']); }
-  else                      {           cf.push([false, 'No about page']); }
-  if (html.hasServicePage)  { cp += 25; cf.push([true,  'Service / pricing pages found']); }
-  else                      {           cf.push([false, 'Service pages not detected']); }
-  if (html.hasChatWidget)   { cp += 15; }
+  if (html.hasTestimonials) { cp += 25; cf.push([true,  'Testimonials or reviews on page']); }
+  else                      {           cf.push([false, 'No social proof visible — hurts conversions']); }
+  if (html.hasAboutPage)    { cp += 20; cf.push([true,  'About / team page found']); }
+  else                      {           cf.push([false, 'No about page — harder to build trust']); }
+  if (html.hasServicePage)  { cp += 20; cf.push([true,  'Service / pricing pages present']); }
+  else                      {           cf.push([false, 'Service or pricing pages not detected']); }
+  if (html.hasAddress)      { cp += 15; cf.push([true,  'Physical address visible — builds local trust']); }
+  else                      {           cf.push([false, 'No physical address on site']); }
+  if (html.hasTrustBadge)   { cp += 10; cf.push([true,  'Trust badges / certifications visible']); }
+  if (html.hasVideo)        { cp += 10; cf.push([true,  'Video content on site — increases trust']); }
   const convScore = Math.min(100, cp);
 
   // ── Hiring Pipeline ───────────────────────────────
@@ -913,19 +987,19 @@ function calculateScores(psi, html, gmb) {
   if (html.hasCareersPage) {
     hp += 40; hf.push([true, 'Careers or jobs page found']);
     if (html.hasEmailHiring) { hf.push([false, '"Email your resume" — no automated pipeline']); }
-    else                     { hp += 40; hf.push([true, 'Application form (not email-only)']); }
-    hp += 20; hf.push([true, 'Hiring process publicly visible']);
+    else { hp += 40; hf.push([true, 'Application form present (not email-only)']); }
+    hp += 20; hf.push([true, 'Hiring process publicly described']);
   } else {
-    hf.push([false, 'No careers or jobs page']);
-    hf.push([false, 'No clear applicant entry point']);
-    hf.push([false, 'Hiring is likely manual / untracked']);
+    hf.push([false, 'No careers or jobs page found']);
+    hf.push([false, 'No applicant entry point — hiring is invisible']);
+    hf.push([false, 'Likely manual / untracked hiring process']);
   }
   const hireScore = Math.min(100, hp);
 
   // ── Overall ───────────────────────────────────────
   const overall = Math.round(
-    leadScore  * .25 + presScore  * .20 + foundScore * .20 +
-    seoScore   * .15 + convScore  * .10 + hireScore  * .10
+    leadScore * .25 + presScore  * .20 + foundScore      * .20 +
+    seoScoreCapped * .15 + convScore * .10 + hireScore  * .10
   );
 
   return {
@@ -934,7 +1008,7 @@ function calculateScores(psi, html, gmb) {
       { id:'lead',  icon:'🎯', label:'Lead Capture',    score:leadScore,  findings:lf, weight:'25%' },
       { id:'pres',  icon:'🌐', label:'Online Presence', score:presScore,  findings:pf, weight:'20%' },
       { id:'found', icon:'⚡', label:'Site Foundation', score:foundScore, findings:ff, weight:'20%' },
-      { id:'seo',   icon:'🔍', label:'SEO',             score:seoScore,   findings:sf, weight:'15%' },
+      { id:'seo',   icon:'🔍', label:'SEO',             score:seoScoreCapped, findings:sf, weight:'15%' },
       { id:'conv',  icon:'🏆', label:'Trust & Close',   score:convScore,  findings:cf, weight:'10%' },
       { id:'hire',  icon:'👥', label:'Hiring Pipeline', score:hireScore,  findings:hf, weight:'10%' },
     ],
