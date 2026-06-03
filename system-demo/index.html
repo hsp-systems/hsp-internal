@@ -11,82 +11,85 @@
 :root{
   --navy:#1C2E5C; --navy-dark:#131f3e; --navy-mid:#243D7A; --navy-card:#162447;
   --gold:#C8912A; --gold-light:#E0A840;
-  --white:#FFFFFF; --off-white:#F7F6F3; --cream:#EEE9DF;
-  --text:#1A1A1A; --text-mid:#4A4A4A; --muted:#7A7A7A;
-  --border:#DDD9D2; --border-dark:#C8C4BC;
+  --white:#FFFFFF; --off-white:#F7F6F3;
+  --text:#1A1A1A; --text-mid:#4A4A4A; --muted:#7A7A7A; --border:#DDD9D2;
   --green:#1B7A3A; --green-bg:#E8F5ED;
   --card-shadow:0 2px 16px rgba(0,0,0,0.09);
 }
 html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text);padding-top:62px}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text);padding-top:98px}
 .hidden{display:none!important}
 
-/* ====================================================
-   PRESENTER BAR
-   ==================================================== */
+/* ── PRESENTER BAR ── */
 #presenter-bar{
   position:fixed;top:0;left:0;right:0;z-index:200;
   background:var(--navy-dark);border-bottom:2px solid var(--gold);
-  height:62px;display:flex;align-items:center;gap:16px;padding:0 20px;
+}
+.pb-row1{
+  height:60px;display:flex;align-items:center;gap:14px;padding:0 18px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
 }
 .pb-brand{
-  font-family:'Bebas Neue',sans-serif;color:var(--gold);
-  font-size:15px;letter-spacing:0.12em;white-space:nowrap;flex-shrink:0;
-  border-right:1px solid rgba(255,255,255,0.12);padding-right:16px;
+  font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:15px;
+  letter-spacing:0.12em;white-space:nowrap;flex-shrink:0;
+  border-right:1px solid rgba(255,255,255,0.12);padding-right:14px;
 }
-.pb-controls{display:flex;align-items:center;gap:12px;flex:1;flex-wrap:wrap}
-.pb-field{display:flex;align-items:center;gap:6px}
-.pb-field label{
-  font-size:10px;color:rgba(255,255,255,0.38);
-  text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;
-}
+.pb-controls{display:flex;align-items:center;gap:10px;flex:1;flex-wrap:nowrap}
+.pb-field{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.pb-field label{font-size:10px;color:rgba(255,255,255,0.38);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap}
 .pb-field input,.pb-field select{
   background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);
   color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;
   padding:5px 9px;border-radius:4px;outline:none;transition:border-color 0.2s;
 }
-.pb-field input{width:170px}
-.pb-field input:focus,.pb-field select:focus{border-color:var(--gold)}
+.pb-field input{width:160px}
 .pb-field input::placeholder{color:rgba(255,255,255,0.28)}
 .pb-field select option{background:#1a2a50;color:var(--white)}
 .pb-reset{
   background:transparent;color:rgba(255,255,255,0.45);
   border:1px solid rgba(255,255,255,0.18);font-family:'DM Sans',sans-serif;
-  font-size:12px;padding:5px 11px;border-radius:4px;cursor:pointer;
+  font-size:12px;padding:5px 10px;border-radius:4px;cursor:pointer;
   white-space:nowrap;transition:all 0.2s;flex-shrink:0;
 }
 .pb-reset:hover{border-color:var(--gold);color:var(--gold)}
 .pb-nav{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
 .pb-nav a{
-  font-size:12px;color:rgba(255,255,255,0.45);text-decoration:none;
-  padding:5px 10px;border-radius:4px;transition:all 0.2s;white-space:nowrap;
+  font-size:11px;color:rgba(255,255,255,0.42);text-decoration:none;
+  padding:5px 9px;border-radius:4px;transition:all 0.2s;white-space:nowrap;
 }
 .pb-nav a:hover{color:var(--white);background:rgba(255,255,255,0.08)}
 
-/* ====================================================
-   SECTION SHARED
-   ==================================================== */
-.section-header{text-align:center;padding:64px 24px 40px;max-width:680px;margin:0 auto}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:14px;
+/* Industry chips row */
+.pb-row2{
+  height:38px;display:flex;align-items:center;gap:6px;padding:0 18px;
+  overflow-x:auto;background:rgba(0,0,0,0.18);
 }
+.pb-row2::-webkit-scrollbar{display:none}
+.pb-ind-label{font-size:10px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;flex-shrink:0;margin-right:4px}
+.ind-btn{
+  padding:3px 13px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:12px;
+  border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);
+  cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;
+}
+.ind-btn.active{background:var(--gold);border-color:var(--gold);color:var(--navy-dark);font-weight:700}
+.ind-btn:hover:not(.active){border-color:rgba(255,255,255,0.35);color:var(--white)}
+
+/* ── SHARED SECTION STYLES ── */
+.section-header{text-align:center;padding:60px 24px 36px;max-width:680px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
 .eyebrow-line{width:22px;height:1px;background:var(--gold)}
-.sec-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,5vw,52px);line-height:1.02;color:var(--navy);margin-bottom:14px}
+.sec-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,5vw,52px);line-height:1.02;color:var(--navy);margin-bottom:12px}
 .sec-h2.light{color:var(--white)}
 .sec-sub{font-size:15px;color:var(--text-mid);line-height:1.7}
 .sec-sub.light{color:rgba(255,255,255,0.55)}
 .divider{height:1px;background:rgba(255,255,255,0.08);margin:52px 24px}
 
-/* ====================================================
-   SECTION 1 — FUNNEL DEMO
-   ==================================================== */
+/* ── SECTION 1: FUNNEL DEMO ── */
 #section-funnel{background:#ECEEF5;padding-bottom:64px}
 
 .funnel-banner{
   background:var(--navy);color:rgba(255,255,255,0.65);
-  text-align:center;padding:9px 20px;font-size:12px;letter-spacing:0.06em;
+  text-align:center;padding:9px 20px;font-size:12px;letter-spacing:0.05em;
 }
 .funnel-banner strong{color:var(--gold)}
 
@@ -95,42 +98,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
   padding:18px 36px;display:flex;align-items:center;gap:18px;
   box-shadow:0 2px 8px rgba(0,0,0,0.06);
 }
-.funnel-site-logo{
-  font-family:'Bebas Neue',sans-serif;font-size:26px;
-  color:var(--navy);letter-spacing:0.04em;
-}
-.funnel-site-tagline{
-  font-size:13px;color:var(--muted);
-  border-left:2px solid var(--border);padding-left:16px;
-}
+.funnel-site-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--navy);letter-spacing:0.04em}
+.funnel-site-tagline{font-size:13px;color:var(--muted);border-left:2px solid var(--border);padding-left:16px}
 
-/* Step progress */
-.step-progress{
-  display:flex;align-items:center;justify-content:center;
-  padding:32px 24px 20px;max-width:480px;margin:0 auto;
-}
-.step-dot{
-  width:34px;height:34px;border-radius:50%;flex-shrink:0;
-  background:white;border:2px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:600;color:var(--muted);transition:all 0.3s;
-}
+/* Step dots */
+.step-progress{display:flex;align-items:center;justify-content:center;padding:30px 24px 18px;max-width:460px;margin:0 auto}
+.step-dot{width:33px;height:33px;border-radius:50%;flex-shrink:0;background:white;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--muted);transition:all 0.3s}
 .step-dot.active{background:var(--navy);border-color:var(--navy);color:white}
 .step-dot.done{background:var(--green);border-color:var(--green);color:white}
 .step-line{flex:1;height:2px;background:var(--border);max-width:80px;transition:background 0.3s}
 .step-line.done{background:var(--green)}
 
 /* Form card */
-.form-card{
-  background:white;border-radius:14px;box-shadow:var(--card-shadow);
-  max-width:560px;margin:0 auto 24px;padding:36px 40px;
-}
-.form-card-header{margin-bottom:26px}
-.step-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;font-weight:600}
-.form-card-header h2{font-size:22px;font-weight:700;color:var(--text);margin-bottom:7px}
+.form-card{background:white;border-radius:14px;box-shadow:var(--card-shadow);max-width:540px;margin:0 auto 20px;padding:34px 38px}
+.form-card-header{margin-bottom:24px}
+.step-label{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-weight:600}
+.form-card-header h2{font-size:21px;font-weight:700;color:var(--text);margin-bottom:6px}
 .form-card-header p{font-size:14px;color:var(--muted);line-height:1.6}
-
-.form-fields{display:flex;flex-direction:column;gap:15px;margin-bottom:24px}
+.form-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-field label{display:block;font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:5px}
 .form-field input,.form-field select,.form-field textarea{
@@ -139,198 +124,133 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
   color:var(--text);background:white;outline:none;transition:border-color 0.2s;
 }
 .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--navy)}
-.form-field textarea{resize:vertical;min-height:76px}
-
-.form-options{display:flex;gap:8px;flex-wrap:wrap}
-.opt-btn{
-  padding:8px 15px;border-radius:6px;border:1.5px solid var(--border);
-  background:white;color:var(--text-mid);font-family:'DM Sans',sans-serif;
-  font-size:13px;cursor:pointer;transition:all 0.2s;
-}
+.form-field textarea{resize:vertical;min-height:72px}
+.form-options{display:flex;gap:7px;flex-wrap:wrap}
+.opt-btn{padding:7px 14px;border-radius:6px;border:1.5px solid var(--border);background:white;color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s}
 .opt-btn.selected{border-color:var(--navy);background:var(--navy);color:white}
 .opt-btn:hover:not(.selected){border-color:var(--navy-mid);color:var(--navy)}
-
-.form-cta{
-  width:100%;padding:14px;background:var(--navy);color:white;
-  border:none;border-radius:8px;font-family:'DM Sans',sans-serif;
-  font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s;letter-spacing:0.02em;
-}
+.form-cta{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s;letter-spacing:0.02em}
 .form-cta:hover:not(:disabled){background:var(--navy-mid)}
-.form-cta:disabled{opacity:0.45;cursor:not-allowed}
+.form-cta:disabled{opacity:0.4;cursor:not-allowed}
 .form-trust{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
-
 .form-btn-row{display:flex;gap:10px}
 .form-btn-row .form-cta{flex:1}
-.form-back{
-  padding:14px 18px;background:transparent;color:var(--text-mid);
-  border:1.5px solid var(--border);border-radius:8px;
-  font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s;
-}
+.form-back{padding:13px 16px;background:transparent;color:var(--text-mid);border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.2s}
 .form-back:hover{border-color:var(--navy);color:var(--navy)}
-
-.prefill-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--green-bg);color:var(--green);
-  font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;margin-bottom:2px;
-}
+.prefill-pill{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;margin-bottom:2px}
 
 /* Calendar */
 .cal-month{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.1em}
-.cal-times{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
-.cal-slot{
-  padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;
-  background:white;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;
-  text-align:left;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;
-}
-.cal-slot::before{content:'🗓';font-size:15px}
+.cal-times{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.cal-slot{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:white;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;text-align:left;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px}
+.cal-slot::before{content:'🗓';font-size:14px}
 .cal-slot:hover{border-color:var(--navy);background:#F4F6FC}
 .cal-slot.selected{border-color:var(--navy);background:var(--navy);color:white}
 
 /* Checkout */
-.checkout-summary{background:var(--off-white);border-radius:8px;padding:18px;margin-bottom:20px}
-.checkout-line{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;
-}
+.checkout-summary{background:var(--off-white);border-radius:8px;padding:18px;margin-bottom:18px}
+.checkout-line{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px}
 .checkout-line:last-child{border:none;font-weight:700;font-size:15px;padding-top:12px;color:var(--navy)}
 
 /* Confirm */
-.confirm-card{text-align:center;padding:40px}
-.confirm-icon{
-  width:68px;height:68px;background:var(--green);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;color:white;margin:0 auto 20px;
-}
-.confirm-card h2{font-size:26px;font-weight:700;color:var(--text);margin-bottom:8px}
-.confirm-card p{font-size:15px;color:var(--text-mid);margin-bottom:6px;line-height:1.6}
-.confirm-next{margin-top:20px;display:flex;flex-direction:column;gap:8px}
-.next-item{
-  display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-mid);
-  background:var(--off-white);padding:10px 14px;border-radius:8px;
-}
-.confirm-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.confirm-card{text-align:center;padding:36px}
+.confirm-icon{width:64px;height:64px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:white;margin:0 auto 18px}
+.confirm-card h2{font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px}
+.confirm-card p{font-size:15px;color:var(--text-mid);margin-bottom:5px;line-height:1.6}
+.confirm-next{margin-top:18px;display:flex;flex-direction:column;gap:7px}
+.next-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-mid);background:var(--off-white);padding:10px 13px;border-radius:8px}
+.confirm-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
 
-/* ====================================================
-   SECTION 2 — WHAT HAPPENS NEXT
-   ==================================================== */
+/* ── SECTION 2: BACKEND ── */
 #section-backend{background:var(--navy-dark);padding-bottom:72px}
-
-.flow-diagram{max-width:880px;margin:0 auto;padding:0 24px}
-.flow-row{display:flex;align-items:stretch;justify-content:center;gap:14px;margin-bottom:0}
-.flow-node{
-  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
-  border-radius:10px;padding:18px 16px;text-align:center;flex:1;max-width:200px;
-  transition:border-color 0.3s;
-}
+.flow-diagram{max-width:860px;margin:0 auto;padding:0 24px}
+.flow-row{display:flex;align-items:stretch;justify-content:center;gap:12px;margin-bottom:0}
+.flow-node{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:16px 14px;text-align:center;flex:1;max-width:196px;transition:border-color 0.3s}
 .flow-node:hover{border-color:rgba(200,145,42,0.5)}
-.flow-node-icon{font-size:26px;margin-bottom:8px}
-.flow-node-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:5px;line-height:1.3}
+.flow-node-icon{font-size:24px;margin-bottom:7px}
+.flow-node-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px;line-height:1.3}
 .flow-node-sub{font-size:11px;color:rgba(255,255,255,0.42);line-height:1.5}
 .flow-arrow{font-size:18px;color:var(--gold);flex-shrink:0;align-self:center}
 .flow-arrow-down{text-align:center;font-size:20px;color:var(--gold);padding:10px 0}
-.flow-branches{display:flex;gap:24px;justify-content:center;max-width:720px;margin:0 auto}
+.flow-branches{display:flex;gap:20px;justify-content:center;max-width:700px;margin:0 auto}
 .flow-branch{flex:1;max-width:220px}
-.branch-label{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:8px}
+.branch-label{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:7px}
 
-/* ====================================================
-   SECTION 3 — CRM BACKEND
-   ==================================================== */
+/* ── SECTION 3: CRM ── */
 #section-crm{background:var(--navy);padding-bottom:80px}
 
-/* Pipeline */
+/* Pipeline toggle */
+.pipeline-toggle{display:flex;gap:10px;justify-content:center;padding:0 24px 12px}
+.ptoggle{padding:11px 26px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:2px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);transition:all 0.25s;letter-spacing:0.02em}
+.ptoggle.active{background:var(--gold);border-color:var(--gold);color:var(--navy-dark)}
+.ptoggle:hover:not(.active){border-color:rgba(255,255,255,0.35);color:var(--white)}
+
+.pipeline-lever-ctx{
+  text-align:center;max-width:600px;margin:0 auto 28px;padding:0 24px;
+  font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;
+}
+.pipeline-lever-ctx strong{color:rgba(255,255,255,0.75)}
+
+/* Pipeline board */
 .pipeline-wrap{overflow-x:auto;padding:0 24px 8px}
-.pipeline-board{display:flex;gap:12px;min-width:max-content;padding:4px 0 12px}
-.pipeline-col{background:rgba(255,255,255,0.04);border-radius:8px;width:210px;flex-shrink:0;overflow:hidden}
-.pipeline-col-head{
-  background:rgba(0,0,0,0.2);padding:11px 13px;
-  border-bottom:1px solid rgba(255,255,255,0.07);
-}
-.pipeline-col-title{font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px}
-.pipeline-col-meta{font-size:11px;color:rgba(255,255,255,0.38)}
-.pipeline-cards{padding:9px;display:flex;flex-direction:column;gap:7px}
-.pipeline-card{
-  background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.08);
-  border-radius:6px;padding:11px;transition:border-color 0.2s;cursor:default;
-}
+.pipeline-board{display:flex;gap:11px;min-width:max-content;padding:4px 0 10px}
+.pipeline-col{background:rgba(255,255,255,0.04);border-radius:8px;width:200px;flex-shrink:0;overflow:hidden}
+.pipeline-col-head{background:rgba(0,0,0,0.2);padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.pipeline-col-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px}
+.pipeline-col-meta{font-size:11px;color:rgba(255,255,255,0.38);margin-bottom:3px}
+.pipeline-stage-val{font-size:10px;color:rgba(200,145,42,0.7);font-style:italic}
+.pipeline-cards{padding:8px;display:flex;flex-direction:column;gap:6px}
+.pipeline-card{background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px;transition:border-color 0.2s;cursor:default}
 .pipeline-card:hover{border-color:rgba(200,145,42,0.35)}
 .pipeline-card.won{background:rgba(27,122,58,0.14);border-color:rgba(27,122,58,0.28)}
-.pc-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:5px}
+.pc-name{font-size:12px;font-weight:600;color:var(--white);margin-bottom:4px}
 .pc-meta{font-size:11px;color:rgba(255,255,255,0.38);margin-bottom:3px}
-.pc-value{font-size:12px;color:var(--gold);font-weight:600}
-.pc-actions{display:flex;gap:7px;margin-top:7px;font-size:13px;opacity:0.45}
-.won-badge{
-  display:inline-block;background:var(--green);color:white;
-  font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;
-}
+.pc-value{font-size:11px;color:var(--gold);font-weight:600}
+.pc-actions{display:flex;gap:6px;margin-top:6px;font-size:12px;opacity:0.45}
+.won-badge{display:inline-block;background:var(--green);color:white;font-size:9px;font-weight:700;padding:1px 5px;border-radius:7px;margin-left:4px}
 
 /* Automation suites */
-.suites-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
-  gap:18px;max-width:1080px;margin:0 auto;padding:0 24px;
-}
-.suite-card{
-  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
-  border-radius:12px;padding:26px;transition:border-color 0.3s,transform 0.2s;
-}
+.suites-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:16px;max-width:1060px;margin:0 auto;padding:0 24px}
+.suite-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;transition:border-color 0.3s,transform 0.2s}
 .suite-card:hover{border-color:rgba(200,145,42,0.38);transform:translateY(-2px)}
-.suite-icon{font-size:30px;margin-bottom:12px}
-.suite-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:7px}
-.suite-desc{font-size:12px;color:rgba(255,255,255,0.48);line-height:1.6;margin-bottom:12px}
+.suite-icon{font-size:28px;margin-bottom:11px}
+.suite-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:6px}
+.suite-desc{font-size:12px;color:rgba(255,255,255,0.46);line-height:1.6;margin-bottom:11px}
 .suite-list{list-style:none;display:flex;flex-direction:column;gap:5px}
-.suite-list li{font-size:12px;color:rgba(255,255,255,0.58);display:flex;align-items:flex-start;gap:7px;line-height:1.4}
+.suite-list li{font-size:12px;color:rgba(255,255,255,0.57);display:flex;align-items:flex-start;gap:6px;line-height:1.4}
 .suite-list li::before{content:'→';color:var(--gold);flex-shrink:0}
 
 /* Comparison */
 .comp-wrap{max-width:820px;margin:0 auto;padding:0 24px;overflow-x:auto}
 .comp-table{width:100%;border-collapse:collapse;min-width:580px}
-.comp-table th{
-  padding:12px 18px;text-align:left;font-size:11px;font-weight:700;
-  text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);
-  border-bottom:1px solid rgba(255,255,255,0.08);
-}
+.comp-table th{padding:11px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);border-bottom:1px solid rgba(255,255,255,0.08)}
 .comp-table th.col-hsp{color:var(--gold)}
-.comp-table td{
-  padding:13px 18px;font-size:13px;color:rgba(255,255,255,0.6);
-  border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;line-height:1.4;
-}
-.comp-table td.col-label{color:rgba(255,255,255,0.38);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em}
+.comp-table td{padding:12px 16px;font-size:13px;color:rgba(255,255,255,0.6);border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;line-height:1.4}
+.comp-table td.col-label{color:rgba(255,255,255,0.38);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em}
 .comp-table td.col-hsp{color:var(--white);font-weight:500}
 .comp-table tr:last-child td{border:none}
 .bad{color:rgba(255,90,90,0.7)!important}
 .good{color:#4ADE80!important;font-weight:600!important}
 
-/* ====================================================
-   SECTION 4 — HSP DIFFERENCE
-   ==================================================== */
+/* ── SECTION 4: HSP DIFFERENCE ── */
 #section-hsp{background:var(--navy-dark);padding:0 24px 80px}
-.hsp-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;max-width:980px;margin:0 auto;
-}
-.hsp-card{border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:26px}
-.hsp-card-icon{font-size:26px;margin-bottom:10px}
-.hsp-card-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:7px}
-.hsp-card-body{font-size:13px;color:rgba(255,255,255,0.52);line-height:1.7}
+.hsp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;max-width:960px;margin:0 auto}
+.hsp-card{border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px}
+.hsp-card-icon{font-size:24px;margin-bottom:9px}
+.hsp-card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:7px}
+.hsp-card-body{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7}
+.biz-tags-section{max-width:740px;margin:48px auto 0;text-align:center}
+.biz-tags-label{font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.3);margin-bottom:16px}
+.biz-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.biz-tag{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:6px 14px;font-size:12px;color:rgba(255,255,255,0.56)}
 
-.biz-tags-section{max-width:760px;margin:52px auto 0;text-align:center}
-.biz-tags-label{font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.3);margin-bottom:18px}
-.biz-tags{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
-.biz-tag{
-  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
-  border-radius:18px;padding:7px 15px;font-size:13px;color:rgba(255,255,255,0.58);
-}
-
-/* ====================================================
-   RESPONSIVE
-   ==================================================== */
 @media(max-width:640px){
-  #presenter-bar{flex-wrap:wrap;height:auto;padding:8px 14px;gap:8px}
-  .pb-brand{border:none;padding:0}
+  body{padding-top:118px}
+  .pb-row1{flex-wrap:wrap;height:auto;padding:8px 12px;gap:7px}
   .pb-nav{display:none}
-  .pb-field input{width:130px}
-  .form-card{padding:24px 20px}
+  .pb-field input{width:120px}
+  .form-card{padding:22px 18px}
   .form-row{grid-template-columns:1fr}
-  .funnel-site-header{padding:14px 20px}
   .flow-row{flex-wrap:wrap}
   .flow-arrow{display:none}
   .flow-branches{flex-direction:column;align-items:center}
@@ -339,56 +259,67 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 </head>
 <body>
 
-<!-- ==========================================
+<!-- ═══════════════════════════════════════
      PRESENTER BAR
-     ========================================== -->
+     ═══════════════════════════════════════ -->
 <div id="presenter-bar">
-  <div class="pb-brand">HSP · DEMO</div>
-  <div class="pb-controls">
-    <div class="pb-field">
-      <label>Business</label>
-      <input type="text" id="biz-input" placeholder="e.g. Bareither Group" oninput="updateBizName()">
+  <div class="pb-row1">
+    <div class="pb-brand">HSP · DEMO</div>
+    <div class="pb-controls">
+      <div class="pb-field">
+        <label>Business</label>
+        <input type="text" id="biz-input" placeholder="e.g. Bareither Group" oninput="updateBizName()">
+      </div>
+      <div class="pb-field">
+        <label>Steps</label>
+        <select id="flow-select" onchange="setFlow()">
+          <option value="2">2-Step</option>
+          <option value="3" selected>3-Step</option>
+          <option value="4">4-Step</option>
+        </select>
+      </div>
+      <div class="pb-field">
+        <label>End</label>
+        <select id="end-select" onchange="setEndState()">
+          <option value="book">Book Appointment</option>
+          <option value="checkout">Checkout</option>
+        </select>
+      </div>
+      <button class="pb-reset" onclick="resetDemo()">↺ Reset</button>
     </div>
-    <div class="pb-field">
-      <label>Steps</label>
-      <select id="flow-select" onchange="setFlow()">
-        <option value="2">2-Step</option>
-        <option value="3" selected>3-Step</option>
-        <option value="4">4-Step</option>
-      </select>
-    </div>
-    <div class="pb-field">
-      <label>End</label>
-      <select id="end-select" onchange="setEndState()">
-        <option value="book">Book Appointment</option>
-        <option value="checkout">Checkout Page</option>
-      </select>
-    </div>
-    <button class="pb-reset" onclick="resetDemo()">↺ Reset</button>
+    <nav class="pb-nav">
+      <a href="#section-funnel">① Form</a>
+      <a href="#section-backend">② Backend</a>
+      <a href="#section-crm">③ CRM</a>
+      <a href="#section-hsp">④ HSP</a>
+    </nav>
   </div>
-  <nav class="pb-nav">
-    <a href="#section-funnel">① Form Demo</a>
-    <a href="#section-backend">② What Happens Next</a>
-    <a href="#section-crm">③ CRM Backend</a>
-    <a href="#section-hsp">④ HSP Difference</a>
-  </nav>
+  <div class="pb-row2">
+    <span class="pb-ind-label">Industry:</span>
+    <button class="ind-btn active" data-ind="cleaning" onclick="setIndustry('cleaning')">🧹 Cleaning</button>
+    <button class="ind-btn" data-ind="landscaping" onclick="setIndustry('landscaping')">🌿 Landscaping</button>
+    <button class="ind-btn" data-ind="medical" onclick="setIndustry('medical')">🏥 Medical / Eye Care</button>
+    <button class="ind-btn" data-ind="industrial" onclick="setIndustry('industrial')">🏭 Industrial / Consulting</button>
+    <button class="ind-btn" data-ind="trades" onclick="setIndustry('trades')">🔧 Trades</button>
+    <button class="ind-btn" data-ind="professional" onclick="setIndustry('professional')">📋 Professional Services</button>
+    <button class="ind-btn" data-ind="product" onclick="setIndustry('product')">🛒 Product / Retail</button>
+  </div>
 </div>
 
-<!-- ==========================================
-     SECTION 1 — THE FORM FUNNEL
-     ========================================== -->
+<!-- ═══════════════════════════════════════
+     SECTION 1 — FORM FUNNEL DEMO
+     ═══════════════════════════════════════ -->
 <section id="section-funnel">
 
   <div class="funnel-banner">
-    👆 <strong>What your prospects see</strong> — this is your live HSP lead funnel, running on your website
+    👆 <strong>What your prospects see</strong> — this is your live HSP lead funnel running on your website
   </div>
 
   <div class="funnel-site-header">
     <div class="funnel-site-logo" id="funnel-biz-name">Your Business</div>
-    <div class="funnel-site-tagline">Professional Service You Can Trust</div>
+    <div class="funnel-site-tagline" id="funnel-tagline">Professional Service You Can Trust</div>
   </div>
 
-  <!-- Step dots -->
   <div class="step-progress">
     <div class="step-dot active" id="dot-1">1</div>
     <div class="step-line" id="line-12"></div>
@@ -399,41 +330,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <div class="step-dot hidden" id="dot-4">4</div>
   </div>
 
-  <!-- STEP 1 -->
+  <!-- STEP 1 — Microform (name + email + 1 dropdown) -->
   <div class="form-card" id="step-1">
     <div class="form-card-header">
       <div class="step-label" id="label-1">Step 1 of 3</div>
-      <h2>Let's get you a quote</h2>
-      <p>Takes less than 2 minutes. We'll reach out same day.</p>
+      <h2>Get your free estimate</h2>
+      <p>30 seconds. No commitment. We'll reach out same day.</p>
     </div>
     <div class="form-fields">
-      <div class="form-row">
-        <div class="form-field">
-          <label>First Name</label>
-          <input type="text" id="f-first" placeholder="Sarah" oninput="saveStep1()">
-        </div>
-        <div class="form-field">
-          <label>Last Name</label>
-          <input type="text" id="f-last" placeholder="Miller" oninput="saveStep1()">
-        </div>
+      <div class="form-field">
+        <label>First Name</label>
+        <input type="text" id="f-first" placeholder="Sarah" oninput="saveStep1()">
       </div>
       <div class="form-field">
         <label>Email Address</label>
         <input type="email" id="f-email" placeholder="sarah@example.com" oninput="saveStep1()">
       </div>
       <div class="form-field">
-        <label>Phone Number</label>
-        <input type="tel" id="f-phone" placeholder="(616) 555-0123" oninput="saveStep1()">
-      </div>
-      <div class="form-field">
-        <label>What service are you looking for?</label>
+        <label>What are you looking for?</label>
         <select id="f-service" onchange="saveStep1()">
           <option value="">Select a service...</option>
-          <option>Recurring Maintenance</option>
-          <option>One-Time Service</option>
-          <option>Post-Construction / Move-In</option>
-          <option>Commercial Contract</option>
-          <option>Large Project / Estimate</option>
         </select>
       </div>
     </div>
@@ -441,30 +357,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <div class="form-trust">🔒 Your information is never sold or shared.</div>
   </div>
 
-  <!-- STEP 2 -->
+  <!-- STEP 2 — Qualification (phone + details) -->
   <div class="form-card hidden" id="step-2">
     <div class="form-card-header">
       <div class="step-label" id="label-2">Step 2 of 3</div>
-      <h2>Tell us about your property</h2>
-      <span class="prefill-pill hidden" id="prefill-pill">✓ Your info from Step 1 is saved</span>
+      <h2 id="step2-heading">Tell us about your space</h2>
+      <span class="prefill-pill hidden" id="prefill-pill">✓ Welcome back — your info from Step 1 is saved</span>
     </div>
     <div class="form-fields">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Last Name</label>
+          <input type="text" id="f-last" placeholder="Miller">
+        </div>
+        <div class="form-field">
+          <label>Phone Number</label>
+          <input type="tel" id="f-phone" placeholder="(616) 555-0123">
+        </div>
+      </div>
       <div class="form-field">
         <label>Property Type</label>
-        <div class="form-options" id="opts-proptype">
-          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">Residential</button>
-          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">Commercial</button>
-          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">Industrial</button>
-          <button class="opt-btn" onclick="selectOpt(this,'opts-proptype')">HOA / Multi-Unit</button>
-        </div>
+        <div class="form-options" id="opts-proptype"></div>
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Approx. Square Footage</label>
-          <input type="text" id="f-sqft" placeholder="e.g. 2,400 sq ft">
+          <label id="label-sqft">Approx. Square Footage</label>
+          <input type="text" id="f-sqft" placeholder="e.g. 2,400">
         </div>
         <div class="form-field">
-          <label>Number of Areas / Rooms</label>
+          <label id="label-areas">Number of Areas</label>
           <input type="text" id="f-areas" placeholder="e.g. 8">
         </div>
       </div>
@@ -480,7 +401,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       </div>
       <div class="form-field">
         <label>Anything we should know upfront?</label>
-        <textarea id="f-notes" placeholder="E.g. pets on property, eco-friendly products preferred, gate code needed..." rows="3"></textarea>
+        <textarea id="f-notes" placeholder="Access codes, specific requirements, preferences..." rows="3"></textarea>
       </div>
     </div>
     <div class="form-btn-row">
@@ -494,7 +415,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <div class="form-card-header">
       <div class="step-label">Step 3 of 4</div>
       <h2>A few more details</h2>
-      <p>Helps us prepare before your walkthrough so we're not wasting your time.</p>
+      <p>Helps us come prepared — so your walkthrough isn't wasted time.</p>
     </div>
     <div class="form-fields">
       <div class="form-field">
@@ -507,29 +428,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         </div>
       </div>
       <div class="form-field">
-        <label>Service Frequency</label>
+        <label>Frequency / Engagement Type</label>
         <div class="form-options" id="opts-freq">
           <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">One-Time</button>
           <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Weekly</button>
           <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Bi-Weekly</button>
           <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Monthly</button>
-          <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Seasonal</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-freq')">Ongoing / Retainer</button>
         </div>
       </div>
       <div class="form-field">
-        <label>Who is the primary decision-maker?</label>
+        <label>Who makes the final call?</label>
         <div class="form-options" id="opts-dm">
           <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">Me</button>
-          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">My Spouse / Partner</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">My Partner / Spouse</button>
           <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">Property Manager</button>
-          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">Business / Org Owner</button>
-        </div>
-      </div>
-      <div class="form-field">
-        <label>Have you used a similar service before?</label>
-        <div class="form-options" id="opts-prev">
-          <button class="opt-btn" onclick="selectOpt(this,'opts-prev')">Yes</button>
-          <button class="opt-btn" onclick="selectOpt(this,'opts-prev')">No — first time</button>
+          <button class="opt-btn" onclick="selectOpt(this,'opts-dm')">Business Owner</button>
         </div>
       </div>
     </div>
@@ -539,15 +453,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     </div>
   </div>
 
-  <!-- FINAL STEP -->
+  <!-- FINAL STEP: book or checkout -->
   <div class="form-card hidden" id="step-final">
 
-    <!-- BOOK APPOINTMENT -->
     <div id="end-book">
       <div class="form-card-header">
         <div class="step-label" id="label-final">Last Step</div>
-        <h2>Pick your walkthrough time</h2>
-        <p>A quick on-site visit (or video call) to confirm details and get your exact quote. No commitment.</p>
+        <h2>Pick your time</h2>
+        <p>A quick walkthrough to confirm details and get your exact quote. No commitment.</p>
       </div>
       <div class="cal-month">June 2026</div>
       <div class="cal-times">
@@ -561,10 +474,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <button class="form-cta" id="confirm-book-btn" onclick="confirmBooking()" disabled>Select a time above to confirm</button>
     </div>
 
-    <!-- CHECKOUT -->
     <div id="end-checkout" class="hidden">
       <div class="form-card-header">
-        <div class="step-label" id="label-final-checkout">Last Step</div>
+        <div class="step-label" id="label-final-co">Last Step</div>
         <h2>Review & confirm your service</h2>
         <p>You're one step away from getting started.</p>
       </div>
@@ -574,11 +486,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="checkout-line"><span>Supplies & Products</span><span>Included</span></div>
         <div class="checkout-line"><span>Total Due Today</span><span>$349</span></div>
       </div>
-      <div class="form-fields" style="margin-bottom:20px">
-        <div class="form-field">
-          <label>Card Number</label>
-          <input type="text" placeholder="4242 4242 4242 4242">
-        </div>
+      <div class="form-fields" style="margin-bottom:18px">
+        <div class="form-field"><label>Card Number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
         <div class="form-row">
           <div class="form-field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div>
           <div class="form-field"><label>CVC</label><input type="text" placeholder="•••"></div>
@@ -608,36 +517,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 
 </section>
 
-<!-- ==========================================
+<!-- ═══════════════════════════════════════
      SECTION 2 — WHAT HAPPENS NEXT
-     ========================================== -->
+     ═══════════════════════════════════════ -->
 <section id="section-backend">
-
   <div class="section-header">
     <div class="eyebrow"><span class="eyebrow-line"></span>Behind the scenes<span class="eyebrow-line"></span></div>
     <h2 class="sec-h2 light">What Happens The Moment They Hit Submit</h2>
-    <p class="sec-sub light">Your prospect doesn't wait. Neither does your system. Every step below fires automatically — no one on your team has to trigger it.</p>
+    <p class="sec-sub light">Every step below fires automatically. No one on your team has to trigger it.</p>
   </div>
 
   <div class="flow-diagram">
-
     <div class="flow-row">
       <div class="flow-node">
         <div class="flow-node-icon">📋</div>
         <div class="flow-node-title">Step 1 Submitted</div>
-        <div class="flow-node-sub">Name, email, phone, and service captured in seconds</div>
+        <div class="flow-node-sub">Name, email, service. 30 seconds, zero friction.</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="flow-node-icon">📱</div>
-        <div class="flow-node-title">Instant SMS to You</div>
+        <div class="flow-node-title">Instant Alert to You</div>
         <div class="flow-node-sub">"New lead: Sarah M. — Commercial — (616) 555-0123"</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="flow-node-icon">🗂️</div>
-        <div class="flow-node-title">Contact Created in GHL</div>
-        <div class="flow-node-sub">Full record, tagged by source, pipeline stage set automatically</div>
+        <div class="flow-node-title">Contact Created Automatically</div>
+        <div class="flow-node-sub">Tagged by source, pipeline stage set, record ready</div>
       </div>
     </div>
 
@@ -647,19 +554,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <div class="flow-node">
         <div class="flow-node-icon">🤖</div>
         <div class="flow-node-title">AI Follow-Up Fires</div>
-        <div class="flow-node-sub">Text + email nudge to complete Step 2 within minutes of abandonment</div>
+        <div class="flow-node-sub">Text + email nudge to complete Step 2 if they abandon</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="flow-node-icon">✅</div>
         <div class="flow-node-title">Steps 2 & 3 Completed</div>
-        <div class="flow-node-sub">Qualification data captured, pipeline auto-advances to next stage</div>
+        <div class="flow-node-sub">Qualification captured, pipeline advances automatically</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="flow-node-icon">📅</div>
         <div class="flow-node-title">Booking or Checkout</div>
-        <div class="flow-node-sub">Walkthrough booked or payment collected — your call based on the service</div>
+        <div class="flow-node-sub">Walkthrough booked or payment taken — based on your service</div>
       </div>
     </div>
 
@@ -671,7 +578,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="flow-node" style="max-width:100%">
           <div class="flow-node-icon">🔁</div>
           <div class="flow-node-title">Automated Follow-Up Sequence</div>
-          <div class="flow-node-sub">Day 0 text → Day 1 email → Day 2 call reminder to your team. No lead falls through the cracks.</div>
+          <div class="flow-node-sub">Day 0 text → Day 1 email → Day 2 call reminder to your team. No lead falls through.</div>
         </div>
       </div>
       <div class="flow-branch">
@@ -679,41 +586,53 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="flow-node" style="max-width:100%">
           <div class="flow-node-icon">🔔</div>
           <div class="flow-node-title">Reminders Fire Both Ways</div>
-          <div class="flow-node-sub">24-hour and 2-hour reminders to the prospect. Alert to your team. Quote stage queued automatically.</div>
+          <div class="flow-node-sub">24hr + 2hr reminders to prospect. Your team alerted. Quote stage queued.</div>
         </div>
       </div>
       <div class="flow-branch">
         <div class="branch-label">After walkthrough</div>
         <div class="flow-node" style="max-width:100%">
           <div class="flow-node-icon">💼</div>
-          <div class="flow-node-title">Quote → Contract → Job</div>
-          <div class="flow-node-sub">Quote sent via Jobber, approval tracked, contract e-signed, job drops onto your calendar.</div>
+          <div class="flow-node-title">Quote → Contract → Scheduled</div>
+          <div class="flow-node-sub">Quote sent, approval tracked, contract e-signed, job on the calendar.</div>
         </div>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ==========================================
+<!-- ═══════════════════════════════════════
      SECTION 3 — CRM BACKEND
-     ========================================== -->
+     ═══════════════════════════════════════ -->
 <section id="section-crm">
 
-  <!-- Pipeline -->
   <div class="section-header">
-    <div class="eyebrow"><span class="eyebrow-line"></span>Lead Pipeline<span class="eyebrow-line"></span></div>
-    <h2 class="sec-h2 light">Every Lead. Every Stage. Nothing Lost.</h2>
-    <p class="sec-sub light">Your full pipeline in GHL — custom-built for your business. Every card is a real opportunity. Every stage is automated to push toward closed.</p>
+    <div class="eyebrow"><span class="eyebrow-line"></span>Your Two Levers<span class="eyebrow-line"></span></div>
+    <h2 class="sec-h2 light">Jobs Without Staff, or Staff Without Jobs — You Pick the Lever.</h2>
+    <p class="sec-sub light">Every business has two constraints. Your system handles both. Toggle between your lead pipeline and your hiring pipeline below.</p>
   </div>
 
-  <div class="pipeline-wrap">
+  <div class="pipeline-toggle">
+    <button class="ptoggle active" id="ptog-lead" onclick="showPipeline('lead')">⚡ Lead Pipeline</button>
+    <button class="ptoggle" id="ptog-hiring" onclick="showPipeline('hiring')">👥 Hiring Pipeline</button>
+  </div>
+
+  <div class="pipeline-lever-ctx" id="ctx-lead">
+    <strong>You have the capacity. You need the jobs.</strong> Every lead tracked from first click to signed contract — with automations firing at every stage so nothing gets dropped.
+  </div>
+  <div class="pipeline-lever-ctx hidden" id="ctx-hiring">
+    <strong>You have the jobs. You need the people.</strong> One trigger, and qualified candidates are being screened, interviewed, background-checked, and onboarded — without you touching it until the final hire.
+  </div>
+
+  <!-- LEAD PIPELINE -->
+  <div class="pipeline-wrap" id="pipeline-lead">
     <div class="pipeline-board">
 
       <div class="pipeline-col">
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Microform Submitted</div>
-          <div class="pipeline-col-meta">4 leads · $6,750</div>
+          <div class="pipeline-col-meta">4 leads</div>
+          <div class="pipeline-stage-val">~$50–100/lead · high volume, low friction</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
@@ -746,7 +665,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <div class="pipeline-col">
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">2nd Form Submitted</div>
-          <div class="pipeline-col-meta">2 leads · $3,200</div>
+          <div class="pipeline-col-meta">2 leads</div>
+          <div class="pipeline-stage-val">~$500–1,000/lead · qualified, interested</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
@@ -767,7 +687,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <div class="pipeline-col">
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Walkthrough Booked</div>
-          <div class="pipeline-col-meta">2 leads · $3,400</div>
+          <div class="pipeline-col-meta">2 leads</div>
+          <div class="pipeline-stage-val">~$3,000–5,000/lead · high intent</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
@@ -788,7 +709,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <div class="pipeline-col">
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Quote Sent</div>
-          <div class="pipeline-col-meta">3 leads · $8,700</div>
+          <div class="pipeline-col-meta">3 leads</div>
+          <div class="pipeline-stage-val">~$8,000–15,000/lead · nearly closed</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
@@ -815,7 +737,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <div class="pipeline-col">
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Quote Approved</div>
-          <div class="pipeline-col-meta">1 lead · $3,874</div>
+          <div class="pipeline-col-meta">1 lead</div>
+          <div class="pipeline-stage-val">Revenue locked — pending signature</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
@@ -829,47 +752,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 
       <div class="pipeline-col">
         <div class="pipeline-col-head">
-          <div class="pipeline-col-title">Contract Sent</div>
-          <div class="pipeline-col-meta">1 lead · $3,874</div>
-        </div>
-        <div class="pipeline-cards">
-          <div class="pipeline-card">
-            <div class="pc-name">Wellspring Lutheran Org</div>
-            <div class="pc-meta">Source: Referral</div>
-            <div class="pc-value">$3,874.00</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pipeline-col">
-        <div class="pipeline-col-head">
           <div class="pipeline-col-title">Contract Signed ✅</div>
           <div class="pipeline-col-meta">4 deals · $45,061</div>
+          <div class="pipeline-stage-val">Closed ✓ Revenue confirmed</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card won">
             <div class="pc-name">Weekly Office Contract <span class="won-badge">WON</span></div>
             <div class="pc-meta">Source: Jobber</div>
-            <div class="pc-value">$10,577.00/yr</div>
+            <div class="pc-value">$10,577/yr</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card won">
             <div class="pc-name">West Industrial Site <span class="won-badge">WON</span></div>
             <div class="pc-meta">Source: Referral</div>
-            <div class="pc-value">$9,823.00/yr</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
-          </div>
-          <div class="pipeline-card won">
-            <div class="pc-name">Bi-Weekly Residence <span class="won-badge">WON</span></div>
-            <div class="pc-meta">Source: Website</div>
-            <div class="pc-value">$5,988.00/yr</div>
+            <div class="pc-value">$9,823/yr</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card won">
             <div class="pc-name">St. Martin Campus <span class="won-badge">WON</span></div>
             <div class="pc-meta">Source: Referral</div>
-            <div class="pc-value">$18,673.00/yr</div>
+            <div class="pc-value">$18,673/yr</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
         </div>
@@ -878,7 +781,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <div class="pipeline-col">
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Scheduled</div>
-          <div class="pipeline-col-meta">2 jobs confirmed</div>
+          <div class="pipeline-col-meta">2 jobs active</div>
+          <div class="pipeline-stage-val">On the calendar, recurring revenue</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card won">
@@ -888,10 +792,153 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card won">
-            <div class="pc-name">Bi-Weekly Residence — Jun 10</div>
-            <div class="pc-meta">Recurring · Bi-weekly</div>
+            <div class="pc-name">Office Contract — Jun 10</div>
+            <div class="pc-meta">Recurring · Weekly</div>
             <div class="pc-value">Active contract</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HIRING PIPELINE -->
+  <div class="pipeline-wrap hidden" id="pipeline-hiring">
+    <div class="pipeline-board">
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Application Captured</div>
+          <div class="pipeline-col-meta">6 applicants</div>
+          <div class="pipeline-stage-val">Auto-tagged by position applied</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant A — Field Tech</div>
+            <div class="pc-meta">Source: Indeed · 2 days ago</div>
+            <div class="pc-value">Awaiting AI screen</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant B — Crew Lead</div>
+            <div class="pc-meta">Source: Website · 1 day ago</div>
+            <div class="pc-value">Awaiting AI screen</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant C — Field Tech</div>
+            <div class="pc-meta">Source: Referral · today</div>
+            <div class="pc-value">Awaiting AI screen</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">AI Screened ✓</div>
+          <div class="pipeline-col-meta">3 qualified</div>
+          <div class="pipeline-stage-val">Resume + criteria scored automatically</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant D — Crew Lead</div>
+            <div class="pc-meta">Score: 87% · Strong match</div>
+            <div class="pc-value">Interview ready</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant E — Field Tech</div>
+            <div class="pc-meta">Score: 74% · Good match</div>
+            <div class="pc-value">Interview ready</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Interview Scheduled</div>
+          <div class="pipeline-col-meta">2 candidates</div>
+          <div class="pipeline-stage-val">Booked automatically — no back-and-forth</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant D — Crew Lead</div>
+            <div class="pc-meta">Interview: Mon Jun 8 · 10am</div>
+            <div class="pc-value">Reminder queued</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant F — Ops Support</div>
+            <div class="pc-meta">Interview: Tue Jun 9 · 2pm</div>
+            <div class="pc-value">Reminder queued</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Interview Completed</div>
+          <div class="pipeline-col-meta">1 candidate</div>
+          <div class="pipeline-stage-val">Decision pending</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant D — Crew Lead</div>
+            <div class="pc-meta">Interviewed Jun 8 · Strong</div>
+            <div class="pc-value">Awaiting decision</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Background Check</div>
+          <div class="pipeline-col-meta">1 candidate</div>
+          <div class="pipeline-stage-val">Triggered automatically on advance</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant D — Crew Lead</div>
+            <div class="pc-meta">Check: in progress</div>
+            <div class="pc-value">~2 day turnaround</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Offer Sent</div>
+          <div class="pipeline-col-meta">1 candidate</div>
+          <div class="pipeline-stage-val">Digital offer + e-signature</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card">
+            <div class="pc-name">Applicant D — Crew Lead</div>
+            <div class="pc-meta">Offer sent Jun 11</div>
+            <div class="pc-value">Awaiting signature</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-col">
+        <div class="pipeline-col-head">
+          <div class="pipeline-col-title">Hired & Onboarding 🎉</div>
+          <div class="pipeline-col-meta">1 new hire</div>
+          <div class="pipeline-stage-val">Paperwork, training, Day 1 automated</div>
+        </div>
+        <div class="pipeline-cards">
+          <div class="pipeline-card won">
+            <div class="pc-name">New Crew Lead <span class="won-badge">HIRED</span></div>
+            <div class="pc-meta">Start date: Jun 16</div>
+            <div class="pc-value">Onboarding in progress</div>
+            <div class="pc-actions">📞 💬 ☑️ 📄</div>
           </div>
         </div>
       </div>
@@ -905,39 +952,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
   <div class="section-header">
     <div class="eyebrow"><span class="eyebrow-line"></span>Automation Suites<span class="eyebrow-line"></span></div>
     <h2 class="sec-h2 light">Every System Your Business Runs On — Automated.</h2>
-    <p class="sec-sub light">Pre-built and custom-configured for your operation. Unlimited automations, unlimited contacts, unlimited users. Not templates — a diagnosis of exactly where your business needs to improve.</p>
+    <p class="sec-sub light">Unlimited automations, unlimited contacts, unlimited users. Pre-built and custom-configured for your operation — not generic templates.</p>
   </div>
 
   <div class="suites-grid">
-
     <div class="suite-card">
       <div class="suite-icon">🎯</div>
       <div class="suite-title">Lead Response System</div>
-      <div class="suite-desc">The foundation. Every lead gets contacted in seconds, not hours. No one falls through the cracks — ever.</div>
+      <div class="suite-desc">Every lead contacted in seconds. No one falls through the cracks — ever.</div>
       <ul class="suite-list">
-        <li>Instant SMS + email to owner on new lead</li>
-        <li>Auto follow-up if form not completed (Day 0 / 1 / 2)</li>
+        <li>Instant alert to owner on new lead</li>
+        <li>Auto follow-up if Step 2 not completed (Day 0 / 1 / 2)</li>
         <li>Appointment reminder sequences (prospect + team)</li>
         <li>Salesperson task queue and pipeline stage alerts</li>
       </ul>
     </div>
-
     <div class="suite-card">
       <div class="suite-icon">⚙️</div>
       <div class="suite-title">Operations & Task Management</div>
-      <div class="suite-desc">No team member forgets a task. No job gets missed. Every process has an automated reminder and a named owner.</div>
+      <div class="suite-desc">No team member forgets a task. Every process has an owner and an automated reminder.</div>
       <ul class="suite-list">
         <li>Job scheduling and dispatch automation</li>
         <li>Pre-job and post-job task checklists</li>
         <li>SOP compliance reminders per service line</li>
-        <li>Automated client communication before and after service</li>
+        <li>Automated client communication pre and post-service</li>
       </ul>
     </div>
-
     <div class="suite-card">
       <div class="suite-icon">👥</div>
       <div class="suite-title">Hiring & Onboarding Pipeline</div>
-      <div class="suite-desc">From job post to first day — fully automated. Built for service businesses that hire seasonally or at scale.</div>
+      <div class="suite-desc">From job post to first day — fully automated. Built for businesses that hire seasonally or at scale.</div>
       <ul class="suite-list">
         <li>Application capture and AI resume screening</li>
         <li>Automated interview scheduling</li>
@@ -945,67 +989,61 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <li>Training quizzes and full onboarding workflow</li>
       </ul>
     </div>
-
     <div class="suite-card">
       <div class="suite-icon">🏢</div>
       <div class="suite-title">Employee Management</div>
-      <div class="suite-desc">PTO requests, attendance, performance reviews, birthdays — all running on autopilot so you're managing outcomes, not processes.</div>
+      <div class="suite-desc">PTO, attendance, reviews, birthdays — running on autopilot so you manage outcomes, not admin.</div>
       <ul class="suite-list">
         <li>PTO and time-off request workflows</li>
         <li>Attendance incident tracking and documentation</li>
-        <li>Performance review scheduling and paperwork automation</li>
+        <li>Performance review scheduling and paperwork</li>
         <li>Birthday e-gift cards and employee recognition</li>
       </ul>
     </div>
-
     <div class="suite-card">
       <div class="suite-icon">📞</div>
       <div class="suite-title">Call Routing & Reception</div>
-      <div class="suite-desc">Never miss a call. Route correctly by time of day. Missed call text-back fires in seconds — most leads book from that alone.</div>
+      <div class="suite-desc">Never miss a call. Missed call text-back fires in seconds — most leads book from that alone.</div>
       <ul class="suite-list">
         <li>Business hours vs. after-hours routing</li>
         <li>IVR menu (press 1 for quotes, 2 for scheduling…)</li>
         <li>Missed call auto text-back within seconds</li>
-        <li>AI receptionist option available for high-volume inbound</li>
+        <li>AI receptionist option for high-volume inbound</li>
       </ul>
     </div>
-
     <div class="suite-card">
       <div class="suite-icon">📚</div>
       <div class="suite-title">Company Knowledge Base</div>
-      <div class="suite-desc">A living FAQ and SOP library your whole team can access instantly — employees, managers, and even customers via chatbot.</div>
+      <div class="suite-desc">A living FAQ and SOP library — employees, managers, even customers via chatbot.</div>
       <ul class="suite-list">
         <li>Employee FAQ chatbot (no more "ask your manager")</li>
-        <li>Management SOP and policy document library</li>
-        <li>Training video library and compliance tracking</li>
-        <li>Customer-facing FAQ chatbot embedded on your site</li>
+        <li>Management SOP and policy library</li>
+        <li>Training documentation and compliance tracking</li>
+        <li>Customer-facing FAQ chatbot on your website</li>
       </ul>
     </div>
-
     <div class="suite-card">
       <div class="suite-icon">📣</div>
       <div class="suite-title">Marketing & Reactivation</div>
-      <div class="suite-desc">Your existing customer list is a goldmine. Reactivate past clients, collect 5-star reviews, and run campaigns — automatically.</div>
+      <div class="suite-desc">Your existing customer list is a goldmine. Reviews, reactivation, upsells — automated.</div>
       <ul class="suite-list">
-        <li>Email and SMS campaign builder (bulk + drip)</li>
+        <li>Email and SMS campaign builder</li>
         <li>Post-job Google review request automation</li>
         <li>Old customer reactivation and upsell sequences</li>
         <li>Referral program automation and tracking</li>
       </ul>
     </div>
-
     <div class="suite-card">
       <div class="suite-icon">📊</div>
       <div class="suite-title">Paid Ads & Attribution</div>
-      <div class="suite-desc">Once your funnel is dialed in, ads become a lever — not a gamble. Every dollar tracked to a source. No more guessing.</div>
+      <div class="suite-desc">Once your funnel is dialed in, ads become a lever — not a gamble. Every dollar tracked.</div>
       <ul class="suite-list">
         <li>Google and Facebook pixel integration with your funnel</li>
-        <li>Funnel-level conversion tracking per source and campaign</li>
+        <li>Funnel-level conversion tracking per source</li>
         <li>ROI attribution by ad, keyword, and audience</li>
-        <li>Retargeting audiences built directly from your CRM contacts</li>
+        <li>Retargeting audiences built from your CRM contacts</li>
       </ul>
     </div>
-
   </div>
 
   <div class="divider"></div>
@@ -1024,14 +1062,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
           <th>Feature</th>
           <th>HubSpot</th>
           <th>Salesforce</th>
-          <th class="col-hsp">HSP + GHL</th>
+          <th class="col-hsp">HSP System</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td class="col-label">Monthly Cost</td>
-          <td class="bad">$800 – $3,200+</td>
-          <td class="bad">$1,000 – $5,000+</td>
+          <td class="bad">$800–$3,200+</td>
+          <td class="bad">$1,000–$5,000+</td>
           <td class="col-hsp good">Included in HSP plan</td>
         </tr>
         <tr>
@@ -1055,26 +1093,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <tr>
           <td class="col-label">Setup</td>
           <td class="bad">DIY / generic templates</td>
-          <td class="bad">Requires developer or consultant</td>
+          <td class="bad">Requires developer</td>
           <td class="col-hsp good">Custom-built for your operation</td>
         </tr>
         <tr>
           <td class="col-label">Support</td>
           <td>Ticketed / slow</td>
-          <td>Ticketed / expensive add-on</td>
-          <td class="col-hsp good">Direct access to your builder</td>
+          <td>Ticketed / expensive</td>
+          <td class="col-hsp good">Direct + 24/7 platform support</td>
         </tr>
         <tr>
           <td class="col-label">HIPAA Compliant</td>
-          <td>Enterprise plan only</td>
-          <td>Enterprise plan only</td>
-          <td class="col-hsp good">Yes — available on all HSP plans</td>
+          <td>Enterprise only</td>
+          <td>Enterprise only</td>
+          <td class="col-hsp good">Available on all HSP plans</td>
         </tr>
         <tr>
           <td class="col-label">Built for Service Businesses</td>
-          <td class="bad">No — built for SaaS / sales orgs</td>
-          <td class="bad">No — enterprise B2B focus</td>
-          <td class="col-hsp good">Yes — cleaning, landscaping, trades, medical, product businesses</td>
+          <td class="bad">No — SaaS / sales orgs</td>
+          <td class="bad">No — enterprise B2B</td>
+          <td class="col-hsp good">Yes — cleaning, landscaping, medical, trades, and more</td>
         </tr>
       </tbody>
     </table>
@@ -1082,11 +1120,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 
 </section>
 
-<!-- ==========================================
+<!-- ═══════════════════════════════════════
      SECTION 4 — HSP DIFFERENCE
-     ========================================== -->
+     ═══════════════════════════════════════ -->
 <section id="section-hsp">
-
   <div class="section-header">
     <div class="eyebrow"><span class="eyebrow-line"></span>The HSP Difference<span class="eyebrow-line"></span></div>
     <h2 class="sec-h2 light">Not a Template. A Diagnosis.</h2>
@@ -1102,12 +1139,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <div class="hsp-card">
       <div class="hsp-card-icon">🛠️</div>
       <div class="hsp-card-title">Custom Builds, Not Templates</div>
-      <div class="hsp-card-body">Expert Cleaning Services got a custom commercial outreach system. Wenke Landscaping got a custom PTO and job scheduling logic. Honey Girl Granola got a product fulfillment pipeline. Every business is different — and your system will be too.</div>
+      <div class="hsp-card-body">Expert Cleaning Services got a custom commercial outreach system. Wenke Landscaping got a custom PTO and scheduling logic. Honey Girl Granola got a product fulfillment pipeline. Every business is different — and your system will be too.</div>
     </div>
     <div class="hsp-card">
       <div class="hsp-card-icon">🤖</div>
       <div class="hsp-card-title">AI-Native, Not AI-Adjacent</div>
-      <div class="hsp-card-body">AI isn't a feature bolted onto HSP — it's woven into every system. From AI resume screening to AI-assisted follow-up sequences, your business runs smarter around the clock.</div>
+      <div class="hsp-card-body">AI isn't a feature bolted on — it's woven into every system. Resume screening, follow-up sequences, call routing, knowledge bases. Your business runs smarter around the clock.</div>
     </div>
     <div class="hsp-card">
       <div class="hsp-card-icon">📈</div>
@@ -1117,12 +1154,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <div class="hsp-card">
       <div class="hsp-card-icon">🏆</div>
       <div class="hsp-card-title">Proven in Real Businesses First</div>
-      <div class="hsp-card-body">Every system HSP sells was battle-tested in live operations before it was ever offered to clients. Expert Cleaning Services and Wenke Landscaping ran these systems first. This isn't theory — it's working today.</div>
+      <div class="hsp-card-body">Every system HSP sells was battle-tested in live operations before being offered to clients. Expert Cleaning Services and Wenke Landscaping ran these systems first. This isn't theory — it's running today.</div>
     </div>
     <div class="hsp-card">
       <div class="hsp-card-icon">⚡</div>
       <div class="hsp-card-title">The AI Age Is Already Here</div>
-      <div class="hsp-card-body">Your competitors are automating. Your customers expect instant responses. Every process you're still doing manually is a compounding competitive disadvantage. The question isn't whether to automate — it's whether you do it before or after the business next door does.</div>
+      <div class="hsp-card-body">Your competitors are automating. Every process you're still doing manually is a compounding competitive disadvantage. The question isn't whether to automate — it's whether you do it before or after the business next door does.</div>
     </div>
   </div>
 
@@ -1134,83 +1171,199 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       <span class="biz-tag">Commercial Cleaning</span>
       <span class="biz-tag">Post-Construction</span>
       <span class="biz-tag">Medical & HIPAA-Compliant</span>
+      <span class="biz-tag">Industrial / Manufacturing</span>
+      <span class="biz-tag">Professional Services</span>
       <span class="biz-tag">Product Businesses</span>
       <span class="biz-tag">HOA & Property Management</span>
       <span class="biz-tag">Trade Services</span>
       <span class="biz-tag">Multi-Location Operations</span>
     </div>
   </div>
-
 </section>
 
 <script>
-// ---- State ----
+// ════════════════════════════════
+// INDUSTRY DATA
+// ════════════════════════════════
+const INDUSTRIES = {
+  cleaning: {
+    tagline: 'Professional Cleaning You Can Trust',
+    services: ['Recurring Residential Cleaning','Post-Construction Cleaning','Commercial Cleaning Contract','Move-In / Move-Out Clean','One-Time Deep Clean'],
+    step2Head: 'Tell us about your space',
+    propTypes: ['Residential Home','Commercial Office','Multi-Unit / HOA','Industrial Facility'],
+    sqftLabel: 'Approx. Square Footage',
+    areasLabel: 'Rooms / Areas',
+  },
+  landscaping: {
+    tagline: 'Outdoor Living Designed to Last',
+    services: ['Recurring Lawn Maintenance','Landscape Design & Install','Hardscaping / Patio Build','Irrigation System','Seasonal Cleanup'],
+    step2Head: 'Tell us about your property',
+    propTypes: ['Residential','Commercial Property','HOA / Community','New Construction'],
+    sqftLabel: 'Lot / Property Size',
+    areasLabel: 'Service Zones / Areas',
+  },
+  medical: {
+    tagline: 'Expert Care Across All Locations',
+    services: ['Annual Eye Exam','Contact Lens Fitting & Evaluation','New Patient Consultation','Optical / Eyewear','Specialty Services'],
+    step2Head: 'Tell us about your visit',
+    propTypes: ['New Patient','Returning Patient','Referral','Insurance Inquiry'],
+    sqftLabel: 'Preferred Location',
+    areasLabel: 'Estimated Visits / Year',
+  },
+  industrial: {
+    tagline: 'Operational Excellence. Engineered.',
+    services: ['Process Assessment & Audit','Lean / Six Sigma Implementation','Systems & Workflow Design','Capacity & Equipment Analysis','Staff Training & Consulting'],
+    step2Head: 'Tell us about your operation',
+    propTypes: ['Manufacturing Plant','Distribution / Warehouse','Multi-Site Operation','Corporate Office'],
+    sqftLabel: 'Facility Size (sq ft)',
+    areasLabel: 'Number of Employees',
+  },
+  trades: {
+    tagline: 'Reliable Service. Done Right.',
+    services: ['Service Call / Repair','New Installation','Maintenance Agreement','Emergency Response','Full Project Estimate'],
+    step2Head: 'Tell us about the job',
+    propTypes: ['Residential Home','Commercial Building','New Construction','Industrial'],
+    sqftLabel: 'Property Size',
+    areasLabel: 'Units / Areas',
+  },
+  professional: {
+    tagline: 'Results-Driven. Partnership-First.',
+    services: ['Initial Consultation','Ongoing Retainer','Project-Based Engagement','Advisory / Strategy','Compliance & Audit'],
+    step2Head: 'Tell us about your business',
+    propTypes: ['Small Business','Mid-Market','Enterprise / Multi-Location','Nonprofit'],
+    sqftLabel: 'Number of Employees',
+    areasLabel: 'Number of Locations',
+  },
+  product: {
+    tagline: 'Quality Products. Real Results.',
+    services: ['Wholesale Inquiry','Retail Partnership','Custom Order','Subscription Program','Event / Catering Order'],
+    step2Head: 'Tell us about your order',
+    propTypes: ['Direct Consumer','Retail Reseller','Restaurant / Café','Corporate / Event'],
+    sqftLabel: 'Estimated Monthly Volume',
+    areasLabel: 'Number of Locations',
+  }
+};
+
+// ════════════════════════════════
+// STATE
+// ════════════════════════════════
 let currentStep = 1;
 let totalSteps = 3;
 let endState = 'book';
 let selectedSlot = null;
+let currentIndustry = 'cleaning';
 
-// ---- Helpers ----
+// ════════════════════════════════
+// HELPERS
+// ════════════════════════════════
 function show(id){ document.getElementById(id).classList.remove('hidden') }
 function hide(id){ document.getElementById(id).classList.add('hidden') }
 function hideAllSteps(){
   ['step-1','step-2','step-3-extra','step-final','step-confirm'].forEach(hide);
 }
 function scrollToFunnel(){
-  const top = document.getElementById('section-funnel').offsetTop - 70;
-  window.scrollTo({top, behavior:'smooth'});
+  window.scrollTo({top: document.getElementById('section-funnel').offsetTop - 100, behavior:'smooth'});
 }
 
-// ---- Init ----
-function initDemo(){
-  const keys = ['demo_first','demo_last','demo_email','demo_phone','demo_service'];
-  const ids  = ['f-first',  'f-last',  'f-email',  'f-phone',  'f-service'];
-  keys.forEach((k,i) => {
-    const v = localStorage.getItem(k);
-    if(v){ const el = document.getElementById(ids[i]); if(el) el.value = v; }
+// ════════════════════════════════
+// INDUSTRY SELECTOR
+// ════════════════════════════════
+function setIndustry(key){
+  currentIndustry = key;
+  const ind = INDUSTRIES[key];
+
+  // Update active chip
+  document.querySelectorAll('.ind-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.ind === key);
   });
+
+  // Update funnel tagline
+  document.getElementById('funnel-tagline').textContent = ind.tagline;
+
+  // Update service dropdown
+  const svc = document.getElementById('f-service');
+  svc.innerHTML = '<option value="">Select a service...</option>';
+  ind.services.forEach(s => {
+    const o = document.createElement('option');
+    o.textContent = s;
+    svc.appendChild(o);
+  });
+  localStorage.setItem('demo_service', '');
+
+  // Update step 2 heading
+  document.getElementById('step2-heading').textContent = ind.step2Head;
+
+  // Update property type buttons
+  const wrap = document.getElementById('opts-proptype');
+  wrap.innerHTML = '';
+  ind.propTypes.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = p;
+    btn.onclick = function(){ selectOpt(this, 'opts-proptype'); };
+    wrap.appendChild(btn);
+  });
+
+  // Update size/areas labels
+  document.getElementById('label-sqft').textContent = ind.sqftLabel;
+  document.getElementById('label-areas').textContent = ind.areasLabel;
 }
 
-// ---- Save Step 1 ----
+// ════════════════════════════════
+// INIT
+// ════════════════════════════════
+function initDemo(){
+  const map = { 'demo_first':'f-first', 'demo_email':'f-email', 'demo_service':'f-service' };
+  for(const [k,id] of Object.entries(map)){
+    const v = localStorage.getItem(k);
+    const el = document.getElementById(id);
+    if(v && el) el.value = v;
+  }
+  // Init industry (property type options need to be populated)
+  setIndustry(currentIndustry);
+}
+
+// ════════════════════════════════
+// SAVE STEP 1
+// ════════════════════════════════
 function saveStep1(){
-  const map = {
-    'demo_first':'f-first','demo_last':'f-last',
-    'demo_email':'f-email','demo_phone':'f-phone','demo_service':'f-service'
-  };
+  const map = { 'demo_first':'f-first', 'demo_email':'f-email', 'demo_service':'f-service' };
   for(const [k,id] of Object.entries(map)){
     const el = document.getElementById(id);
     if(el) localStorage.setItem(k, el.value);
   }
 }
 
-// ---- Business Name ----
+// ════════════════════════════════
+// BUSINESS NAME
+// ════════════════════════════════
 function updateBizName(){
   const name = document.getElementById('biz-input').value.trim() || 'Your Business';
   document.getElementById('funnel-biz-name').textContent = name;
 }
 
-// ---- Flow ----
+// ════════════════════════════════
+// FLOW TYPE
+// ════════════════════════════════
 function setFlow(){
   totalSteps = parseInt(document.getElementById('flow-select').value);
 
-  // dots and lines visibility
-  const show3 = totalSteps >= 3;
-  const show4 = totalSteps === 4;
-  document.getElementById('dot-3').classList.toggle('hidden', !show3);
-  document.getElementById('line-23').classList.toggle('hidden', !show3);
-  document.getElementById('dot-4').classList.toggle('hidden', !show4);
-  document.getElementById('line-34').classList.toggle('hidden', !show4);
+  document.getElementById('dot-3').classList.toggle('hidden', totalSteps < 3);
+  document.getElementById('line-23').classList.toggle('hidden', totalSteps < 3);
+  document.getElementById('dot-4').classList.toggle('hidden', totalSteps < 4);
+  document.getElementById('line-34').classList.toggle('hidden', totalSteps < 4);
 
-  // step labels
   document.getElementById('label-1').textContent = `Step 1 of ${totalSteps}`;
   document.getElementById('label-2').textContent = `Step 2 of ${totalSteps}`;
   document.getElementById('label-final').textContent = `Step ${totalSteps} of ${totalSteps}`;
-  document.getElementById('label-final-checkout').textContent = `Step ${totalSteps} of ${totalSteps}`;
+  document.getElementById('label-final-co').textContent = `Step ${totalSteps} of ${totalSteps}`;
 
   goToStep(1);
 }
 
-// ---- End State ----
+// ════════════════════════════════
+// END STATE
+// ════════════════════════════════
 function setEndState(){
   endState = document.getElementById('end-select').value;
   if(currentStep === 'final') renderEndState();
@@ -1225,40 +1378,29 @@ function renderEndState(){
   }
 }
 
-// ---- Navigation ----
+// ════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════
 function goToStep(step){
   hideAllSteps();
   currentStep = step;
 
   if(step === 1){
-    show('step-1');
-    setDots(1);
-
+    show('step-1'); setDots(1);
   } else if(step === 2){
-    if(totalSteps === 2){
-      showFinalStep(); return;
-    }
-    show('step-2');
-    updatePrefillPill();
-    setDots(2);
-
+    if(totalSteps === 2){ showFinalStep(); return; }
+    show('step-2'); updatePrefillPill(); setDots(2);
   } else if(step === 3){
-    if(totalSteps <= 3){
-      showFinalStep(); return;
-    }
-    show('step-3-extra');
-    setDots(3);
-
+    if(totalSteps <= 3){ showFinalStep(); return; }
+    show('step-3-extra'); setDots(3);
   } else if(step === 'final'){
     showFinalStep();
   }
-
   scrollToFunnel();
 }
 
 function advanceFromStep2(){
-  if(totalSteps === 4) goToStep(3);
-  else showFinalStep();
+  totalSteps === 4 ? goToStep(3) : showFinalStep();
 }
 
 function showFinalStep(){
@@ -1275,7 +1417,9 @@ function goBackFromFinal(){
   else goToStep(1);
 }
 
-// ---- Step dots ----
+// ════════════════════════════════
+// STEP DOTS
+// ════════════════════════════════
 function setDots(active){
   for(let i = 1; i <= 4; i++){
     const dot = document.getElementById('dot-' + i);
@@ -1284,22 +1428,22 @@ function setDots(active){
     if(i < active) dot.classList.add('done');
     else if(i === active) dot.classList.add('active');
   }
-  const lineIds = ['line-12','line-23','line-34'];
-  lineIds.forEach((id, idx) => {
+  [['line-12',1],['line-23',2],['line-34',3]].forEach(([id, idx]) => {
     const el = document.getElementById(id);
     if(!el || el.classList.contains('hidden')) return;
-    el.classList.toggle('done', idx + 1 < active);
+    el.classList.toggle('done', idx < active);
   });
 }
 
-// ---- Option buttons ----
+// ════════════════════════════════
+// OPT BUTTONS / CALENDAR
+// ════════════════════════════════
 function selectOpt(el, groupId){
   document.getElementById(groupId).querySelectorAll('.opt-btn')
     .forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
 }
 
-// ---- Calendar ----
 function selectSlot(el){
   document.querySelectorAll('.cal-slot').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
@@ -1309,32 +1453,33 @@ function selectSlot(el){
   btn.textContent = `Confirm — ${selectedSlot} →`;
 }
 
-// ---- Confirm booking ----
+// ════════════════════════════════
+// CONFIRM
+// ════════════════════════════════
 function confirmBooking(){
   if(!selectedSlot) return;
-  const email = document.getElementById('f-email').value || 'your email';
   const first = document.getElementById('f-first').value;
+  const email = document.getElementById('f-email').value || 'your email';
   document.getElementById('confirm-headline').textContent = first ? `You're booked, ${first}!` : 'You\'re booked!';
   document.getElementById('confirm-line1').textContent = `We'll see you ${selectedSlot}.`;
   document.getElementById('confirm-email-display').textContent = email;
   document.getElementById('confirm-next-3').textContent = '📅 Calendar invite on its way — see you soon!';
-  hide('step-final');
-  show('step-confirm');
+  hide('step-final'); show('step-confirm');
 }
 
-// ---- Confirm checkout ----
 function confirmCheckout(){
-  const email = document.getElementById('f-email').value || 'your email';
   const first = document.getElementById('f-first').value;
+  const email = document.getElementById('f-email').value || 'your email';
   document.getElementById('confirm-headline').textContent = first ? `All set, ${first}!` : 'You\'re all set!';
   document.getElementById('confirm-line1').textContent = 'Your service is confirmed and scheduled.';
   document.getElementById('confirm-email-display').textContent = email;
   document.getElementById('confirm-next-3').textContent = '🗓️ Service date confirmed — we\'ll reach out 24 hours before.';
-  hide('step-final');
-  show('step-confirm');
+  hide('step-final'); show('step-confirm');
 }
 
-// ---- Pre-fill pill ----
+// ════════════════════════════════
+// PREFILL PILL
+// ════════════════════════════════
 function updatePrefillPill(){
   const first = document.getElementById('f-first').value;
   const pill = document.getElementById('prefill-pill');
@@ -1346,12 +1491,25 @@ function updatePrefillPill(){
   }
 }
 
-// ---- Reset ----
-function resetDemo(){
-  ['demo_first','demo_last','demo_email','demo_phone','demo_service']
-    .forEach(k => localStorage.removeItem(k));
+// ════════════════════════════════
+// PIPELINE TOGGLE
+// ════════════════════════════════
+function showPipeline(type){
+  const isLead = type === 'lead';
+  document.getElementById('ptog-lead').classList.toggle('active', isLead);
+  document.getElementById('ptog-hiring').classList.toggle('active', !isLead);
+  document.getElementById('pipeline-lead').classList.toggle('hidden', !isLead);
+  document.getElementById('pipeline-hiring').classList.toggle('hidden', isLead);
+  document.getElementById('ctx-lead').classList.toggle('hidden', !isLead);
+  document.getElementById('ctx-hiring').classList.toggle('hidden', isLead);
+}
 
-  ['f-first','f-last','f-email','f-phone','f-sqft','f-areas','f-notes'].forEach(id => {
+// ════════════════════════════════
+// RESET
+// ════════════════════════════════
+function resetDemo(){
+  ['demo_first','demo_email','demo_service'].forEach(k => localStorage.removeItem(k));
+  ['f-first','f-email','f-last','f-phone','f-sqft','f-areas','f-notes'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.value = '';
   });
@@ -1359,22 +1517,20 @@ function resetDemo(){
     const el = document.getElementById(id);
     if(el) el.selectedIndex = 0;
   });
-
   document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
   document.querySelectorAll('.cal-slot').forEach(b => b.classList.remove('selected'));
   selectedSlot = null;
-
   const btn = document.getElementById('confirm-book-btn');
   btn.disabled = true;
   btn.textContent = 'Select a time above to confirm';
-
   totalSteps = parseInt(document.getElementById('flow-select').value);
   goToStep(1);
 }
 
-// ---- Run on load ----
+// ════════════════════════════════
+// BOOT
+// ════════════════════════════════
 initDemo();
 </script>
-
 </body>
 </html>
