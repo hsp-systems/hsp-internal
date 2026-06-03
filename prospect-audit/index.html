@@ -278,13 +278,10 @@ header{
     <p>Enter the prospect's business name and website. The audit runs automatically — takes about 15 seconds.</p>
 
     <div class="field">
-      <label>Business Name</label>
-      <input type="text" id="inp-biz" placeholder="e.g. Bareither Group" autocomplete="off">
-    </div>
-    <div class="field">
       <label>Website URL</label>
-      <input type="url" id="inp-url" placeholder="https://example.com" autocomplete="off">
+      <input type="url" id="inp-url" placeholder="https://bareithergroup.com" autocomplete="off">
     </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:-8px">Business name is detected automatically from the site.</p>
 
     <button class="run-btn" onclick="runAudit()">Run Audit →</button>
     <p class="input-note">🔒 Internal use only — not indexed or shared</p>
@@ -404,8 +401,10 @@ header{
 
 <script>
 // ─── CONFIG ─────────────────────────────────────────────────────
-// Update this after deploying the Worker: wrangler deploy (from audit-worker/)
+// Worker adds GMB detection. Tool works without it via browser fallbacks.
 const WORKER_URL = 'https://hsp-audit.hsp-systems.workers.dev/audit';
+// CORS proxy fallback for HTML fetching when Worker isn't deployed
+const PROXY_URL  = 'https://api.allorigins.win/raw?url=';
 
 // ─── SCREENS ────────────────────────────────────────────────────
 const screens = {
@@ -428,51 +427,122 @@ function setStep(n, state) { // state: 'active' | 'done' | 'error'
   if (icon) icon.textContent = state === 'done' ? '✓' : state === 'error' ? '✗' : '⏳';
 }
 
+// ─── BUSINESS NAME EXTRACTION ───────────────────────────────────
+function extractBizName(html, url) {
+  // 1. og:site_name  (most reliable)
+  const ogSite = html.match(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']+)["']/i)?.[1]
+                || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:site_name["']/i)?.[1];
+  if (ogSite?.trim()) return ogSite.trim();
+
+  // 2. og:title / twitter:title  (take first segment before | or -)
+  const ogTitle = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i)?.[1]
+                || html.match(/<meta[^>]+name=["']twitter:title["'][^>]+content=["']([^"']+)["']/i)?.[1];
+  if (ogTitle?.trim()) {
+    return ogTitle.split(/[|\-–—]/)[0].trim() || ogTitle.trim();
+  }
+
+  // 3. <title> tag
+  const titleTag = html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim();
+  if (titleTag) {
+    return titleTag.split(/[|\-–—]/)[0].trim() || titleTag;
+  }
+
+  // 4. Domain → readable name fallback
+  try {
+    const domain = new URL(url).hostname.replace(/^www\./, '').split('.')[0];
+    // Try to split camelCase: "bareitherGroup" → "Bareither Group"
+    return domain
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/[-_]/g, ' ')
+      .split(' ')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  } catch { return 'This Business'; }
+}
+
 // ─── MAIN AUDIT FLOW ────────────────────────────────────────────
 async function runAudit() {
-  const bizRaw = document.getElementById('inp-biz').value.trim();
   const urlRaw = document.getElementById('inp-url').value.trim();
-
-  if (!bizRaw || !urlRaw) { alert('Please enter both a business name and website URL.'); return; }
+  if (!urlRaw) { alert('Please enter a website URL.'); return; }
 
   let targetUrl = urlRaw;
   if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
 
-  // Show loading screen
-  document.getElementById('loading-biz-name').textContent = 'Analyzing ' + bizRaw + '...';
+  document.getElementById('loading-biz-name').textContent = 'Analyzing...';
   document.getElementById('loading-url-display').textContent = targetUrl;
   showScreen('loading');
-  setStep(1, 'active');
-  setStep(2, 'active');
-  setStep(3, 'active');
-  setStep(4, 'active');
+  ['1','2','3','4'].forEach(n => setStep(n, 'active'));
 
-  let workerData = null;
+  // ── Step 1: Fetch HTML ──────────────────────────────
+  // Try Worker first → CORS proxy fallback → bare fetch fallback
+  let html = '', isHTTPS = targetUrl.startsWith('https'), finalUrl = targetUrl;
+  let workerLive = false, gmb = { found: false };
+
   try {
-    const res = await fetch(
-      `${WORKER_URL}?url=${encodeURIComponent(targetUrl)}&biz=${encodeURIComponent(bizRaw)}`,
-      { signal: AbortSignal.timeout(30000) }
+    const domainGuess = new URL(targetUrl).hostname.replace(/^www\./, '').split('.')[0];
+    const wr = await fetch(
+      `${WORKER_URL}?url=${encodeURIComponent(targetUrl)}&biz=${encodeURIComponent(domainGuess)}`,
+      { signal: AbortSignal.timeout(12000) }
     );
-    workerData = await res.json();
-    setStep(1, workerData.html ? 'done' : 'error');
-    setStep(2, workerData.pagespeed ? 'done' : 'error');
-    setStep(3, 'done');
-  } catch (e) {
-    setStep(1, 'error');
-    setStep(2, 'error');
-    setStep(3, 'error');
-    workerData = { ok: false, html: '', pagespeed: null, gmb: { found: false }, isHTTPS: targetUrl.startsWith('https') };
+    if (wr.ok) {
+      const wd = await wr.json();
+      html      = wd.html      || '';
+      isHTTPS   = wd.isHTTPS  ?? isHTTPS;
+      finalUrl  = wd.finalUrl || finalUrl;
+      gmb       = wd.gmb      || { found: false };
+      workerLive = true;
+    }
+  } catch (_) {}
+
+  // Fallback: allorigins CORS proxy
+  if (!html) {
+    try {
+      const pr = await fetch(PROXY_URL + encodeURIComponent(targetUrl),
+        { signal: AbortSignal.timeout(10000) });
+      if (pr.ok) html = await pr.text();
+    } catch (_) {}
   }
+  setStep(1, html ? 'done' : 'error');
 
+  // Extract biz name from HTML now that we have it
+  const bizName = extractBizName(html, finalUrl);
+  document.getElementById('loading-biz-name').textContent = 'Analyzing ' + bizName + '...';
+
+  // If Worker is live but used domain guess for GMB, re-query with real name
+  if (workerLive && bizName && bizName !== 'This Business') {
+    try {
+      const wr2 = await fetch(
+        `${WORKER_URL}?url=${encodeURIComponent(finalUrl)}&biz=${encodeURIComponent(bizName)}`,
+        { signal: AbortSignal.timeout(8000) }
+      );
+      if (wr2.ok) { const wd2 = await wr2.json(); gmb = wd2.gmb || gmb; }
+    } catch (_) {}
+  }
+  setStep(3, 'done');
+
+  // ── Step 2: PageSpeed API — always called directly from browser ──
+  // PSI is CORS-enabled by Google; never depends on the Worker.
+  let psiData = null;
+  try {
+    const psiRes = await fetch(
+      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed` +
+      `?url=${encodeURIComponent(finalUrl)}&strategy=mobile` +
+      `&category=performance&category=seo&category=best-practices&category=accessibility`,
+      { signal: AbortSignal.timeout(25000) }
+    );
+    if (psiRes.ok) psiData = await psiRes.json();
+  } catch (_) {}
+  setStep(2, psiData ? 'done' : 'error');
+
+  // ── Step 4: Score ───────────────────────────────────
   setStep(4, 'active');
-  const htmlData = analyzeHTML(workerData.html || '', targetUrl);
-  htmlData.isHTTPS = workerData.isHTTPS ?? targetUrl.startsWith('https');
-
-  const scores = calculateScores(workerData.pagespeed, htmlData, workerData.gmb || {});
+  const htmlData    = analyzeHTML(html, finalUrl);
+  htmlData.isHTTPS  = isHTTPS;
+  const scores      = calculateScores(psiData, htmlData, gmb);
   setStep(4, 'done');
 
-  await new Promise(r => setTimeout(r, 600)); // brief pause so user sees all ✓
-  renderResults(bizRaw, targetUrl, scores);
+  await new Promise(r => setTimeout(r, 500));
+  renderResults(bizName, finalUrl, scores);
   showScreen('results');
 }
 
@@ -503,18 +573,28 @@ function analyzeHTML(html, urlStr) {
     lower.includes('wizard') || lower.includes('multi-step') || lower.includes('multistep') ||
     formCount > 2;
 
-  // Booking
-  const bookingKw = ['book now','book online','book a ','book your','schedule now',
-    'schedule online','get a quote','get quote','instant quote','free quote',
-    'free estimate','get estimate','request a quote','request quote','calendly',
-    'acuityscheduling','booksy','jobber','housecall','servicetitan','workiz'];
+  // Booking — broad net including scheduling language
+  const bookingKw = [
+    'book now','book online','book a ','book your',
+    'schedule now','schedule online','schedule a call','schedule a meeting',
+    'schedule a consultation','schedule your','schedule time',
+    'get a quote','get quote','instant quote','free quote',
+    'free estimate','get estimate','request a quote','request quote',
+    'book a demo','book a call','book a free',
+    'calendly','acuityscheduling','booksy','jobber','housecall',
+    'servicetitan','workiz','schedule.once','savvycal','cal.com',
+  ];
   const hasBooking = bookingKw.some(k => lower.includes(k));
 
-  // CTA above fold (first 3000 chars)
-  const top3k = lower.slice(0, 3000);
-  const ctaKw = ['get started','book now','call now','contact us','get quote',
-    'free quote','schedule','get estimate','book free','get started'];
-  const hasCTAAboveFold = ctaKw.some(k => top3k.includes(k));
+  // CTA above fold (first 4000 chars — covers most hero sections)
+  const top4k = lower.slice(0, 4000);
+  const ctaKw = [
+    'get started','book now','call now','contact us','get quote',
+    'free quote','schedule','get estimate','book free',
+    'schedule a call','schedule a meeting','let\'s talk',
+    'talk to us','get in touch','request a','start today',
+  ];
+  const hasCTAAboveFold = ctaKw.some(k => top4k.includes(k));
 
   // Phone
   const hasPhone = /\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}/.test(bodyText + html);
@@ -577,11 +657,13 @@ function analyzeHTML(html, urlStr) {
 
 // ─── SCORING ────────────────────────────────────────────────────
 function calculateScores(psi, html, gmb) {
-  const audits = psi?.lighthouseResult?.audits || {};
-  const cats   = psi?.lighthouseResult?.categories || {};
-  const perf   = Math.round((cats.performance?.score  ?? 0) * 100);
-  const seoLH  = Math.round((cats.seo?.score          ?? 0) * 100);
-  const access = Math.round((cats.accessibility?.score ?? 0) * 100);
+  const audits  = psi?.lighthouseResult?.audits || {};
+  const cats    = psi?.lighthouseResult?.categories || {};
+  const hasPSI  = !!psi?.lighthouseResult;
+  // When PSI is unavailable use neutral 50 so the tool doesn't falsely score 0
+  const perf   = hasPSI ? Math.round((cats.performance?.score  ?? 0) * 100) : 50;
+  const seoLH  = hasPSI ? Math.round((cats.seo?.score          ?? 0) * 100) : 50;
+  const access = hasPSI ? Math.round((cats.accessibility?.score ?? 0) * 100) : 50;
 
   // ── Lead Capture ──────────────────────────────────
   let lp = 0; const lf = [];
@@ -634,7 +716,7 @@ function calculateScores(psi, html, gmb) {
   else              ff.push([false, 'No SSL — browsers show "Not Secure"']);
   if (hasVP)        ff.push([true,  'Mobile-responsive design']);
   else              ff.push([false, 'Not fully mobile-responsive']);
-  ff.push([perf >= 50, `Mobile speed score: ${perf}/100${perf < 50 ? ' — slow load loses leads' : ''}`]);
+  ff.push([perf >= 50, `Mobile speed: ${perf}/100${!hasPSI ? ' (est.)' : perf < 50 ? ' — slow load loses leads' : ''}`]);
   if (access >= 70) ff.push([true, `Accessibility: ${access}/100`]);
   const foundScore = Math.round(
     (html.isHTTPS ? 20 : 0) + (hasVP ? 20 : 0) + perf * 0.50 + access * 0.10
@@ -647,7 +729,7 @@ function calculateScores(psi, html, gmb) {
     [hasTit,  hasTit  ? 'Page title set correctly'                       : 'Missing or weak page title'],
     [hasMD,   hasMD   ? 'Meta description present'                       : 'No meta description'],
     [html.hasBlog, html.hasBlog ? 'Blog / content section found'         : 'No blog — missed SEO opportunity'],
-    [seoLH >= 70, `Lighthouse SEO score: ${seoLH}/100`],
+    [seoLH >= 70, `SEO score: ${seoLH}/100${!hasPSI ? ' (est.)' : ''}`],
   ];
   const seoScore = seoLH;
 
@@ -787,7 +869,6 @@ function renderResults(biz, url, scores) {
 
 // ─── RESET ──────────────────────────────────────────────────────
 function resetAudit() {
-  document.getElementById('inp-biz').value = '';
   document.getElementById('inp-url').value = '';
   ['1','2','3','4'].forEach(n => setStep(n, 'active'));
   showScreen('input');
