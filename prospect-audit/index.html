@@ -609,11 +609,15 @@ function analyzeHTML(html, urlStr) {
                   + (hasGHLForm    ? 2 : 0)
                   + (hasFormPlugin ? 1 : 0)
                   + (hasFormAnchor ? 1 : 0);
+  // Multi-step: only flag when step structure is actually visible in the HTML.
+  // GHL iframes are cross-origin — we cannot read inside them from outside,
+  // so we never assume multi-step just because GHL is present.
   const hasMultiStep =
     lower.includes('step 1') || lower.includes('step-1') || lower.includes('step 2') ||
     lower.includes('wizard') || lower.includes('multi-step') || lower.includes('multistep') ||
-    hasGHLForm ||
-    formCount > 2;
+    formCount > 4;
+  // Whether the form type (single vs multi) could be verified automatically
+  const formTypeUnknown = hasGHLForm && !hasMultiStep;
 
   // Booking — broad net including scheduling language
   const bookingKw = [
@@ -687,7 +691,7 @@ function analyzeHTML(html, urlStr) {
   const hasTitle    = !!(doc.querySelector('title')?.textContent?.trim());
 
   return {
-    formCount, hasMultiStep, hasBooking, hasCTAAboveFold, hasPhone,
+    formCount, hasMultiStep, formTypeUnknown, hasBooking, hasCTAAboveFold, hasPhone,
     hasFacebook, hasInstagram, hasLinkedIn, hasYouTube,
     hasChatWidget, hasGMBLink, hasReviewWidget, hasYelp,
     hasCareersPage, hasEmailHiring, hasTestimonials,
@@ -714,7 +718,11 @@ function calculateScores(psi, html, gmb) {
     lp += 15;
     if (html.hasMultiStep) {
       lp += 20;
-      lf.push([true, html.hasGHLForm ? 'Multi-step form (HSP system detected)' : 'Multi-step form detected']);
+      lf.push([true, 'Multi-step form detected']);
+    } else if (html.formTypeUnknown) {
+      // Embedded iframe form (GHL/3rd party) — step count not readable cross-origin
+      lp += 5; // small credit for uncertainty; not penalizing, not rewarding
+      lf.push([null, 'Embedded form found — step count unverifiable (test manually)']);
     } else {
       lf.push([false, 'Basic single form — low conversion rate']);
     }
@@ -894,8 +902,8 @@ function renderResults(biz, url, scores) {
       <ul class="cat-findings">
         ${cat.findings.slice(0, 4).map(([good, text]) => `
           <li>
-            <span class="fi">${good ? '✅' : '❌'}</span>
-            <span>${text}</span>
+            <span class="fi">${good === true ? '✅' : good === false ? '❌' : '❓'}</span>
+            <span style="${good === null ? 'color:#92400e;font-style:italic' : ''}">${text}</span>
           </li>`).join('')}
       </ul>
       ${isWeak ? `<span class="cat-badge opp">HSP can address this</span>` : ''}
