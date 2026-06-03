@@ -596,6 +596,28 @@ async function runAudit() {
   showScreen('results');
 }
 
+// Catch unhandled errors in runAudit so the page never freezes silently
+const _origRunAudit = runAudit;
+window.runAudit = async function() {
+  try {
+    await _origRunAudit();
+  } catch(e) {
+    console.error('Audit error:', e);
+    // Show a user-friendly error and let them retry
+    ['1','2','3','4'].forEach(n => {
+      const el = document.getElementById('lstep-'+n);
+      if(el && !el.classList.contains('done')) {
+        el.classList.remove('active'); el.classList.add('error');
+        const ic = el.querySelector('.lstep-icon'); if(ic) ic.textContent='✗';
+      }
+    });
+    const hdr = document.getElementById('loading-biz-name');
+    if(hdr) hdr.textContent = 'Something went wrong — try again';
+    const sub = document.getElementById('loading-url-display');
+    if(sub) sub.textContent = 'Error: ' + (e?.message || 'unknown error');
+  }
+};
+
 // ─── HTML ANALYSIS ──────────────────────────────────────────────
 function analyzeHTML(html, urlStr) {
   let doc;
@@ -803,6 +825,8 @@ function analyzeHTML(html, urlStr) {
     lower.includes('join our list') || lower.includes('email list') || lower.includes('sign up for');
 
   // Schema / structured data completeness
+  // jsonLdBlocks defined here (also used independently in extractBizName)
+  const jsonLdBlocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
   const hasLocalBizSchema = jsonLdBlocks.some(b => {
     try {
       const d = JSON.parse(b.replace(/<script[^>]*>/i,'').replace(/<\/script>/i,''));
