@@ -609,15 +609,64 @@ function analyzeHTML(html, urlStr) {
                   + (hasGHLForm    ? 2 : 0)
                   + (hasFormPlugin ? 1 : 0)
                   + (hasFormAnchor ? 1 : 0);
-  // Multi-step: only flag when step structure is actually visible in the HTML.
-  // GHL iframes are cross-origin — we cannot read inside them from outside,
-  // so we never assume multi-step just because GHL is present.
-  const hasMultiStep =
-    lower.includes('step 1') || lower.includes('step-1') || lower.includes('step 2') ||
-    lower.includes('wizard') || lower.includes('multi-step') || lower.includes('multistep') ||
-    formCount > 4;
-  // Whether the form type (single vs multi) could be verified automatically
-  const formTypeUnknown = hasGHLForm && !hasMultiStep;
+  // ── Multi-step detection ─────────────────────────────────────────
+  // Logic: look at the actual signals on the page, not the form platform.
+  //
+  // Single-step signals: "Submit", "Send Message", "Send Us a Message",
+  //   lots of fields crammed into one form, "fill out the form below"
+  //
+  // Multi-step signals: "Continue", "Next", "Next Step", "Keep Going",
+  //   language like "a few questions" / "tell us about your project",
+  //   very few visible fields (1-3) with a "Continue" CTA
+  //
+  // For GHL iframes: the iframe content is cross-origin locked, so we
+  // can't read button text inside it. We fall back to page-level language
+  // signals only. If none found, mark as unknown (most will be single-step).
+
+  // Button / CTA text visible in the DOM (outside iframes)
+  const allBtnTexts = Array.from(
+    doc.querySelectorAll('button, input[type="submit"], input[type="button"], a[class*="btn"], a[class*="button"], .cta-btn')
+  ).map(el => (el.textContent || el.value || el.getAttribute('aria-label') || '').toLowerCase().trim());
+
+  const multiStepBtns  = ['continue','next','next step','keep going','proceed','get started →','continue →'];
+  const singleStepBtns = ['submit','send','send message','send inquiry','send us a message','get a quote','request quote'];
+
+  const hasMultiStepBtn  = multiStepBtns.some(w  => allBtnTexts.some(t => t === w || t.startsWith(w)));
+  const hasSingleStepBtn = singleStepBtns.some(w => allBtnTexts.some(t => t === w || t.startsWith(w)));
+
+  // Page language near the form
+  const multiStepLang  = ['a few questions','quick questions','few steps','just a few','takes a minute',
+    'a couple questions','tell us a bit','tell us about your','what type of service','select your service',
+    'choose your','a little about','answer a few','a short form'];
+  const singleStepLang = ['fill out the form below','fill in the form','complete the form below',
+    'send us a message','leave us a message','drop us a line','reach out using'];
+
+  const hasMultiStepLang  = multiStepLang.some(w  => lower.includes(w));
+  const hasSingleStepLang = singleStepLang.some(w => lower.includes(w));
+
+  // Field count heuristic for raw HTML forms (not iframes)
+  const rawFieldCount = doc.querySelectorAll(
+    'form input:not([type=hidden]):not([type=submit]):not([type=button]), form select, form textarea'
+  ).length;
+  // 6+ fields all at once = single-step data dump; 1-3 fields = first step of multi
+  const fieldCountSuggestsMulti  = rawFieldCount > 0 && rawFieldCount <= 3;
+  const fieldCountSuggestsSingle = rawFieldCount >= 6;
+
+  // Explicit step markers in HTML
+  const hasStepMarkers = lower.includes('step 1') || lower.includes('step-1') ||
+    lower.includes('step 2') || lower.includes('wizard') ||
+    lower.includes('multi-step') || lower.includes('multistep');
+
+  // Combine signals — weight explicit markers and button text most heavily
+  const multiStepEvidence = (hasStepMarkers ? 3 : 0) + (hasMultiStepBtn ? 3 : 0) +
+    (hasMultiStepLang ? 2 : 0) + (fieldCountSuggestsMulti ? 1 : 0);
+  const singleStepEvidence = (hasSingleStepBtn ? 3 : 0) + (hasSingleStepLang ? 2 : 0) +
+    (fieldCountSuggestsSingle ? 2 : 0);
+
+  const hasMultiStep = multiStepEvidence > singleStepEvidence && multiStepEvidence >= 2;
+  // Unknown = GHL iframe present, no HTML signals either way — can't see inside
+  const formTypeUnknown = hasGHLForm && !hasStepMarkers && !hasMultiStepBtn && !hasSingleStepBtn &&
+    !hasMultiStepLang && !hasSingleStepLang;
 
   // Booking — broad net including scheduling language
   const bookingKw = [
