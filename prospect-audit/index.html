@@ -402,9 +402,62 @@ header{
 <script>
 // ─── CONFIG ─────────────────────────────────────────────────────
 // Worker adds GMB detection. Tool works without it via browser fallbacks.
-const WORKER_URL = 'https://hsp-audit.hsp-systems.workers.dev/audit';
-// CORS proxy fallback for HTML fetching when Worker isn't deployed
-const PROXY_URL  = 'https://api.allorigins.win/raw?url=';
+const WORKER_URL = 'https://hsp-audit.harley-b13.workers.dev/audit';
+// CORS proxy chain — fallback for HTML fetch only when the Worker is down.
+// Tried in order until one returns real HTML. Ordering reflects live testing:
+// corsproxy.org is currently the most reliable; the others are flaky backups.
+const PROXY_CHAIN = [
+  async (url) => {
+    const r = await fetch('https://corsproxy.org/?url=' + encodeURIComponent(url),
+      { signal: timedSignal(12000) });
+    if (!r.ok) throw new Error('corsproxy.org ' + r.status);
+    const t = await r.text();
+    if (!t || t.length < 200) throw new Error('corsproxy.org empty');
+    return t;
+  },
+  async (url) => {
+    const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+      { signal: timedSignal(12000) });
+    if (!r.ok) throw new Error('allorigins ' + r.status);
+    const t = await r.text();
+    if (!t || t.length < 200) throw new Error('allorigins empty');
+    return t;
+  },
+  async (url) => {
+    const r = await fetch('https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(url),
+      { signal: timedSignal(12000) });
+    if (!r.ok) throw new Error('codetabs ' + r.status);
+    const t = await r.text();
+    if (!t || t.length < 200) throw new Error('codetabs empty');
+    return t;
+  },
+];
+
+// Cross-browser compatible timeout signal
+function timedSignal(ms) {
+  const ctrl = new AbortController();
+  setTimeout(() => ctrl.abort(), ms);
+  return ctrl.signal;
+}
+
+// PageSpeed Insights. An API key makes this far more reliable — without one,
+// anonymous calls share a per-IP quota and frequently return HTTP 429.
+// Get a free key (1 min): https://developers.google.com/speed/docs/insights/v5/get-started
+// Then paste it between the quotes below.
+const PSI_API_KEY = '';
+async function fetchPageSpeed(url) {
+  try {
+    const key = PSI_API_KEY ? '&key=' + PSI_API_KEY : '';
+    const r = await fetch(
+      'https://www.googleapis.com/pagespeedonline/v5/runPagespeed' +
+      '?url=' + encodeURIComponent(url) + '&strategy=mobile' +
+      '&category=performance&category=seo&category=best-practices&category=accessibility' + key,
+      { signal: timedSignal(45000) }
+    );
+    if (r.ok) return await r.json();
+  } catch (_) {}
+  return null;
+}
 
 // ─── SCREENS ────────────────────────────────────────────────────
 const screens = {
@@ -519,53 +572,61 @@ async function runAudit() {
   showScreen('loading');
   ['1','2','3','4'].forEach(n => setStep(n, 'active'));
 
-  // ── Step 1: Fetch HTML ──────────────────────────────
-  // Try Worker first → CORS proxy fallback → bare fetch fallback
+  // ── Step 1: Fetch HTML + PageSpeed ──────────────────
+  // Reliability model:
+  //   Tier 1 (primary):  the Worker fetches HTML + PageSpeed + GMB server-side
+  //     — no CORS, no browser rate limits. One call returns everything.
+  //   Tier 2 (fallback): if the Worker is unreachable, fetch HTML through the
+  //     public CORS-proxy chain and run PageSpeed straight from the browser.
   let html = '', isHTTPS = targetUrl.startsWith('https'), finalUrl = targetUrl;
-  let workerLive = false, gmb = { found: false };
+  let workerLive = false, gmb = { found: false }, psiData = null;
 
-  // ── Run HTML fetch AND PageSpeed in parallel ──────────────────
-  // PSI can take 20-40s; running sequentially would cause "(est.)" timeouts.
   const domainGuess = new URL(targetUrl).hostname.replace(/^www\./, '').split('.')[0];
 
-  const [htmlResult, psiResult] = await Promise.allSettled([
-    // HTML: Worker → allorigins fallback
-    (async () => {
-      let h = '', iH = targetUrl.startsWith('https'), fU = targetUrl, wL = false, g = { found:false };
-      try {
-        const wr = await fetch(`${WORKER_URL}?url=${encodeURIComponent(targetUrl)}&biz=${encodeURIComponent(domainGuess)}`,
-          { signal: AbortSignal.timeout(12000) });
-        if (wr.ok) { const wd = await wr.json(); h=wd.html||''; iH=wd.isHTTPS??iH; fU=wd.finalUrl||fU; g=wd.gmb||g; wL=true; }
-      } catch(_) {}
-      if (!h) {
-        try {
-          const pr = await fetch(PROXY_URL + encodeURIComponent(targetUrl), { signal: AbortSignal.timeout(10000) });
-          if (pr.ok) h = await pr.text();
-        } catch(_) {}
+  // Start the Worker call and a browser-side PageSpeed call in parallel.
+  // We prefer the Worker's PageSpeed (server-cached + consistent finalUrl);
+  // the browser call is only used if the Worker is down or its PSI is empty.
+  const workerPromise = (async () => {
+    try {
+      const wr = await fetch(
+        `${WORKER_URL}?url=${encodeURIComponent(targetUrl)}&biz=${encodeURIComponent(domainGuess)}`,
+        { signal: timedSignal(40000) }
+      );
+      if (wr.ok) {
+        const wd = await wr.json();
+        if (wd && (wd.html || wd.pagespeed)) return wd;
       }
-      return { html:h, isHTTPS:iH, finalUrl:fU, gmb:g, workerLive:wL };
-    })(),
+    } catch (_) {}
+    return null;
+  })();
+  const browserPsiPromise = fetchPageSpeed(targetUrl);
 
-    // PageSpeed: always called directly from browser — CORS-enabled, free
-    (async () => {
-      try {
-        const r = await fetch(
-          `https://www.googleapis.com/pagespeedonline/v5/runPagespeed` +
-          `?url=${encodeURIComponent(targetUrl)}&strategy=mobile` +
-          `&category=performance&category=seo&category=best-practices&category=accessibility`,
-          { signal: AbortSignal.timeout(45000) }
-        );
-        if (r.ok) return await r.json();
-      } catch(_) {}
-      return null;
-    })(),
-  ]);
-
-  if (htmlResult.status === 'fulfilled' && htmlResult.value) {
-    const v = htmlResult.value;
-    html = v.html; isHTTPS = v.isHTTPS; finalUrl = v.finalUrl; gmb = v.gmb; workerLive = v.workerLive;
+  // Wait for the Worker first — it's the reliable path.
+  const wd = await workerPromise;
+  if (wd) {
+    workerLive = true;
+    if (wd.html)            html     = wd.html;
+    if (wd.isHTTPS != null) isHTTPS  = wd.isHTTPS;
+    if (wd.finalUrl)        finalUrl = wd.finalUrl;
+    if (wd.gmb)             gmb      = wd.gmb;
+    if (wd.pagespeed)       psiData  = wd.pagespeed;
   }
-  let psiData = psiResult.status === 'fulfilled' ? psiResult.value : null;
+
+  // Tier 2: Worker gave us no HTML → walk the CORS-proxy chain until one works.
+  if (!html) {
+    for (const proxy of PROXY_CHAIN) {
+      try {
+        const t = await proxy(targetUrl);
+        if (t && t.length > 200) { html = t; finalUrl = targetUrl; break; }
+      } catch (_) {}
+    }
+  }
+
+  // PageSpeed: fall back to the browser call if the Worker didn't supply one.
+  if (!psiData?.lighthouseResult) {
+    const bp = await browserPsiPromise;
+    if (bp?.lighthouseResult) psiData = bp;
+  }
 
   setStep(1, html ? 'done' : 'error');
   setStep(2, psiData?.lighthouseResult ? 'done' : 'error');
@@ -574,12 +635,14 @@ async function runAudit() {
   const bizName = extractBizName(html, finalUrl);
   document.getElementById('loading-biz-name').textContent = 'Analyzing ' + bizName + '...';
 
-  // Re-query Worker with real biz name for better GMB detection
-  if (workerLive && bizName && bizName !== 'This Business') {
+  // Re-query Worker with the real biz name for better GMB detection.
+  // skippsi=1 makes this a fast lookup (no PageSpeed) so it returns quickly.
+  if (workerLive && bizName && bizName !== 'This Business' && !gmb?.found) {
     try {
-      const wr2 = await fetch(`${WORKER_URL}?url=${encodeURIComponent(finalUrl)}&biz=${encodeURIComponent(bizName)}`,
-        { signal: AbortSignal.timeout(8000) });
-      if (wr2.ok) { const wd2 = await wr2.json(); gmb = wd2.gmb || gmb; }
+      const wr2 = await fetch(
+        `${WORKER_URL}?url=${encodeURIComponent(finalUrl)}&biz=${encodeURIComponent(bizName)}&skippsi=1`,
+        { signal: timedSignal(15000) });
+      if (wr2.ok) { const wd2 = await wr2.json(); if (wd2.gmb) gmb = wd2.gmb; }
     } catch (_) {}
   }
   setStep(3, 'done');

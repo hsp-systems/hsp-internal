@@ -44,6 +44,7 @@ export default {
 
     const rawUrl   = searchParams.get("url") || "";
     const bizName  = searchParams.get("biz") || "";
+    const skipPsi  = searchParams.get("skippsi") === "1";
 
     // Validate URL
     let targetUrl;
@@ -64,59 +65,70 @@ export default {
       gmb: { found: false, rating: null, reviewCount: null },
     };
 
-    // ── 1. Fetch site HTML ──────────────────────────────────
-    try {
-      const siteRes = await fetch(targetUrl.href, {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-            "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-          Accept:
-            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-          "Accept-Language": "en-US,en;q=0.9",
-        },
-        redirect: "follow",
-        cf: { cacheTtl: 300 },
-      });
+    // ── Run HTML, PageSpeed and GMB lookups in parallel ──────
+    // Total latency ≈ the slowest task, not the sum of all three.
 
-      result.statusCode = siteRes.status;
-      result.finalUrl   = siteRes.url;
-      result.isHTTPS    = result.finalUrl.startsWith("https://");
+    // 1. Fetch site HTML
+    const htmlTask = (async () => {
+      try {
+        const siteRes = await fetch(targetUrl.href, {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+              "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            Accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+          },
+          redirect: "follow",
+          cf: { cacheTtl: 300 },
+        });
 
-      const ct = siteRes.headers.get("content-type") || "";
-      if (siteRes.ok && ct.includes("text/html")) {
-        // Limit to 500KB to keep worker memory sane
-        const buf  = await siteRes.arrayBuffer();
-        const text = new TextDecoder("utf-8", { fatal: false }).decode(
-          buf.slice(0, 500_000)
+        result.statusCode = siteRes.status;
+        result.finalUrl   = siteRes.url;
+        result.isHTTPS    = result.finalUrl.startsWith("https://");
+
+        const ct = siteRes.headers.get("content-type") || "";
+        if (siteRes.ok && ct.includes("text/html")) {
+          // Limit to 500KB to keep worker memory sane
+          const buf  = await siteRes.arrayBuffer();
+          result.html = new TextDecoder("utf-8", { fatal: false }).decode(
+            buf.slice(0, 500_000)
+          );
+          result.ok = true;
+        } else {
+          result.htmlError = `HTTP ${siteRes.status} / content-type: ${ct}`;
+        }
+      } catch (e) {
+        result.htmlError = e.message;
+      }
+    })();
+
+    // 2. PageSpeed API (mobile) — skipped for fast GMB-only re-queries.
+    //    An optional PSI_API_KEY secret avoids Google's anonymous 429 throttling.
+    const psiTask = skipPsi ? Promise.resolve() : (async () => {
+      try {
+        const key = env && env.PSI_API_KEY ? `&key=${env.PSI_API_KEY}` : "";
+        const psiRes = await fetch(
+          `https://www.googleapis.com/pagespeedonline/v5/runPagespeed` +
+            `?url=${encodeURIComponent(targetUrl.href)}` +
+            `&strategy=mobile` +
+            `&category=performance&category=seo&category=best-practices&category=accessibility` +
+            key,
+          { cf: { cacheTtl: 3600 } }
         );
-        result.html = text;
-        result.ok   = true;
-      } else {
-        result.htmlError = `HTTP ${siteRes.status} / content-type: ${ct}`;
+        if (psiRes.ok) {
+          result.pagespeed = await psiRes.json();
+        } else {
+          result.pagespeedError = `HTTP ${psiRes.status}`;
+        }
+      } catch (e) {
+        result.pagespeedError = e.message;
       }
-    } catch (e) {
-      result.htmlError = e.message;
-    }
+    })();
 
-    // ── 2. PageSpeed API (mobile) ────────────────────────────
-    try {
-      const psiRes = await fetch(
-        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed` +
-          `?url=${encodeURIComponent(result.finalUrl)}` +
-          `&strategy=mobile` +
-          `&category=performance&category=seo&category=best-practices&category=accessibility`,
-        { cf: { cacheTtl: 3600 } }
-      );
-      if (psiRes.ok) {
-        result.pagespeed = await psiRes.json();
-      }
-    } catch (e) {
-      result.pagespeedError = e.message;
-    }
-
-    // ── 3. Google Business Profile detection ─────────────────
-    if (bizName.trim()) {
+    // 3. Google Business Profile detection
+    const gmbTask = bizName.trim() ? (async () => {
       try {
         const q   = encodeURIComponent(`${bizName.trim()} reviews`);
         const gRes = await fetch(
@@ -163,7 +175,9 @@ export default {
       } catch (e) {
         result.gmb.error = e.message;
       }
-    }
+    })() : Promise.resolve();
+
+    await Promise.allSettled([htmlTask, psiTask, gmbTask]);
 
     return json(result, 200, headers);
   },
