@@ -889,10 +889,30 @@ function analyzeHTML(html, urlStr) {
   // Physical address visible (street number + street type)
   const hasAddress = /\b\d{2,5}\s+[A-Za-z].{2,30}(St\.?|Ave\.?|Dr\.?|Blvd\.?|Rd\.?|Ln\.?|Way|Ct\.?|Circle|Pkwy|Hwy)\b/i.test(bodyText)
     || !!doc.querySelector('[itemprop="streetAddress"],[class*="address"],[class*="location"]');
-  // Visible business email on page (not in hidden scripts)
-  const emailMatches = bodyText.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g) || [];
-  const hasEmail = emailMatches.some(e => !e.includes('example') && !e.includes('noreply') &&
-    !e.includes('sentry') && !e.includes('@2x') && !e.includes('.png'));
+  // Email — detect AND classify: branded company domain vs free consumer inbox.
+  // A free inbox (gmail/yahoo/etc.) reads as less credible than name@company.com.
+  // Pull from both mailto: links and visible body text.
+  const FREE_EMAIL = ['gmail.com','googlemail.com','yahoo.com','ymail.com','rocketmail.com',
+    'hotmail.com','outlook.com','live.com','msn.com','aol.com','aim.com','icloud.com','me.com',
+    'mac.com','gmx.com','gmx.us','mail.com','yandex.com','zoho.com','protonmail.com','proton.me',
+    'pm.me','comcast.net','att.net','verizon.net','sbcglobal.net','bellsouth.net','cox.net',
+    'charter.net','earthlink.net','frontier.com'];
+  const isJunkEmail = e => /example|noreply|no-reply|donotreply|sentry|wixpress|@2x|\.(png|jpe?g|gif|svg|webp)$|yourdomain|domain\.com|email\.com|test@|@test|@example/.test(e);
+  const mailtoEmails = linkHrefs.filter(h => h.startsWith('mailto:'))
+    .map(h => h.replace('mailto:', '').split('?')[0].trim().toLowerCase());
+  const textEmails = (bodyText.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g) || [])
+    .map(e => e.toLowerCase());
+  const realEmails = [...new Set([...mailtoEmails, ...textEmails])].filter(e => e.includes('@') && !isJunkEmail(e));
+  const hasEmail = realEmails.length > 0;
+  let siteDomain = '';
+  try { siteDomain = new URL(urlStr).hostname.replace(/^www\./, '').toLowerCase(); } catch (_) {}
+  const emailDomains = realEmails.map(e => e.split('@')[1]).filter(Boolean);
+  const brandedEmail = emailDomains.find(d => siteDomain && (d === siteDomain || d.endsWith('.' + siteDomain) || siteDomain.endsWith('.' + d)))
+    || emailDomains.find(d => !FREE_EMAIL.includes(d)); // any custom (non-free) domain counts as branded
+  const freeEmailDomain = emailDomains.find(d => FREE_EMAIL.includes(d));
+  // 'business' = branded/custom domain · 'free' = only a consumer inbox · 'none' = no email
+  const emailType = brandedEmail ? 'business' : (freeEmailDomain ? 'free' : 'none');
+  const emailProvider = brandedEmail || freeEmailDomain || '';
   // Trust badges / certifications
   const hasTrustBadge = lower.includes('bbb') || lower.includes('better business bureau') ||
     lower.includes('licensed') || lower.includes('insured') || lower.includes('certified') ||
@@ -941,7 +961,7 @@ function analyzeHTML(html, urlStr) {
   return {
     formCount, hasMultiStep, formTypeUnknown, hasBooking, hasCTAAboveFold, hasPhone,
     hasChatWidget, chatProviderName,
-    hasEmail, hasAddress, hasNewsletter, hasTrustBadge, hasVideo,
+    hasEmail, emailType, emailProvider, hasAddress, hasNewsletter, hasTrustBadge, hasVideo,
     hasFacebook, hasInstagram, hasLinkedIn, hasYouTube, hasTikTok, hasTwitterX,
     hasGMBLink, hasReviewWidget, hasYelp,
     hasCareersPage, hasEmailHiring, hasTestimonials,
@@ -1071,8 +1091,14 @@ function calculateScores(psi, html, gmb) {
 
   // ── Trust & Conversion ────────────────────────────
   let cp = 0; const cf = [];
-  if (html.hasTestimonials) { cp += 25; cf.push([true,  'Testimonials or reviews on page']); }
+  if (html.hasTestimonials) { cp += 20; cf.push([true,  'Testimonials or reviews on page']); }
   else                      {           cf.push([false, 'No social proof visible — hurts conversions']); }
+  // Email credibility — branded company domain vs a free consumer inbox.
+  if (html.emailType === 'business') {
+    cp += 15; cf.push([true,  `Branded email on company domain (@${html.emailProvider}) — looks professional`]);
+  } else if (html.emailType === 'free') {
+    cf.push([false, `Uses a free ${html.emailProvider} inbox — a branded @company email builds more trust`]);
+  }
   if (html.hasAboutPage)    { cp += 20; cf.push([true,  'About / team page found']); }
   else                      {           cf.push([false, 'No about page — harder to build trust']); }
   if (html.hasServicePage)  { cp += 20; cf.push([true,  'Service / pricing pages present']); }
