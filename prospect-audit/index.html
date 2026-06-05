@@ -897,12 +897,23 @@ function analyzeHTML(html, urlStr) {
     'mac.com','gmx.com','gmx.us','mail.com','yandex.com','zoho.com','protonmail.com','proton.me',
     'pm.me','comcast.net','att.net','verizon.net','sbcglobal.net','bellsouth.net','cox.net',
     'charter.net','earthlink.net','frontier.com'];
-  const isJunkEmail = e => /example|noreply|no-reply|donotreply|sentry|wixpress|@2x|\.(png|jpe?g|gif|svg|webp)$|yourdomain|domain\.com|email\.com|test@|@test|@example/.test(e);
+  const isJunkEmail = e => /example|noreply|no-reply|donotreply|sentry|wixpress|godaddy|@2x|\.(png|jpe?g|gif|svg|webp|css|js)$|yourdomain|domain\.com|email\.com|test@|@test|@example|schema\.org|w3\.org|googleapis|gstatic|cloudflare|jquery/.test(e);
+  const EMAIL_RX = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
+  // Pull from mailto: links, JSON-LD "email" fields, and visible body text.
+  // JSON-LD is the most authoritative — local-business schema lists the real
+  // contact email (often a free att.net/gmail inbox the site never shows in text).
   const mailtoEmails = linkHrefs.filter(h => h.startsWith('mailto:'))
     .map(h => h.replace('mailto:', '').split('?')[0].trim().toLowerCase());
-  const textEmails = (bodyText.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g) || [])
-    .map(e => e.toLowerCase());
-  const realEmails = [...new Set([...mailtoEmails, ...textEmails])].filter(e => e.includes('@') && !isJunkEmail(e));
+  const jsonLdEmails = [...html.matchAll(/["']email["']\s*:\s*["']([^"']+)["']/gi)]
+    .map(m => m[1].trim().toLowerCase());
+  const textEmails = (bodyText.match(EMAIL_RX) || []).map(e => e.toLowerCase());
+  let realEmails = [...new Set([...mailtoEmails, ...jsonLdEmails, ...textEmails])]
+    .filter(e => e.includes('@') && !isJunkEmail(e));
+  // Last resort: scan the raw HTML (catches emails tucked in attributes/markup).
+  if (!realEmails.length) {
+    realEmails = [...new Set((html.match(EMAIL_RX) || []).map(e => e.toLowerCase()))]
+      .filter(e => e.includes('@') && !isJunkEmail(e));
+  }
   const hasEmail = realEmails.length > 0;
   let siteDomain = '';
   try { siteDomain = new URL(urlStr).hostname.replace(/^www\./, '').toLowerCase(); } catch (_) {}
@@ -1098,6 +1109,8 @@ function calculateScores(psi, html, gmb) {
     cp += 15; cf.push([true,  `Branded email on company domain (@${html.emailProvider}) — looks professional`]);
   } else if (html.emailType === 'free') {
     cf.push([false, `Uses a free ${html.emailProvider} inbox — a branded @company email builds more trust`]);
+  } else {
+    cf.push([false, 'No public email address found on the site']);
   }
   if (html.hasAboutPage)    { cp += 20; cf.push([true,  'About / team page found']); }
   else                      {           cf.push([false, 'No about page — harder to build trust']); }
