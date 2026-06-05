@@ -490,23 +490,33 @@ function extractBizName(html, url) {
       .replace(/&nbsp;/gi, ' ').replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n))
       .trim();
   }
+  // Decode + strip common CMS "site title" junk suffixes, e.g. Wix's default
+  // "<Brand> Co 1" / "My Site 1". Only strips a trailing Co/Site/LLC + number,
+  // so legitimate names like "Smith & Co" are left intact.
+  function clean(s) {
+    return decode(s)
+      .replace(/\s+(Co|Company|Site|Website|LLC|L\.L\.C\.|Inc|Incorporated|Corp)\.?\s+\d+\s*$/i, '')
+      .trim();
+  }
 
-  // 1. JSON-LD structured data — most accurate for local businesses
-  //    e.g. <script type="application/ld+json">{"@type":"LocalBusiness","name":"Vollink Eye Care"...}
+  // 1. JSON-LD structured data — most accurate for local businesses.
+  //    Only trust names from business/org/person entities. WebSite / WebPage
+  //    names are often the CMS "site title" (e.g. Wix's "<Brand> Co 1" default)
+  //    and must NOT outrank the cleaner <title>.
+  const GOOD_LD_TYPE = /(LocalBusiness|Organization|Corporation|Store|Restaurant|FoodEstablishment|Business|Professional|Dentist|Physician|MedicalClinic|MedicalBusiness|Attorney|LegalService|HomeAndConstruction|Contractor|Person)/i;
+  const ldType = e => { const t = e && e['@type']; return Array.isArray(t) ? t.join(' ') : (t || ''); };
   const jsonLdBlocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
   for (const block of jsonLdBlocks) {
     try {
       const raw  = block.replace(/<script[^>]*>/i,'').replace(/<\/script>/i,'');
       const data = JSON.parse(raw);
       const entities = Array.isArray(data) ? data : [data];
-      for (const e of entities) {
-        // Direct entity name
-        if (e.name && typeof e.name === 'string' && e.name.trim().length > 1) return decode(e.name.trim());
-        // @graph array (common in WordPress SEO plugins)
-        if (Array.isArray(e['@graph'])) {
-          for (const g of e['@graph']) {
-            if (g.name && typeof g.name === 'string' && g.name.trim().length > 1) return decode(g.name.trim());
-          }
+      // Flatten direct entities + @graph children (common in WordPress SEO plugins)
+      const pool = [];
+      for (const e of entities) { pool.push(e); if (Array.isArray(e['@graph'])) pool.push(...e['@graph']); }
+      for (const e of pool) {
+        if (e && typeof e.name === 'string' && e.name.trim().length > 1 && GOOD_LD_TYPE.test(ldType(e))) {
+          return clean(e.name.trim());
         }
       }
     } catch(_) {}
@@ -515,11 +525,11 @@ function extractBizName(html, url) {
   // 2. og:site_name
   const ogSite = html.match(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']+)["']/i)?.[1]
               || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:site_name["']/i)?.[1];
-  if (ogSite?.trim()) return decode(ogSite);
+  if (ogSite?.trim()) return clean(ogSite);
 
   // 2. application-name meta
   const appName = html.match(/<meta[^>]+name=["']application-name["'][^>]+content=["']([^"']+)["']/i)?.[1];
-  if (appName?.trim()) return decode(appName);
+  if (appName?.trim()) return clean(appName);
 
   // 3. <title> — smart segment selection
   //    Pattern is usually: "Service Desc | Business Name | City, ST"
@@ -866,7 +876,11 @@ function analyzeHTML(html, urlStr) {
     lower.includes('what our customers') || lower.includes('hear from') ||
     lower.includes('★') || lower.includes('⭐') ||
     (lower.includes('review') && (lower.includes('star') || lower.includes('rating')));
-  const hasAboutPage   = hasLink('/about', 'about us') || hasLink('/about', 'about');
+  // About: a dedicated page, OR an on-page "About" section (anchor/id) — common
+  // on single-page Wix/Squarespace sites where the nav scrolls to #about.
+  const hasAboutPage   = hasLink('/about', 'about us') || hasLink('/about', 'about') ||
+    linkHrefs.some(h => h.includes('#about')) ||
+    !!doc.querySelector('#about, #about-us, a[href*="#about"], [aria-label="About" i]');
   const hasServicePage = hasLink('/service', 'services') || hasLink('/pricing', 'pricing');
   const hasBlog        = hasLink('/blog', 'blog') || hasLink('/news', 'news') || hasLink('/resources', 'resources');
   // Video on site

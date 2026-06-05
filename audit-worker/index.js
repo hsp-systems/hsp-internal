@@ -90,10 +90,12 @@ export default {
 
         const ct = siteRes.headers.get("content-type") || "";
         if (siteRes.ok && ct.includes("text/html")) {
-          // Limit to 500KB to keep worker memory sane
+          // Cap to keep worker memory sane, but high enough to include the
+          // footer/nav. Wix & Squarespace pages inline ~500KB-1MB of CSS/JS
+          // BEFORE the links, so a low cap silently drops social/contact/nav.
           const buf  = await siteRes.arrayBuffer();
           result.html = new TextDecoder("utf-8", { fatal: false }).decode(
-            buf.slice(0, 500_000)
+            buf.slice(0, 3_000_000)
           );
           result.ok = true;
         } else {
