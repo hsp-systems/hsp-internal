@@ -459,9 +459,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="ghl-wrap">
 
           <div class="ghl-sidebar">
-            <div class="ghl-logo-box">HS</div>
-            <div class="ghl-org">HSP Systems</div>
-            <div class="ghl-event" id="ghl-event-title">System Demo</div>
+            <div class="ghl-logo-box" id="ghl-logo-box">HS</div>
+            <div class="ghl-org" id="ghl-org-1"></div>
+            <div class="ghl-event">Book a Consultation</div>
             <div class="ghl-smeta"><span class="ghl-smeta-icon">⏱</span> 35 min</div>
             <div class="ghl-smeta hidden" id="ghl-sidebar-date-row">
               <span class="ghl-smeta-icon">📅</span>
@@ -502,8 +502,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 
           <div class="ghl-sidebar">
             <button class="ghl-back-btn" onclick="ghlShowCalendar()">← Back</button>
-            <div class="ghl-org">HSP Systems</div>
-            <div class="ghl-event">System Demo</div>
+            <div class="ghl-org" id="ghl-org-2"></div>
+            <div class="ghl-event">Book a Consultation</div>
             <div class="ghl-smeta"><span class="ghl-smeta-icon">⏱</span> 35 min</div>
             <div class="ghl-smeta" id="ghl-details-time"><span class="ghl-smeta-icon">📅</span><span id="ghl-details-time-text">—</span></div>
             <div class="ghl-smeta"><span class="ghl-smeta-icon">🌐</span> America/New_York (EDT)</div>
@@ -1028,6 +1028,7 @@ function goToStep(step){
 }
 function advanceFromStep2(){totalSteps===4?goToStep(3):showFinalStep()}
 function showFinalStep(){
+  hideAllSteps();
   currentStep='final';
   show('step-final');
   renderEndState();
@@ -1091,6 +1092,12 @@ function ghlInit(){
   ghlSelDate = null; ghlSelTime = null;
   hide('ghl-view-details'); show('ghl-view-cal');
   hide('ghl-slots-panel'); hide('ghl-sidebar-date-row');
+  // Populate business name from presenter bar
+  const biz = document.getElementById('biz-input').value.trim() || 'Your Business';
+  const initials = biz.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('ghl-logo-box').textContent = initials || 'HS';
+  document.getElementById('ghl-org-1').textContent = biz;
+  document.getElementById('ghl-org-2').textContent = biz;
   ghlRender();
 }
 
