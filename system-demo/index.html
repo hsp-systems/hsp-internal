@@ -21,60 +21,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .hidden{display:none!important}
 
 /* ── PRESENTER BAR ── */
-#presenter-bar{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  background:var(--navy-dark);border-bottom:2px solid var(--gold);
-}
-.pb-row1{
-  height:60px;display:flex;align-items:center;gap:14px;padding:0 18px;
-  border-bottom:1px solid rgba(255,255,255,0.07);
-}
-.pb-brand{
-  font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:15px;
-  letter-spacing:0.12em;white-space:nowrap;flex-shrink:0;
-  border-right:1px solid rgba(255,255,255,0.12);padding-right:14px;
-}
-.pb-controls{display:flex;align-items:center;gap:10px;flex:1;flex-wrap:nowrap}
+#presenter-bar{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--navy-dark);border-bottom:2px solid var(--gold)}
+.pb-row1{height:60px;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.pb-brand{font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:15px;letter-spacing:0.12em;white-space:nowrap;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.12);padding-right:14px}
+.pb-controls{display:flex;align-items:center;gap:10px;flex:1}
 .pb-field{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .pb-field label{font-size:10px;color:rgba(255,255,255,0.38);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap}
-.pb-field input,.pb-field select{
-  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);
-  color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;
-  padding:5px 9px;border-radius:4px;outline:none;transition:border-color 0.2s;
-}
+.pb-field input,.pb-field select{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 9px;border-radius:4px;outline:none;transition:border-color 0.2s}
 .pb-field input{width:160px}
 .pb-field input::placeholder{color:rgba(255,255,255,0.28)}
 .pb-field select option{background:#1a2a50;color:var(--white)}
-.pb-reset{
-  background:transparent;color:rgba(255,255,255,0.45);
-  border:1px solid rgba(255,255,255,0.18);font-family:'DM Sans',sans-serif;
-  font-size:12px;padding:5px 10px;border-radius:4px;cursor:pointer;
-  white-space:nowrap;transition:all 0.2s;flex-shrink:0;
-}
+.pb-reset{background:transparent;color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.18);font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 10px;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0}
 .pb-reset:hover{border-color:var(--gold);color:var(--gold)}
 .pb-nav{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
-.pb-nav a{
-  font-size:11px;color:rgba(255,255,255,0.42);text-decoration:none;
-  padding:5px 9px;border-radius:4px;transition:all 0.2s;white-space:nowrap;
-}
+.pb-nav a{font-size:11px;color:rgba(255,255,255,0.42);text-decoration:none;padding:5px 9px;border-radius:4px;transition:all 0.2s;white-space:nowrap}
 .pb-nav a:hover{color:var(--white);background:rgba(255,255,255,0.08)}
-
-/* Industry chips row */
-.pb-row2{
-  height:38px;display:flex;align-items:center;gap:6px;padding:0 18px;
-  overflow-x:auto;background:rgba(0,0,0,0.18);
-}
+.pb-row2{height:38px;display:flex;align-items:center;gap:6px;padding:0 18px;overflow-x:auto;background:rgba(0,0,0,0.18)}
 .pb-row2::-webkit-scrollbar{display:none}
 .pb-ind-label{font-size:10px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;flex-shrink:0;margin-right:4px}
-.ind-btn{
-  padding:3px 13px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:12px;
-  border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);
-  cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;
-}
+.ind-btn{padding:3px 13px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:12px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s}
 .ind-btn.active{background:var(--gold);border-color:var(--gold);color:var(--navy-dark);font-weight:700}
 .ind-btn:hover:not(.active){border-color:rgba(255,255,255,0.35);color:var(--white)}
 
-/* ── SHARED SECTION STYLES ── */
+/* ── SHARED ── */
 .section-header{text-align:center;padding:60px 24px 36px;max-width:680px;margin:0 auto}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
 .eyebrow-line{width:22px;height:1px;background:var(--gold)}
@@ -84,20 +53,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .sec-sub.light{color:rgba(255,255,255,0.55)}
 .divider{height:1px;background:rgba(255,255,255,0.08);margin:52px 24px}
 
-/* ── SECTION 1: FUNNEL DEMO ── */
+/* ── SECTION 1: FUNNEL ── */
 #section-funnel{background:#ECEEF5;padding-bottom:64px}
-
-.funnel-banner{
-  background:var(--navy);color:rgba(255,255,255,0.65);
-  text-align:center;padding:9px 20px;font-size:12px;letter-spacing:0.05em;
-}
+.funnel-banner{background:var(--navy);color:rgba(255,255,255,0.65);text-align:center;padding:9px 20px;font-size:12px;letter-spacing:0.05em}
 .funnel-banner strong{color:var(--gold)}
-
-.funnel-site-header{
-  background:white;border-bottom:3px solid var(--gold);
-  padding:18px 36px;display:flex;align-items:center;gap:18px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
-}
+.funnel-site-header{background:white;border-bottom:3px solid var(--gold);padding:18px 36px;display:flex;align-items:center;gap:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 .funnel-site-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--navy);letter-spacing:0.04em}
 .funnel-site-tagline{font-size:13px;color:var(--muted);border-left:2px solid var(--border);padding-left:16px}
 
@@ -118,11 +78,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .form-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-field label{display:block;font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:5px}
-.form-field input,.form-field select,.form-field textarea{
-  width:100%;border:1.5px solid var(--border);border-radius:8px;
-  padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:15px;
-  color:var(--text);background:white;outline:none;transition:border-color 0.2s;
-}
+.form-field input,.form-field select,.form-field textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:white;outline:none;transition:border-color 0.2s}
 .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--navy)}
 .form-field textarea{resize:vertical;min-height:72px}
 .form-options{display:flex;gap:7px;flex-wrap:wrap}
@@ -139,14 +95,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .form-back:hover{border-color:var(--navy);color:var(--navy)}
 .prefill-pill{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;margin-bottom:2px}
 
-/* Calendar */
-.cal-month{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.1em}
-.cal-times{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
-.cal-slot{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:white;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;text-align:left;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px}
-.cal-slot::before{content:'🗓';font-size:14px}
-.cal-slot:hover{border-color:var(--navy);background:#F4F6FC}
-.cal-slot.selected{border-color:var(--navy);background:var(--navy);color:white}
-
 /* Checkout */
 .checkout-summary{background:var(--off-white);border-radius:8px;padding:18px;margin-bottom:18px}
 .checkout-line{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px}
@@ -161,10 +109,68 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .next-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-mid);background:var(--off-white);padding:10px 13px;border-radius:8px}
 .confirm-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
 
+/* ── GHL BOOKING WIDGET ── */
+.ghl-card{background:#1e3168;border-radius:14px;max-width:760px;margin:0 auto 12px;overflow:hidden;box-shadow:0 10px 50px rgba(0,0,0,0.35)}
+.ghl-wrap{display:flex;min-height:460px}
+.ghl-sidebar{background:#162447;width:205px;flex-shrink:0;padding:22px 18px;border-right:1px solid rgba(255,255,255,0.08)}
+.ghl-logo-box{width:50px;height:50px;background:var(--gold-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--navy-dark);margin-bottom:12px;letter-spacing:0.05em}
+.ghl-org{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:5px}
+.ghl-event{font-size:17px;font-weight:700;color:white;margin-bottom:12px;line-height:1.3}
+.ghl-smeta{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,0.52);margin-bottom:7px;line-height:1.4}
+.ghl-smeta-icon{flex-shrink:0;margin-top:1px}
+.ghl-desc{font-size:11px;color:rgba(255,255,255,0.38);line-height:1.7;margin-top:14px;border-top:1px solid rgba(255,255,255,0.07);padding-top:14px}
+.ghl-desc strong{color:rgba(255,255,255,0.68);font-size:11px;display:block;margin-bottom:6px}
+.ghl-back-btn{background:none;border:none;color:rgba(255,255,255,0.55);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;padding:0;margin-bottom:18px;display:flex;align-items:center;gap:5px;transition:color 0.2s}
+.ghl-back-btn:hover{color:white}
+
+/* Calendar area */
+.ghl-cal-area{flex:1;padding:22px 16px;min-width:0}
+.ghl-cal-title{font-size:14px;font-weight:600;color:white;margin-bottom:14px}
+.ghl-month-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+#ghl-month-label{font-size:13px;font-weight:600;color:white;flex:1;text-align:center}
+.ghl-nav-btn{background:rgba(255,255,255,0.08);border:none;color:white;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;flex-shrink:0}
+.ghl-nav-btn:hover{background:rgba(255,255,255,0.18)}
+.ghl-weekdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
+.ghl-weekdays span{text-align:center;font-size:10px;color:rgba(255,255,255,0.4);padding:3px 0}
+.ghl-days{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.ghl-day{text-align:center;padding:0;font-size:12px;color:rgba(255,255,255,0.65);cursor:pointer;border-radius:50%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;transition:all 0.18s;position:relative}
+.ghl-day:hover:not(.ghl-empty):not(.ghl-unavail){background:rgba(200,145,42,0.2);color:white}
+.ghl-day.ghl-empty,.ghl-day.ghl-unavail{color:rgba(255,255,255,0.16);cursor:default}
+.ghl-day.ghl-avail::after{content:'·';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:14px;line-height:1}
+.ghl-day.ghl-selected{background:var(--gold);color:var(--navy-dark);font-weight:700}
+.ghl-day.ghl-selected::after{display:none}
+.ghl-timezone{margin-top:10px;font-size:10px;color:rgba(255,255,255,0.3);display:flex;align-items:center;gap:5px}
+
+/* Time slots panel */
+.ghl-slots-panel{width:145px;flex-shrink:0;padding:22px 10px;border-left:1px solid rgba(255,255,255,0.08);overflow-y:auto;max-height:460px}
+.ghl-slots-panel::-webkit-scrollbar{width:3px}
+.ghl-slots-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:2px}
+.ghl-slots-dayname{font-size:11px;font-weight:700;color:white;margin-bottom:10px}
+.ghl-slot{display:block;width:100%;padding:9px 4px;border:1px solid var(--gold);background:transparent;color:var(--gold);border-radius:5px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.18s;font-weight:700;margin-bottom:7px;text-align:center}
+.ghl-slot:hover{background:var(--gold);color:var(--navy-dark)}
+
+/* Details form */
+.ghl-details-area{flex:1;padding:22px 24px;position:relative;display:flex;flex-direction:column}
+.ghl-details-title{font-size:15px;font-weight:600;color:white;margin-bottom:20px}
+.ghl-detail-field{margin-bottom:12px}
+.ghl-detail-field label{display:block;font-size:13px;color:rgba(255,255,255,0.65);margin-bottom:6px}
+.ghl-detail-input{width:100%;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.18);color:white;font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 14px;border-radius:6px;outline:none;transition:border-color 0.2s;display:flex;align-items:center}
+.ghl-detail-input:focus{border-color:var(--gold)}
+.ghl-email-err{color:var(--gold);font-size:12px;margin-top:4px}
+.ghl-add-guest{background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:4px;cursor:pointer;margin-top:4px;transition:all 0.2s}
+.ghl-add-guest:hover{background:rgba(200,145,42,0.12)}
+.ghl-schedule-btn{margin-top:auto;align-self:flex-end;background:var(--gold);color:var(--navy-dark);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:11px 22px;border-radius:6px;border:none;cursor:pointer;transition:background 0.2s;margin-top:20px}
+.ghl-schedule-btn:hover{background:var(--gold-light)}
+
+/* Back-to-form link below GHL widget */
+.ghl-form-back{display:flex;justify-content:center;padding:4px 0 8px;max-width:760px;margin:0 auto}
+.ghl-form-back button{background:transparent;border:none;font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(0,0,0,0.35);cursor:pointer;text-decoration:underline}
+.ghl-form-back button:hover{color:var(--navy)}
+
 /* ── SECTION 2: BACKEND ── */
 #section-backend{background:var(--navy-dark);padding-bottom:72px}
 .flow-diagram{max-width:860px;margin:0 auto;padding:0 24px}
-.flow-row{display:flex;align-items:stretch;justify-content:center;gap:12px;margin-bottom:0}
+.flow-row{display:flex;align-items:stretch;justify-content:center;gap:12px}
 .flow-node{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:16px 14px;text-align:center;flex:1;max-width:196px;transition:border-color 0.3s}
 .flow-node:hover{border-color:rgba(200,145,42,0.5)}
 .flow-node-icon{font-size:24px;margin-bottom:7px}
@@ -178,20 +184,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 
 /* ── SECTION 3: CRM ── */
 #section-crm{background:var(--navy);padding-bottom:80px}
-
-/* Pipeline toggle */
 .pipeline-toggle{display:flex;gap:10px;justify-content:center;padding:0 24px 12px}
 .ptoggle{padding:11px 26px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:2px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);transition:all 0.25s;letter-spacing:0.02em}
 .ptoggle.active{background:var(--gold);border-color:var(--gold);color:var(--navy-dark)}
 .ptoggle:hover:not(.active){border-color:rgba(255,255,255,0.35);color:var(--white)}
-
-.pipeline-lever-ctx{
-  text-align:center;max-width:600px;margin:0 auto 28px;padding:0 24px;
-  font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;
-}
+.pipeline-lever-ctx{text-align:center;max-width:600px;margin:0 auto 28px;padding:0 24px;font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6}
 .pipeline-lever-ctx strong{color:rgba(255,255,255,0.75)}
-
-/* Pipeline board */
 .pipeline-wrap{overflow-x:auto;padding:0 24px 8px}
 .pipeline-board{display:flex;gap:11px;min-width:max-content;padding:4px 0 10px}
 .pipeline-col{background:rgba(255,255,255,0.04);border-radius:8px;width:200px;flex-shrink:0;overflow:hidden}
@@ -200,7 +198,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .pipeline-col-meta{font-size:11px;color:rgba(255,255,255,0.38);margin-bottom:3px}
 .pipeline-stage-val{font-size:10px;color:rgba(200,145,42,0.7);font-style:italic}
 .pipeline-cards{padding:8px;display:flex;flex-direction:column;gap:6px}
-.pipeline-card{background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px;transition:border-color 0.2s;cursor:default}
+.pipeline-card{background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px;transition:border-color 0.2s}
 .pipeline-card:hover{border-color:rgba(200,145,42,0.35)}
 .pipeline-card.won{background:rgba(27,122,58,0.14);border-color:rgba(27,122,58,0.28)}
 .pc-name{font-size:12px;font-weight:600;color:var(--white);margin-bottom:4px}
@@ -232,7 +230,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .bad{color:rgba(255,90,90,0.7)!important}
 .good{color:#4ADE80!important;font-weight:600!important}
 
-/* ── SECTION 4: HSP DIFFERENCE ── */
+/* ── SECTION 4 ── */
 #section-hsp{background:var(--navy-dark);padding:0 24px 80px}
 .hsp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;max-width:960px;margin:0 auto}
 .hsp-card{border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px}
@@ -244,24 +242,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 .biz-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .biz-tag{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:6px 14px;font-size:12px;color:rgba(255,255,255,0.56)}
 
-@media(max-width:640px){
-  body{padding-top:118px}
-  .pb-row1{flex-wrap:wrap;height:auto;padding:8px 12px;gap:7px}
-  .pb-nav{display:none}
-  .pb-field input{width:120px}
-  .form-card{padding:22px 18px}
+@media(max-width:700px){
+  .ghl-wrap{flex-direction:column}
+  .ghl-sidebar{width:100%;border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);padding:18px}
+  .ghl-desc{display:none}
+  .ghl-slots-panel{width:100%;border-left:none;border-top:1px solid rgba(255,255,255,0.08);max-height:200px}
   .form-row{grid-template-columns:1fr}
-  .flow-row{flex-wrap:wrap}
+  .form-card{padding:22px 18px}
+  .pb-nav{display:none}
   .flow-arrow{display:none}
+  .flow-row{flex-wrap:wrap}
   .flow-branches{flex-direction:column;align-items:center}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════
-     PRESENTER BAR
-     ═══════════════════════════════════════ -->
+<!-- ═══════════════ PRESENTER BAR ═══════════════ -->
 <div id="presenter-bar">
   <div class="pb-row1">
     <div class="pb-brand">HSP · DEMO</div>
@@ -306,9 +303,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SECTION 1 — FORM FUNNEL DEMO
-     ═══════════════════════════════════════ -->
+<!-- ═══════════════ SECTION 1 — FORM FUNNEL ═══════════════ -->
 <section id="section-funnel">
 
   <div class="funnel-banner">
@@ -330,7 +325,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <div class="step-dot hidden" id="dot-4">4</div>
   </div>
 
-  <!-- STEP 1 — Microform (name + email + 1 dropdown) -->
+  <!-- STEP 1 -->
   <div class="form-card" id="step-1">
     <div class="form-card-header">
       <div class="step-label" id="label-1">Step 1 of 3</div>
@@ -357,12 +352,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <div class="form-trust">🔒 Your information is never sold or shared.</div>
   </div>
 
-  <!-- STEP 2 — Qualification (phone + details) -->
+  <!-- STEP 2 -->
   <div class="form-card hidden" id="step-2">
     <div class="form-card-header">
       <div class="step-label" id="label-2">Step 2 of 3</div>
       <h2 id="step2-heading">Tell us about your space</h2>
-      <span class="prefill-pill hidden" id="prefill-pill">✓ Welcome back — your info from Step 1 is saved</span>
+      <span class="prefill-pill hidden" id="prefill-pill">✓ Your info from Step 1 is saved</span>
     </div>
     <div class="form-fields">
       <div class="form-row">
@@ -401,7 +396,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       </div>
       <div class="form-field">
         <label>Anything we should know upfront?</label>
-        <textarea id="f-notes" placeholder="Access codes, specific requirements, preferences..." rows="3"></textarea>
+        <textarea id="f-notes" placeholder="Access codes, preferences, specific requirements..." rows="3"></textarea>
       </div>
     </div>
     <div class="form-btn-row">
@@ -410,7 +405,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     </div>
   </div>
 
-  <!-- STEP 3 EXTRA (4-step only) -->
+  <!-- STEP 3 EXTRA (4-step) -->
   <div class="form-card hidden" id="step-3-extra">
     <div class="form-card-header">
       <div class="step-label">Step 3 of 4</div>
@@ -453,53 +448,116 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     </div>
   </div>
 
-  <!-- FINAL STEP: book or checkout -->
-  <div class="form-card hidden" id="step-final">
+  <!-- FINAL STEP (no form-card wrapper — GHL widget handles its own styling) -->
+  <div class="hidden" id="step-final">
 
+    <!-- BOOK APPOINTMENT — GHL-style calendar widget -->
     <div id="end-book">
-      <div class="form-card-header">
-        <div class="step-label" id="label-final">Last Step</div>
-        <h2>Pick your time</h2>
-        <p>A quick walkthrough to confirm details and get your exact quote. No commitment.</p>
-      </div>
-      <div class="cal-month">June 2026</div>
-      <div class="cal-times">
-        <button class="cal-slot" onclick="selectSlot(this)">Mon, Jun 8 — 9:00 AM</button>
-        <button class="cal-slot" onclick="selectSlot(this)">Mon, Jun 8 — 1:00 PM</button>
-        <button class="cal-slot" onclick="selectSlot(this)">Tue, Jun 9 — 10:30 AM</button>
-        <button class="cal-slot" onclick="selectSlot(this)">Wed, Jun 10 — 2:00 PM</button>
-        <button class="cal-slot" onclick="selectSlot(this)">Thu, Jun 11 — 9:00 AM</button>
-        <button class="cal-slot" onclick="selectSlot(this)">Fri, Jun 12 — 11:00 AM</button>
-      </div>
-      <button class="form-cta" id="confirm-book-btn" onclick="confirmBooking()" disabled>Select a time above to confirm</button>
-    </div>
 
-    <div id="end-checkout" class="hidden">
-      <div class="form-card-header">
-        <div class="step-label" id="label-final-co">Last Step</div>
-        <h2>Review & confirm your service</h2>
-        <p>You're one step away from getting started.</p>
-      </div>
-      <div class="checkout-summary">
-        <div class="checkout-line"><span>Recurring Bi-Weekly Service</span><span>$249/visit</span></div>
-        <div class="checkout-line"><span>First Visit Deep Clean</span><span>$349</span></div>
-        <div class="checkout-line"><span>Supplies & Products</span><span>Included</span></div>
-        <div class="checkout-line"><span>Total Due Today</span><span>$349</span></div>
-      </div>
-      <div class="form-fields" style="margin-bottom:18px">
-        <div class="form-field"><label>Card Number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
-        <div class="form-row">
-          <div class="form-field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div>
-          <div class="form-field"><label>CVC</label><input type="text" placeholder="•••"></div>
+      <!-- View 1: Calendar + Time Slots -->
+      <div class="ghl-card" id="ghl-view-cal">
+        <div class="ghl-wrap">
+
+          <div class="ghl-sidebar">
+            <div class="ghl-logo-box">HS</div>
+            <div class="ghl-org">HSP Systems</div>
+            <div class="ghl-event" id="ghl-event-title">System Demo</div>
+            <div class="ghl-smeta"><span class="ghl-smeta-icon">⏱</span> 35 min</div>
+            <div class="ghl-smeta hidden" id="ghl-sidebar-date-row">
+              <span class="ghl-smeta-icon">📅</span>
+              <span id="ghl-sidebar-date"></span>
+            </div>
+            <div class="ghl-desc">
+              <strong>You're running your business. Your business shouldn't be running you.</strong>
+              In 35 minutes I'll show you exactly which parts of your operation can run on autopilot — leads, follow-up, hiring, scheduling — and demo it live on a real business just like yours.<br><br>
+              No fluff. You'll leave knowing what's possible and what it costs.
+            </div>
+          </div>
+
+          <div class="ghl-cal-area">
+            <div class="ghl-cal-title">Select Date &amp; Time</div>
+            <div class="ghl-month-nav">
+              <button class="ghl-nav-btn" onclick="ghlPrevMonth()">‹</button>
+              <span id="ghl-month-label">June 2026</span>
+              <button class="ghl-nav-btn" onclick="ghlNextMonth()">›</button>
+            </div>
+            <div class="ghl-weekdays">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="ghl-days" id="ghl-days"></div>
+            <div class="ghl-timezone">🌐 GMT-04:00 America/New_York (EDT)</div>
+          </div>
+
+          <div class="ghl-slots-panel hidden" id="ghl-slots-panel">
+            <div class="ghl-slots-dayname" id="ghl-slots-dayname">—</div>
+            <div id="ghl-slots-list"></div>
+          </div>
+
         </div>
       </div>
-      <button class="form-cta" onclick="confirmCheckout()">Pay $349 & Schedule Service →</button>
+
+      <!-- View 2: Enter Details -->
+      <div class="ghl-card hidden" id="ghl-view-details">
+        <div class="ghl-wrap">
+
+          <div class="ghl-sidebar">
+            <button class="ghl-back-btn" onclick="ghlShowCalendar()">← Back</button>
+            <div class="ghl-org">HSP Systems</div>
+            <div class="ghl-event">System Demo</div>
+            <div class="ghl-smeta"><span class="ghl-smeta-icon">⏱</span> 35 min</div>
+            <div class="ghl-smeta" id="ghl-details-time"><span class="ghl-smeta-icon">📅</span><span id="ghl-details-time-text">—</span></div>
+            <div class="ghl-smeta"><span class="ghl-smeta-icon">🌐</span> America/New_York (EDT)</div>
+          </div>
+
+          <div class="ghl-details-area">
+            <div class="ghl-details-title">Enter Details</div>
+            <div class="ghl-detail-field">
+              <label>Email *</label>
+              <input type="email" class="ghl-detail-input" id="ghl-email-input" placeholder="your@email.com">
+              <div class="ghl-email-err hidden" id="ghl-email-err">Email is required</div>
+            </div>
+            <button class="ghl-add-guest">+ Add Guest</button>
+            <button class="ghl-schedule-btn" onclick="ghlSchedule()">Schedule Meeting</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="ghl-form-back">
+        <button onclick="goBackFromFinal()">← Back to previous step</button>
+      </div>
+
     </div>
 
-    <div style="margin-top:10px">
-      <button class="form-back" onclick="goBackFromFinal()">← Back</button>
+    <!-- CHECKOUT -->
+    <div id="end-checkout" class="hidden">
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="step-label" id="label-final-co">Last Step</div>
+          <h2>Review & confirm your service</h2>
+          <p>You're one step away from getting started.</p>
+        </div>
+        <div class="checkout-summary">
+          <div class="checkout-line"><span>Recurring Bi-Weekly Service</span><span>$249/visit</span></div>
+          <div class="checkout-line"><span>First Visit Deep Clean</span><span>$349</span></div>
+          <div class="checkout-line"><span>Supplies & Products</span><span>Included</span></div>
+          <div class="checkout-line"><span>Total Due Today</span><span>$349</span></div>
+        </div>
+        <div class="form-fields" style="margin-bottom:18px">
+          <div class="form-field"><label>Card Number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
+          <div class="form-row">
+            <div class="form-field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div>
+            <div class="form-field"><label>CVC</label><input type="text" placeholder="•••"></div>
+          </div>
+        </div>
+        <button class="form-cta" onclick="confirmCheckout()">Pay $349 & Schedule Service →</button>
+        <div style="margin-top:10px">
+          <button class="form-back" onclick="goBackFromFinal()">← Back</button>
+        </div>
+      </div>
     </div>
-  </div>
+
+  </div><!-- /#step-final -->
 
   <!-- CONFIRMATION -->
   <div class="form-card hidden confirm-card" id="step-confirm">
@@ -517,93 +575,48 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 
 </section>
 
-<!-- ═══════════════════════════════════════
-     SECTION 2 — WHAT HAPPENS NEXT
-     ═══════════════════════════════════════ -->
+<!-- ═══════════════ SECTION 2 — WHAT HAPPENS NEXT ═══════════════ -->
 <section id="section-backend">
   <div class="section-header">
     <div class="eyebrow"><span class="eyebrow-line"></span>Behind the scenes<span class="eyebrow-line"></span></div>
     <h2 class="sec-h2 light">What Happens The Moment They Hit Submit</h2>
     <p class="sec-sub light">Every step below fires automatically. No one on your team has to trigger it.</p>
   </div>
-
   <div class="flow-diagram">
     <div class="flow-row">
-      <div class="flow-node">
-        <div class="flow-node-icon">📋</div>
-        <div class="flow-node-title">Step 1 Submitted</div>
-        <div class="flow-node-sub">Name, email, service. 30 seconds, zero friction.</div>
-      </div>
+      <div class="flow-node"><div class="flow-node-icon">📋</div><div class="flow-node-title">Step 1 Submitted</div><div class="flow-node-sub">Name, email, service. 30 seconds, zero friction.</div></div>
       <div class="flow-arrow">→</div>
-      <div class="flow-node">
-        <div class="flow-node-icon">📱</div>
-        <div class="flow-node-title">Instant Alert to You</div>
-        <div class="flow-node-sub">"New lead: Sarah M. — Commercial — (616) 555-0123"</div>
-      </div>
+      <div class="flow-node"><div class="flow-node-icon">📱</div><div class="flow-node-title">Instant Alert to You</div><div class="flow-node-sub">"New lead: Sarah M. — Commercial — (616) 555-0123"</div></div>
       <div class="flow-arrow">→</div>
-      <div class="flow-node">
-        <div class="flow-node-icon">🗂️</div>
-        <div class="flow-node-title">Contact Created Automatically</div>
-        <div class="flow-node-sub">Tagged by source, pipeline stage set, record ready</div>
-      </div>
+      <div class="flow-node"><div class="flow-node-icon">🗂️</div><div class="flow-node-title">Contact Created Automatically</div><div class="flow-node-sub">Tagged by source, pipeline stage set, record ready</div></div>
     </div>
-
     <div class="flow-arrow-down">↓</div>
-
     <div class="flow-row">
-      <div class="flow-node">
-        <div class="flow-node-icon">🤖</div>
-        <div class="flow-node-title">AI Follow-Up Fires</div>
-        <div class="flow-node-sub">Text + email nudge to complete Step 2 if they abandon</div>
-      </div>
+      <div class="flow-node"><div class="flow-node-icon">🤖</div><div class="flow-node-title">AI Follow-Up Fires</div><div class="flow-node-sub">Text + email nudge to complete Step 2 if they abandon</div></div>
       <div class="flow-arrow">→</div>
-      <div class="flow-node">
-        <div class="flow-node-icon">✅</div>
-        <div class="flow-node-title">Steps 2 & 3 Completed</div>
-        <div class="flow-node-sub">Qualification captured, pipeline advances automatically</div>
-      </div>
+      <div class="flow-node"><div class="flow-node-icon">✅</div><div class="flow-node-title">Steps 2 & 3 Completed</div><div class="flow-node-sub">Qualification captured, pipeline advances automatically</div></div>
       <div class="flow-arrow">→</div>
-      <div class="flow-node">
-        <div class="flow-node-icon">📅</div>
-        <div class="flow-node-title">Booking or Checkout</div>
-        <div class="flow-node-sub">Walkthrough booked or payment taken — based on your service</div>
-      </div>
+      <div class="flow-node"><div class="flow-node-icon">📅</div><div class="flow-node-title">Booking or Checkout</div><div class="flow-node-sub">Walkthrough booked or payment taken — based on your service</div></div>
     </div>
-
     <div class="flow-arrow-down">↓</div>
-
     <div class="flow-branches">
       <div class="flow-branch">
         <div class="branch-label">If no response</div>
-        <div class="flow-node" style="max-width:100%">
-          <div class="flow-node-icon">🔁</div>
-          <div class="flow-node-title">Automated Follow-Up Sequence</div>
-          <div class="flow-node-sub">Day 0 text → Day 1 email → Day 2 call reminder to your team. No lead falls through.</div>
-        </div>
+        <div class="flow-node" style="max-width:100%"><div class="flow-node-icon">🔁</div><div class="flow-node-title">Automated Follow-Up Sequence</div><div class="flow-node-sub">Day 0 text → Day 1 email → Day 2 call reminder to your team. No lead falls through.</div></div>
       </div>
       <div class="flow-branch">
         <div class="branch-label">Appointment booked</div>
-        <div class="flow-node" style="max-width:100%">
-          <div class="flow-node-icon">🔔</div>
-          <div class="flow-node-title">Reminders Fire Both Ways</div>
-          <div class="flow-node-sub">24hr + 2hr reminders to prospect. Your team alerted. Quote stage queued.</div>
-        </div>
+        <div class="flow-node" style="max-width:100%"><div class="flow-node-icon">🔔</div><div class="flow-node-title">Reminders Fire Both Ways</div><div class="flow-node-sub">24hr + 2hr reminders to prospect. Your team alerted. Quote stage queued.</div></div>
       </div>
       <div class="flow-branch">
         <div class="branch-label">After walkthrough</div>
-        <div class="flow-node" style="max-width:100%">
-          <div class="flow-node-icon">💼</div>
-          <div class="flow-node-title">Quote → Contract → Scheduled</div>
-          <div class="flow-node-sub">Quote sent, approval tracked, contract e-signed, job on the calendar.</div>
-        </div>
+        <div class="flow-node" style="max-width:100%"><div class="flow-node-icon">💼</div><div class="flow-node-title">Quote → Contract → Scheduled</div><div class="flow-node-sub">Quote sent, approval tracked, contract e-signed, job on the calendar.</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
-     SECTION 3 — CRM BACKEND
-     ═══════════════════════════════════════ -->
+<!-- ═══════════════ SECTION 3 — CRM ═══════════════ -->
 <section id="section-crm">
 
   <div class="section-header">
@@ -632,31 +645,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Microform Submitted</div>
           <div class="pipeline-col-meta">4 leads</div>
-          <div class="pipeline-stage-val">~$50–100/lead · high volume, low friction</div>
+          <div class="pipeline-stage-val">~$50–75/lead · high volume, low friction</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
             <div class="pc-name">Johnson Residence</div>
             <div class="pc-meta">Source: Website Front Page</div>
-            <div class="pc-value">$1,500.00</div>
+            <div class="pc-value">$75.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card">
             <div class="pc-name">Northside Office Park</div>
             <div class="pc-meta">Source: Website Front Page</div>
-            <div class="pc-value">$2,800.00</div>
+            <div class="pc-value">$75.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card">
             <div class="pc-name">Rivera Family</div>
             <div class="pc-meta">Source: Commercial Page</div>
-            <div class="pc-value">$950.00</div>
+            <div class="pc-value">$50.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card">
             <div class="pc-name">Lakewood Apartments</div>
             <div class="pc-meta">Source: Referral</div>
-            <div class="pc-value">$1,500.00</div>
+            <div class="pc-value">$75.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
         </div>
@@ -666,19 +679,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">2nd Form Submitted</div>
           <div class="pipeline-col-meta">2 leads</div>
-          <div class="pipeline-stage-val">~$500–1,000/lead · qualified, interested</div>
+          <div class="pipeline-stage-val">~$400–600/lead · qualified, interested</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
             <div class="pc-name">Maple Street Complex</div>
             <div class="pc-meta">Source: Website Front Page</div>
-            <div class="pc-value">$1,800.00</div>
+            <div class="pc-value">$450.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card">
             <div class="pc-name">Anderson LLC</div>
             <div class="pc-meta">Source: Referral</div>
-            <div class="pc-value">$1,400.00</div>
+            <div class="pc-value">$380.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
         </div>
@@ -688,19 +701,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Walkthrough Booked</div>
           <div class="pipeline-col-meta">2 leads</div>
-          <div class="pipeline-stage-val">~$3,000–5,000/lead · high intent</div>
+          <div class="pipeline-stage-val">~$1,500–3,000/lead · high intent</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
             <div class="pc-name">Lakeview Industrial</div>
             <div class="pc-meta">Source: Website Front Page</div>
-            <div class="pc-value">$1,900.00</div>
+            <div class="pc-value">$1,200.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
           <div class="pipeline-card won">
             <div class="pc-name">Sunrise HOA <span class="won-badge">WON</span></div>
             <div class="pc-meta">Source: Referral</div>
-            <div class="pc-value">$1,500.00</div>
+            <div class="pc-value">$950.00</div>
             <div class="pc-actions">📞 💬 ☑️ 📄 📅</div>
           </div>
         </div>
@@ -710,7 +723,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
         <div class="pipeline-col-head">
           <div class="pipeline-col-title">Quote Sent</div>
           <div class="pipeline-col-meta">3 leads</div>
-          <div class="pipeline-stage-val">~$8,000–15,000/lead · nearly closed</div>
+          <div class="pipeline-stage-val">~$5,000–15,000/lead · nearly closed</div>
         </div>
         <div class="pipeline-cards">
           <div class="pipeline-card">
@@ -806,143 +819,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
   <!-- HIRING PIPELINE -->
   <div class="pipeline-wrap hidden" id="pipeline-hiring">
     <div class="pipeline-board">
-
       <div class="pipeline-col">
-        <div class="pipeline-col-head">
-          <div class="pipeline-col-title">Application Captured</div>
-          <div class="pipeline-col-meta">6 applicants</div>
-          <div class="pipeline-stage-val">Auto-tagged by position applied</div>
-        </div>
+        <div class="pipeline-col-head"><div class="pipeline-col-title">Application Captured</div><div class="pipeline-col-meta">6 applicants</div><div class="pipeline-stage-val">Auto-tagged by position applied</div></div>
         <div class="pipeline-cards">
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant A — Field Tech</div>
-            <div class="pc-meta">Source: Indeed · 2 days ago</div>
-            <div class="pc-value">Awaiting AI screen</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant B — Crew Lead</div>
-            <div class="pc-meta">Source: Website · 1 day ago</div>
-            <div class="pc-value">Awaiting AI screen</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant C — Field Tech</div>
-            <div class="pc-meta">Source: Referral · today</div>
-            <div class="pc-value">Awaiting AI screen</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
+          <div class="pipeline-card"><div class="pc-name">Applicant A — Field Tech</div><div class="pc-meta">Source: Indeed · 2 days ago</div><div class="pc-value">Awaiting AI screen</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
+          <div class="pipeline-card"><div class="pc-name">Applicant B — Crew Lead</div><div class="pc-meta">Source: Website · 1 day ago</div><div class="pc-value">Awaiting AI screen</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
+          <div class="pipeline-card"><div class="pc-name">Applicant C — Field Tech</div><div class="pc-meta">Source: Referral · today</div><div class="pc-value">Awaiting AI screen</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
         </div>
       </div>
-
       <div class="pipeline-col">
-        <div class="pipeline-col-head">
-          <div class="pipeline-col-title">AI Screened ✓</div>
-          <div class="pipeline-col-meta">3 qualified</div>
-          <div class="pipeline-stage-val">Resume + criteria scored automatically</div>
-        </div>
+        <div class="pipeline-col-head"><div class="pipeline-col-title">AI Screened ✓</div><div class="pipeline-col-meta">3 qualified</div><div class="pipeline-stage-val">Resume + criteria scored automatically</div></div>
         <div class="pipeline-cards">
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant D — Crew Lead</div>
-            <div class="pc-meta">Score: 87% · Strong match</div>
-            <div class="pc-value">Interview ready</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant E — Field Tech</div>
-            <div class="pc-meta">Score: 74% · Good match</div>
-            <div class="pc-value">Interview ready</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
+          <div class="pipeline-card"><div class="pc-name">Applicant D — Crew Lead</div><div class="pc-meta">Score: 87% · Strong match</div><div class="pc-value">Interview ready</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
+          <div class="pipeline-card"><div class="pc-name">Applicant E — Field Tech</div><div class="pc-meta">Score: 74% · Good match</div><div class="pc-value">Interview ready</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
         </div>
       </div>
-
       <div class="pipeline-col">
-        <div class="pipeline-col-head">
-          <div class="pipeline-col-title">Interview Scheduled</div>
-          <div class="pipeline-col-meta">2 candidates</div>
-          <div class="pipeline-stage-val">Booked automatically — no back-and-forth</div>
-        </div>
+        <div class="pipeline-col-head"><div class="pipeline-col-title">Interview Scheduled</div><div class="pipeline-col-meta">2 candidates</div><div class="pipeline-stage-val">Booked automatically — no back-and-forth</div></div>
         <div class="pipeline-cards">
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant D — Crew Lead</div>
-            <div class="pc-meta">Interview: Mon Jun 8 · 10am</div>
-            <div class="pc-value">Reminder queued</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant F — Ops Support</div>
-            <div class="pc-meta">Interview: Tue Jun 9 · 2pm</div>
-            <div class="pc-value">Reminder queued</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
+          <div class="pipeline-card"><div class="pc-name">Applicant D — Crew Lead</div><div class="pc-meta">Interview: Mon Jun 8 · 10am</div><div class="pc-value">Reminder queued</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
+          <div class="pipeline-card"><div class="pc-name">Applicant F — Ops Support</div><div class="pc-meta">Interview: Tue Jun 9 · 2pm</div><div class="pc-value">Reminder queued</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
         </div>
       </div>
-
       <div class="pipeline-col">
-        <div class="pipeline-col-head">
-          <div class="pipeline-col-title">Interview Completed</div>
-          <div class="pipeline-col-meta">1 candidate</div>
-          <div class="pipeline-stage-val">Decision pending</div>
-        </div>
+        <div class="pipeline-col-head"><div class="pipeline-col-title">Interview Completed</div><div class="pipeline-col-meta">1 candidate</div><div class="pipeline-stage-val">Decision pending</div></div>
         <div class="pipeline-cards">
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant D — Crew Lead</div>
-            <div class="pc-meta">Interviewed Jun 8 · Strong</div>
-            <div class="pc-value">Awaiting decision</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
+          <div class="pipeline-card"><div class="pc-name">Applicant D — Crew Lead</div><div class="pc-meta">Interviewed Jun 8 · Strong</div><div class="pc-value">Awaiting decision</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
         </div>
       </div>
-
       <div class="pipeline-col">
-        <div class="pipeline-col-head">
-          <div class="pipeline-col-title">Background Check</div>
-          <div class="pipeline-col-meta">1 candidate</div>
-          <div class="pipeline-stage-val">Triggered automatically on advance</div>
-        </div>
+        <div class="pipeline-col-head"><div class="pipeline-col-title">Background Check</div><div class="pipeline-col-meta">1 candidate</div><div class="pipeline-stage-val">Triggered automatically on advance</div></div>
         <div class="pipeline-cards">
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant D — Crew Lead</div>
-            <div class="pc-meta">Check: in progress</div>
-            <div class="pc-value">~2 day turnaround</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
+          <div class="pipeline-card"><div class="pc-name">Applicant D — Crew Lead</div><div class="pc-meta">Check: in progress</div><div class="pc-value">~2 day turnaround</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
         </div>
       </div>
-
       <div class="pipeline-col">
-        <div class="pipeline-col-head">
-          <div class="pipeline-col-title">Offer Sent</div>
-          <div class="pipeline-col-meta">1 candidate</div>
-          <div class="pipeline-stage-val">Digital offer + e-signature</div>
-        </div>
+        <div class="pipeline-col-head"><div class="pipeline-col-title">Offer Sent</div><div class="pipeline-col-meta">1 candidate</div><div class="pipeline-stage-val">Digital offer + e-signature</div></div>
         <div class="pipeline-cards">
-          <div class="pipeline-card">
-            <div class="pc-name">Applicant D — Crew Lead</div>
-            <div class="pc-meta">Offer sent Jun 11</div>
-            <div class="pc-value">Awaiting signature</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
+          <div class="pipeline-card"><div class="pc-name">Applicant D — Crew Lead</div><div class="pc-meta">Offer sent Jun 11</div><div class="pc-value">Awaiting signature</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
         </div>
       </div>
-
       <div class="pipeline-col">
-        <div class="pipeline-col-head">
-          <div class="pipeline-col-title">Hired & Onboarding 🎉</div>
-          <div class="pipeline-col-meta">1 new hire</div>
-          <div class="pipeline-stage-val">Paperwork, training, Day 1 automated</div>
-        </div>
+        <div class="pipeline-col-head"><div class="pipeline-col-title">Hired & Onboarding 🎉</div><div class="pipeline-col-meta">1 new hire</div><div class="pipeline-stage-val">Paperwork, training, Day 1 automated</div></div>
         <div class="pipeline-cards">
-          <div class="pipeline-card won">
-            <div class="pc-name">New Crew Lead <span class="won-badge">HIRED</span></div>
-            <div class="pc-meta">Start date: Jun 16</div>
-            <div class="pc-value">Onboarding in progress</div>
-            <div class="pc-actions">📞 💬 ☑️ 📄</div>
-          </div>
+          <div class="pipeline-card won"><div class="pc-name">New Crew Lead <span class="won-badge">HIRED</span></div><div class="pc-meta">Start date: Jun 16</div><div class="pc-value">Onboarding in progress</div><div class="pc-actions">📞 💬 ☑️ 📄</div></div>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -954,96 +876,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <h2 class="sec-h2 light">Every System Your Business Runs On — Automated.</h2>
     <p class="sec-sub light">Unlimited automations, unlimited contacts, unlimited users. Pre-built and custom-configured for your operation — not generic templates.</p>
   </div>
-
   <div class="suites-grid">
-    <div class="suite-card">
-      <div class="suite-icon">🎯</div>
-      <div class="suite-title">Lead Response System</div>
-      <div class="suite-desc">Every lead contacted in seconds. No one falls through the cracks — ever.</div>
-      <ul class="suite-list">
-        <li>Instant alert to owner on new lead</li>
-        <li>Auto follow-up if Step 2 not completed (Day 0 / 1 / 2)</li>
-        <li>Appointment reminder sequences (prospect + team)</li>
-        <li>Salesperson task queue and pipeline stage alerts</li>
-      </ul>
-    </div>
-    <div class="suite-card">
-      <div class="suite-icon">⚙️</div>
-      <div class="suite-title">Operations & Task Management</div>
-      <div class="suite-desc">No team member forgets a task. Every process has an owner and an automated reminder.</div>
-      <ul class="suite-list">
-        <li>Job scheduling and dispatch automation</li>
-        <li>Pre-job and post-job task checklists</li>
-        <li>SOP compliance reminders per service line</li>
-        <li>Automated client communication pre and post-service</li>
-      </ul>
-    </div>
-    <div class="suite-card">
-      <div class="suite-icon">👥</div>
-      <div class="suite-title">Hiring & Onboarding Pipeline</div>
-      <div class="suite-desc">From job post to first day — fully automated. Built for businesses that hire seasonally or at scale.</div>
-      <ul class="suite-list">
-        <li>Application capture and AI resume screening</li>
-        <li>Automated interview scheduling</li>
-        <li>Background check triggers and hire paperwork</li>
-        <li>Training quizzes and full onboarding workflow</li>
-      </ul>
-    </div>
-    <div class="suite-card">
-      <div class="suite-icon">🏢</div>
-      <div class="suite-title">Employee Management</div>
-      <div class="suite-desc">PTO, attendance, reviews, birthdays — running on autopilot so you manage outcomes, not admin.</div>
-      <ul class="suite-list">
-        <li>PTO and time-off request workflows</li>
-        <li>Attendance incident tracking and documentation</li>
-        <li>Performance review scheduling and paperwork</li>
-        <li>Birthday e-gift cards and employee recognition</li>
-      </ul>
-    </div>
-    <div class="suite-card">
-      <div class="suite-icon">📞</div>
-      <div class="suite-title">Call Routing & Reception</div>
-      <div class="suite-desc">Never miss a call. Missed call text-back fires in seconds — most leads book from that alone.</div>
-      <ul class="suite-list">
-        <li>Business hours vs. after-hours routing</li>
-        <li>IVR menu (press 1 for quotes, 2 for scheduling…)</li>
-        <li>Missed call auto text-back within seconds</li>
-        <li>AI receptionist option for high-volume inbound</li>
-      </ul>
-    </div>
-    <div class="suite-card">
-      <div class="suite-icon">📚</div>
-      <div class="suite-title">Company Knowledge Base</div>
-      <div class="suite-desc">A living FAQ and SOP library — employees, managers, even customers via chatbot.</div>
-      <ul class="suite-list">
-        <li>Employee FAQ chatbot (no more "ask your manager")</li>
-        <li>Management SOP and policy library</li>
-        <li>Training documentation and compliance tracking</li>
-        <li>Customer-facing FAQ chatbot on your website</li>
-      </ul>
-    </div>
-    <div class="suite-card">
-      <div class="suite-icon">📣</div>
-      <div class="suite-title">Marketing & Reactivation</div>
-      <div class="suite-desc">Your existing customer list is a goldmine. Reviews, reactivation, upsells — automated.</div>
-      <ul class="suite-list">
-        <li>Email and SMS campaign builder</li>
-        <li>Post-job Google review request automation</li>
-        <li>Old customer reactivation and upsell sequences</li>
-        <li>Referral program automation and tracking</li>
-      </ul>
-    </div>
-    <div class="suite-card">
-      <div class="suite-icon">📊</div>
-      <div class="suite-title">Paid Ads & Attribution</div>
-      <div class="suite-desc">Once your funnel is dialed in, ads become a lever — not a gamble. Every dollar tracked.</div>
-      <ul class="suite-list">
-        <li>Google and Facebook pixel integration with your funnel</li>
-        <li>Funnel-level conversion tracking per source</li>
-        <li>ROI attribution by ad, keyword, and audience</li>
-        <li>Retargeting audiences built from your CRM contacts</li>
-      </ul>
-    </div>
+    <div class="suite-card"><div class="suite-icon">🎯</div><div class="suite-title">Lead Response System</div><div class="suite-desc">Every lead contacted in seconds. No one falls through the cracks — ever.</div><ul class="suite-list"><li>Instant alert to owner on new lead</li><li>Auto follow-up if Step 2 not completed (Day 0 / 1 / 2)</li><li>Appointment reminder sequences (prospect + team)</li><li>Salesperson task queue and pipeline stage alerts</li></ul></div>
+    <div class="suite-card"><div class="suite-icon">⚙️</div><div class="suite-title">Operations & Task Management</div><div class="suite-desc">No team member forgets a task. Every process has an owner and an automated reminder.</div><ul class="suite-list"><li>Job scheduling and dispatch automation</li><li>Pre-job and post-job task checklists</li><li>SOP compliance reminders per service line</li><li>Automated client communication pre and post-service</li></ul></div>
+    <div class="suite-card"><div class="suite-icon">👥</div><div class="suite-title">Hiring & Onboarding Pipeline</div><div class="suite-desc">From job post to first day — fully automated. Built for businesses that hire seasonally or at scale.</div><ul class="suite-list"><li>Application capture and AI resume screening</li><li>Automated interview scheduling</li><li>Background check triggers and hire paperwork</li><li>Training quizzes and full onboarding workflow</li></ul></div>
+    <div class="suite-card"><div class="suite-icon">🏢</div><div class="suite-title">Employee Management</div><div class="suite-desc">PTO, attendance, reviews, birthdays — running on autopilot so you manage outcomes, not admin.</div><ul class="suite-list"><li>PTO and time-off request workflows</li><li>Attendance incident tracking and documentation</li><li>Performance review scheduling and paperwork</li><li>Birthday e-gift cards and employee recognition</li></ul></div>
+    <div class="suite-card"><div class="suite-icon">📞</div><div class="suite-title">Call Routing & Reception</div><div class="suite-desc">Never miss a call. Missed call text-back fires in seconds — most leads book from that alone.</div><ul class="suite-list"><li>Business hours vs. after-hours routing</li><li>IVR menu (press 1 for quotes, 2 for scheduling…)</li><li>Missed call auto text-back within seconds</li><li>AI receptionist option for high-volume inbound</li></ul></div>
+    <div class="suite-card"><div class="suite-icon">📚</div><div class="suite-title">Company Knowledge Base</div><div class="suite-desc">A living FAQ and SOP library — employees, managers, even customers via chatbot.</div><ul class="suite-list"><li>Employee FAQ chatbot (no more "ask your manager")</li><li>Management SOP and policy library</li><li>Training documentation and compliance tracking</li><li>Customer-facing FAQ chatbot on your website</li></ul></div>
+    <div class="suite-card"><div class="suite-icon">📣</div><div class="suite-title">Marketing & Reactivation</div><div class="suite-desc">Your existing customer list is a goldmine. Reviews, reactivation, upsells — automated.</div><ul class="suite-list"><li>Email and SMS campaign builder</li><li>Post-job Google review request automation</li><li>Old customer reactivation and upsell sequences</li><li>Referral program automation and tracking</li></ul></div>
+    <div class="suite-card"><div class="suite-icon">📊</div><div class="suite-title">Paid Ads & Attribution</div><div class="suite-desc">Once your funnel is dialed in, ads become a lever — not a gamble. Every dollar tracked.</div><ul class="suite-list"><li>Google and Facebook pixel integration with your funnel</li><li>Funnel-level conversion tracking per source</li><li>ROI attribution by ad, keyword, and audience</li><li>Retargeting audiences built from your CRM contacts</li></ul></div>
   </div>
 
   <div class="divider"></div>
@@ -1054,482 +895,315 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     <h2 class="sec-h2 light">More Power. Less Cost. Built For Your Business.</h2>
     <p class="sec-sub light">Enterprise CRM capabilities — without the enterprise price tag or the 6-month DIY setup that still doesn't fit your operation.</p>
   </div>
-
   <div class="comp-wrap">
     <table class="comp-table">
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>HubSpot</th>
-          <th>Salesforce</th>
-          <th class="col-hsp">HSP System</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Feature</th><th>HubSpot</th><th>Salesforce</th><th class="col-hsp">HSP System</th></tr></thead>
       <tbody>
-        <tr>
-          <td class="col-label">Monthly Cost</td>
-          <td class="bad">$800–$3,200+</td>
-          <td class="bad">$1,000–$5,000+</td>
-          <td class="col-hsp good">Included in HSP plan</td>
-        </tr>
-        <tr>
-          <td class="col-label">Users</td>
-          <td class="bad">Pay per seat</td>
-          <td class="bad">Pay per seat</td>
-          <td class="col-hsp good">Unlimited</td>
-        </tr>
-        <tr>
-          <td class="col-label">Automations</td>
-          <td class="bad">Capped by tier</td>
-          <td class="bad">Limited, complex setup</td>
-          <td class="col-hsp good">Unlimited</td>
-        </tr>
-        <tr>
-          <td class="col-label">Contacts</td>
-          <td class="bad">Pay per 1,000</td>
-          <td class="bad">Pay per record</td>
-          <td class="col-hsp good">Unlimited</td>
-        </tr>
-        <tr>
-          <td class="col-label">Setup</td>
-          <td class="bad">DIY / generic templates</td>
-          <td class="bad">Requires developer</td>
-          <td class="col-hsp good">Custom-built for your operation</td>
-        </tr>
-        <tr>
-          <td class="col-label">Support</td>
-          <td>Ticketed / slow</td>
-          <td>Ticketed / expensive</td>
-          <td class="col-hsp good">Direct + 24/7 platform support</td>
-        </tr>
-        <tr>
-          <td class="col-label">HIPAA Compliant</td>
-          <td>Enterprise only</td>
-          <td>Enterprise only</td>
-          <td class="col-hsp good">Available on all HSP plans</td>
-        </tr>
-        <tr>
-          <td class="col-label">Built for Service Businesses</td>
-          <td class="bad">No — SaaS / sales orgs</td>
-          <td class="bad">No — enterprise B2B</td>
-          <td class="col-hsp good">Yes — cleaning, landscaping, medical, trades, and more</td>
-        </tr>
+        <tr><td class="col-label">Monthly Cost</td><td class="bad">$800–$3,200+</td><td class="bad">$1,000–$5,000+</td><td class="col-hsp good">Included in HSP plan</td></tr>
+        <tr><td class="col-label">Users</td><td class="bad">Pay per seat</td><td class="bad">Pay per seat</td><td class="col-hsp good">Unlimited</td></tr>
+        <tr><td class="col-label">Automations</td><td class="bad">Capped by tier</td><td class="bad">Limited, complex setup</td><td class="col-hsp good">Unlimited</td></tr>
+        <tr><td class="col-label">Contacts</td><td class="bad">Pay per 1,000</td><td class="bad">Pay per record</td><td class="col-hsp good">Unlimited</td></tr>
+        <tr><td class="col-label">Setup</td><td class="bad">DIY / generic templates</td><td class="bad">Requires developer</td><td class="col-hsp good">Custom-built for your operation</td></tr>
+        <tr><td class="col-label">Support</td><td>Ticketed / slow</td><td>Ticketed / expensive</td><td class="col-hsp good">Direct + 24/7 platform support</td></tr>
+        <tr><td class="col-label">HIPAA Compliant</td><td>Enterprise only</td><td>Enterprise only</td><td class="col-hsp good">Available on all HSP plans</td></tr>
+        <tr><td class="col-label">Built for Service Businesses</td><td class="bad">No — SaaS / sales orgs</td><td class="bad">No — enterprise B2B</td><td class="col-hsp good">Yes — cleaning, landscaping, medical, trades, and more</td></tr>
       </tbody>
     </table>
   </div>
 
 </section>
 
-<!-- ═══════════════════════════════════════
-     SECTION 4 — HSP DIFFERENCE
-     ═══════════════════════════════════════ -->
+<!-- ═══════════════ SECTION 4 — HSP DIFFERENCE ═══════════════ -->
 <section id="section-hsp">
   <div class="section-header">
     <div class="eyebrow"><span class="eyebrow-line"></span>The HSP Difference<span class="eyebrow-line"></span></div>
     <h2 class="sec-h2 light">Not a Template. A Diagnosis.</h2>
     <p class="sec-sub light">Most CRM companies hand you a login and a library of generic workflows. HSP Systems starts by understanding your specific operation — and builds to match it exactly.</p>
   </div>
-
   <div class="hsp-grid">
-    <div class="hsp-card">
-      <div class="hsp-card-icon">🔬</div>
-      <div class="hsp-card-title">Systems Engineering Approach</div>
-      <div class="hsp-card-body">Built by an industrial and systems engineer. Every process gets mapped, diagnosed, and redesigned — not just digitized. If something slows you down or costs you money, we find it and fix it.</div>
-    </div>
-    <div class="hsp-card">
-      <div class="hsp-card-icon">🛠️</div>
-      <div class="hsp-card-title">Custom Builds, Not Templates</div>
-      <div class="hsp-card-body">Expert Cleaning Services got a custom commercial outreach system. Wenke Landscaping got a custom PTO and scheduling logic. Honey Girl Granola got a product fulfillment pipeline. Every business is different — and your system will be too.</div>
-    </div>
-    <div class="hsp-card">
-      <div class="hsp-card-icon">🤖</div>
-      <div class="hsp-card-title">AI-Native, Not AI-Adjacent</div>
-      <div class="hsp-card-body">AI isn't a feature bolted on — it's woven into every system. Resume screening, follow-up sequences, call routing, knowledge bases. Your business runs smarter around the clock.</div>
-    </div>
-    <div class="hsp-card">
-      <div class="hsp-card-icon">📈</div>
-      <div class="hsp-card-title">Priority Access on Higher Tiers</div>
-      <div class="hsp-card-body">Higher subscription tiers get first access to new automation builds as they're released — advanced scheduling logic, commercial outreach systems, new integrations. You grow with the platform.</div>
-    </div>
-    <div class="hsp-card">
-      <div class="hsp-card-icon">🏆</div>
-      <div class="hsp-card-title">Proven in Real Businesses First</div>
-      <div class="hsp-card-body">Every system HSP sells was battle-tested in live operations before being offered to clients. Expert Cleaning Services and Wenke Landscaping ran these systems first. This isn't theory — it's running today.</div>
-    </div>
-    <div class="hsp-card">
-      <div class="hsp-card-icon">⚡</div>
-      <div class="hsp-card-title">The AI Age Is Already Here</div>
-      <div class="hsp-card-body">Your competitors are automating. Every process you're still doing manually is a compounding competitive disadvantage. The question isn't whether to automate — it's whether you do it before or after the business next door does.</div>
-    </div>
+    <div class="hsp-card"><div class="hsp-card-icon">🔬</div><div class="hsp-card-title">Systems Engineering Approach</div><div class="hsp-card-body">Built by an industrial and systems engineer. Every process gets mapped, diagnosed, and redesigned — not just digitized. If something slows you down or costs you money, we find it and fix it.</div></div>
+    <div class="hsp-card"><div class="hsp-card-icon">🛠️</div><div class="hsp-card-title">Custom Builds, Not Templates</div><div class="hsp-card-body">Expert Cleaning Services got a custom commercial outreach system. Wenke Landscaping got a custom PTO and scheduling logic. Honey Girl Granola got a product fulfillment pipeline. Every business is different — and your system will be too.</div></div>
+    <div class="hsp-card"><div class="hsp-card-icon">🤖</div><div class="hsp-card-title">AI-Native, Not AI-Adjacent</div><div class="hsp-card-body">AI isn't a feature bolted on — it's woven into every system. Resume screening, follow-up sequences, call routing, knowledge bases. Your business runs smarter around the clock.</div></div>
+    <div class="hsp-card"><div class="hsp-card-icon">📈</div><div class="hsp-card-title">Priority Access on Higher Tiers</div><div class="hsp-card-body">Higher subscription tiers get first access to new automation builds as they're released — advanced scheduling logic, commercial outreach systems, new integrations. You grow with the platform.</div></div>
+    <div class="hsp-card"><div class="hsp-card-icon">🏆</div><div class="hsp-card-title">Proven in Real Businesses First</div><div class="hsp-card-body">Every system HSP sells was battle-tested in live operations before being offered to clients. Expert Cleaning Services and Wenke Landscaping ran these systems first. This isn't theory — it's running today.</div></div>
+    <div class="hsp-card"><div class="hsp-card-icon">⚡</div><div class="hsp-card-title">The AI Age Is Already Here</div><div class="hsp-card-body">Your competitors are automating. Every process you're still doing manually is a compounding competitive disadvantage. The question isn't whether to automate — it's whether you do it before or after the business next door does.</div></div>
   </div>
-
   <div class="biz-tags-section">
     <div class="biz-tags-label">Built for industries including</div>
     <div class="biz-tags">
-      <span class="biz-tag">Landscaping & Outdoor Living</span>
-      <span class="biz-tag">Residential Cleaning</span>
-      <span class="biz-tag">Commercial Cleaning</span>
-      <span class="biz-tag">Post-Construction</span>
-      <span class="biz-tag">Medical & HIPAA-Compliant</span>
-      <span class="biz-tag">Industrial / Manufacturing</span>
-      <span class="biz-tag">Professional Services</span>
-      <span class="biz-tag">Product Businesses</span>
-      <span class="biz-tag">HOA & Property Management</span>
-      <span class="biz-tag">Trade Services</span>
-      <span class="biz-tag">Multi-Location Operations</span>
+      <span class="biz-tag">Landscaping & Outdoor Living</span><span class="biz-tag">Residential Cleaning</span><span class="biz-tag">Commercial Cleaning</span><span class="biz-tag">Post-Construction</span><span class="biz-tag">Medical & HIPAA-Compliant</span><span class="biz-tag">Industrial / Manufacturing</span><span class="biz-tag">Professional Services</span><span class="biz-tag">Product Businesses</span><span class="biz-tag">HOA & Property Management</span><span class="biz-tag">Trade Services</span><span class="biz-tag">Multi-Location Operations</span>
     </div>
   </div>
 </section>
 
 <script>
-// ════════════════════════════════
+// ══════════════════════════════════════
 // INDUSTRY DATA
-// ════════════════════════════════
+// ══════════════════════════════════════
 const INDUSTRIES = {
-  cleaning: {
-    tagline: 'Professional Cleaning You Can Trust',
-    services: ['Recurring Residential Cleaning','Post-Construction Cleaning','Commercial Cleaning Contract','Move-In / Move-Out Clean','One-Time Deep Clean'],
-    step2Head: 'Tell us about your space',
-    propTypes: ['Residential Home','Commercial Office','Multi-Unit / HOA','Industrial Facility'],
-    sqftLabel: 'Approx. Square Footage',
-    areasLabel: 'Rooms / Areas',
-  },
-  landscaping: {
-    tagline: 'Outdoor Living Designed to Last',
-    services: ['Recurring Lawn Maintenance','Landscape Design & Install','Hardscaping / Patio Build','Irrigation System','Seasonal Cleanup'],
-    step2Head: 'Tell us about your property',
-    propTypes: ['Residential','Commercial Property','HOA / Community','New Construction'],
-    sqftLabel: 'Lot / Property Size',
-    areasLabel: 'Service Zones / Areas',
-  },
-  medical: {
-    tagline: 'Expert Care Across All Locations',
-    services: ['Annual Eye Exam','Contact Lens Fitting & Evaluation','New Patient Consultation','Optical / Eyewear','Specialty Services'],
-    step2Head: 'Tell us about your visit',
-    propTypes: ['New Patient','Returning Patient','Referral','Insurance Inquiry'],
-    sqftLabel: 'Preferred Location',
-    areasLabel: 'Estimated Visits / Year',
-  },
-  industrial: {
-    tagline: 'Operational Excellence. Engineered.',
-    services: ['Process Assessment & Audit','Lean / Six Sigma Implementation','Systems & Workflow Design','Capacity & Equipment Analysis','Staff Training & Consulting'],
-    step2Head: 'Tell us about your operation',
-    propTypes: ['Manufacturing Plant','Distribution / Warehouse','Multi-Site Operation','Corporate Office'],
-    sqftLabel: 'Facility Size (sq ft)',
-    areasLabel: 'Number of Employees',
-  },
-  trades: {
-    tagline: 'Reliable Service. Done Right.',
-    services: ['Service Call / Repair','New Installation','Maintenance Agreement','Emergency Response','Full Project Estimate'],
-    step2Head: 'Tell us about the job',
-    propTypes: ['Residential Home','Commercial Building','New Construction','Industrial'],
-    sqftLabel: 'Property Size',
-    areasLabel: 'Units / Areas',
-  },
-  professional: {
-    tagline: 'Results-Driven. Partnership-First.',
-    services: ['Initial Consultation','Ongoing Retainer','Project-Based Engagement','Advisory / Strategy','Compliance & Audit'],
-    step2Head: 'Tell us about your business',
-    propTypes: ['Small Business','Mid-Market','Enterprise / Multi-Location','Nonprofit'],
-    sqftLabel: 'Number of Employees',
-    areasLabel: 'Number of Locations',
-  },
-  product: {
-    tagline: 'Quality Products. Real Results.',
-    services: ['Wholesale Inquiry','Retail Partnership','Custom Order','Subscription Program','Event / Catering Order'],
-    step2Head: 'Tell us about your order',
-    propTypes: ['Direct Consumer','Retail Reseller','Restaurant / Café','Corporate / Event'],
-    sqftLabel: 'Estimated Monthly Volume',
-    areasLabel: 'Number of Locations',
-  }
+  cleaning:{tagline:'Professional Cleaning You Can Trust',services:['Recurring Residential Cleaning','Post-Construction Cleaning','Commercial Cleaning Contract','Move-In / Move-Out Clean','One-Time Deep Clean'],step2Head:'Tell us about your space',propTypes:['Residential Home','Commercial Office','Multi-Unit / HOA','Industrial Facility'],sqftLabel:'Approx. Square Footage',areasLabel:'Rooms / Areas'},
+  landscaping:{tagline:'Outdoor Living Designed to Last',services:['Recurring Lawn Maintenance','Landscape Design & Install','Hardscaping / Patio Build','Irrigation System','Seasonal Cleanup'],step2Head:'Tell us about your property',propTypes:['Residential','Commercial Property','HOA / Community','New Construction'],sqftLabel:'Lot / Property Size',areasLabel:'Service Zones / Areas'},
+  medical:{tagline:'Expert Care Across All Locations',services:['Annual Eye Exam','Contact Lens Fitting & Evaluation','New Patient Consultation','Optical / Eyewear','Specialty Services'],step2Head:'Tell us about your visit',propTypes:['New Patient','Returning Patient','Referral','Insurance Inquiry'],sqftLabel:'Preferred Location',areasLabel:'Estimated Visits / Year'},
+  industrial:{tagline:'Operational Excellence. Engineered.',services:['Process Assessment & Audit','Lean / Six Sigma Implementation','Systems & Workflow Design','Capacity & Equipment Analysis','Staff Training & Consulting'],step2Head:'Tell us about your operation',propTypes:['Manufacturing Plant','Distribution / Warehouse','Multi-Site Operation','Corporate Office'],sqftLabel:'Facility Size (sq ft)',areasLabel:'Number of Employees'},
+  trades:{tagline:'Reliable Service. Done Right.',services:['Service Call / Repair','New Installation','Maintenance Agreement','Emergency Response','Full Project Estimate'],step2Head:'Tell us about the job',propTypes:['Residential Home','Commercial Building','New Construction','Industrial'],sqftLabel:'Property Size',areasLabel:'Units / Areas'},
+  professional:{tagline:'Results-Driven. Partnership-First.',services:['Initial Consultation','Ongoing Retainer','Project-Based Engagement','Advisory / Strategy','Compliance & Audit'],step2Head:'Tell us about your business',propTypes:['Small Business','Mid-Market','Enterprise / Multi-Location','Nonprofit'],sqftLabel:'Number of Employees',areasLabel:'Number of Locations'},
+  product:{tagline:'Quality Products. Real Results.',services:['Wholesale Inquiry','Retail Partnership','Custom Order','Subscription Program','Event / Catering Order'],step2Head:'Tell us about your order',propTypes:['Direct Consumer','Retail Reseller','Restaurant / Café','Corporate / Event'],sqftLabel:'Estimated Monthly Volume',areasLabel:'Number of Locations'}
 };
 
-// ════════════════════════════════
-// STATE
-// ════════════════════════════════
-let currentStep = 1;
-let totalSteps = 3;
-let endState = 'book';
-let selectedSlot = null;
-let currentIndustry = 'cleaning';
+// ══════════════════════════════════════
+// FORM STATE
+// ══════════════════════════════════════
+let currentStep = 1, totalSteps = 3, endState = 'book', currentIndustry = 'cleaning';
 
-// ════════════════════════════════
-// HELPERS
-// ════════════════════════════════
-function show(id){ document.getElementById(id).classList.remove('hidden') }
-function hide(id){ document.getElementById(id).classList.add('hidden') }
-function hideAllSteps(){
-  ['step-1','step-2','step-3-extra','step-final','step-confirm'].forEach(hide);
-}
-function scrollToFunnel(){
-  window.scrollTo({top: document.getElementById('section-funnel').offsetTop - 100, behavior:'smooth'});
-}
+function show(id){document.getElementById(id).classList.remove('hidden')}
+function hide(id){document.getElementById(id).classList.add('hidden')}
+function hideAllSteps(){['step-1','step-2','step-3-extra','step-final','step-confirm'].forEach(hide)}
+function scrollToFunnel(){window.scrollTo({top:document.getElementById('section-funnel').offsetTop-100,behavior:'smooth'})}
 
-// ════════════════════════════════
-// INDUSTRY SELECTOR
-// ════════════════════════════════
+// ── INDUSTRY ──
 function setIndustry(key){
   currentIndustry = key;
   const ind = INDUSTRIES[key];
-
-  // Update active chip
-  document.querySelectorAll('.ind-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.ind === key);
-  });
-
-  // Update funnel tagline
+  document.querySelectorAll('.ind-btn').forEach(b=>b.classList.toggle('active',b.dataset.ind===key));
   document.getElementById('funnel-tagline').textContent = ind.tagline;
-
-  // Update service dropdown
   const svc = document.getElementById('f-service');
   svc.innerHTML = '<option value="">Select a service...</option>';
-  ind.services.forEach(s => {
-    const o = document.createElement('option');
-    o.textContent = s;
-    svc.appendChild(o);
-  });
-  localStorage.setItem('demo_service', '');
-
-  // Update step 2 heading
+  ind.services.forEach(s=>{const o=document.createElement('option');o.textContent=s;svc.appendChild(o)});
+  localStorage.setItem('demo_service','');
   document.getElementById('step2-heading').textContent = ind.step2Head;
-
-  // Update property type buttons
   const wrap = document.getElementById('opts-proptype');
-  wrap.innerHTML = '';
-  ind.propTypes.forEach(p => {
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.textContent = p;
-    btn.onclick = function(){ selectOpt(this, 'opts-proptype'); };
-    wrap.appendChild(btn);
-  });
-
-  // Update size/areas labels
+  wrap.innerHTML='';
+  ind.propTypes.forEach(p=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=p;btn.onclick=function(){selectOpt(this,'opts-proptype')};wrap.appendChild(btn)});
   document.getElementById('label-sqft').textContent = ind.sqftLabel;
   document.getElementById('label-areas').textContent = ind.areasLabel;
 }
 
-// ════════════════════════════════
-// INIT
-// ════════════════════════════════
+// ── INIT ──
 function initDemo(){
-  const map = { 'demo_first':'f-first', 'demo_email':'f-email', 'demo_service':'f-service' };
-  for(const [k,id] of Object.entries(map)){
-    const v = localStorage.getItem(k);
-    const el = document.getElementById(id);
-    if(v && el) el.value = v;
-  }
-  // Init industry (property type options need to be populated)
+  const map={'demo_first':'f-first','demo_email':'f-email','demo_service':'f-service'};
+  for(const[k,id]of Object.entries(map)){const v=localStorage.getItem(k);const el=document.getElementById(id);if(v&&el)el.value=v}
   setIndustry(currentIndustry);
 }
 
-// ════════════════════════════════
-// SAVE STEP 1
-// ════════════════════════════════
+// ── SAVE STEP 1 ──
 function saveStep1(){
-  const map = { 'demo_first':'f-first', 'demo_email':'f-email', 'demo_service':'f-service' };
-  for(const [k,id] of Object.entries(map)){
-    const el = document.getElementById(id);
-    if(el) localStorage.setItem(k, el.value);
-  }
+  const map={'demo_first':'f-first','demo_email':'f-email','demo_service':'f-service'};
+  for(const[k,id]of Object.entries(map)){const el=document.getElementById(id);if(el)localStorage.setItem(k,el.value)}
 }
 
-// ════════════════════════════════
-// BUSINESS NAME
-// ════════════════════════════════
+// ── BIZ NAME ──
 function updateBizName(){
-  const name = document.getElementById('biz-input').value.trim() || 'Your Business';
-  document.getElementById('funnel-biz-name').textContent = name;
+  const name=document.getElementById('biz-input').value.trim()||'Your Business';
+  document.getElementById('funnel-biz-name').textContent=name;
 }
 
-// ════════════════════════════════
-// FLOW TYPE
-// ════════════════════════════════
+// ── FLOW ──
 function setFlow(){
-  totalSteps = parseInt(document.getElementById('flow-select').value);
-
-  document.getElementById('dot-3').classList.toggle('hidden', totalSteps < 3);
-  document.getElementById('line-23').classList.toggle('hidden', totalSteps < 3);
-  document.getElementById('dot-4').classList.toggle('hidden', totalSteps < 4);
-  document.getElementById('line-34').classList.toggle('hidden', totalSteps < 4);
-
-  document.getElementById('label-1').textContent = `Step 1 of ${totalSteps}`;
-  document.getElementById('label-2').textContent = `Step 2 of ${totalSteps}`;
-  document.getElementById('label-final').textContent = `Step ${totalSteps} of ${totalSteps}`;
-  document.getElementById('label-final-co').textContent = `Step ${totalSteps} of ${totalSteps}`;
-
+  totalSteps=parseInt(document.getElementById('flow-select').value);
+  document.getElementById('dot-3').classList.toggle('hidden',totalSteps<3);
+  document.getElementById('line-23').classList.toggle('hidden',totalSteps<3);
+  document.getElementById('dot-4').classList.toggle('hidden',totalSteps<4);
+  document.getElementById('line-34').classList.toggle('hidden',totalSteps<4);
+  document.getElementById('label-1').textContent=`Step 1 of ${totalSteps}`;
+  document.getElementById('label-2').textContent=`Step 2 of ${totalSteps}`;
+  document.getElementById('label-final-co').textContent=`Step ${totalSteps} of ${totalSteps}`;
   goToStep(1);
 }
 
-// ════════════════════════════════
-// END STATE
-// ════════════════════════════════
-function setEndState(){
-  endState = document.getElementById('end-select').value;
-  if(currentStep === 'final') renderEndState();
-}
+// ── END STATE ──
+function setEndState(){endState=document.getElementById('end-select').value;if(currentStep==='final')renderEndState()}
 function renderEndState(){
-  if(endState === 'book'){
-    document.getElementById('end-book').style.display = '';
-    hide('end-checkout');
-  } else {
-    document.getElementById('end-book').style.display = 'none';
-    show('end-checkout');
-  }
+  if(endState==='book'){document.getElementById('end-book').style.display='';hide('end-checkout')}
+  else{document.getElementById('end-book').style.display='none';show('end-checkout')}
 }
 
-// ════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════
+// ── NAVIGATION ──
 function goToStep(step){
-  hideAllSteps();
-  currentStep = step;
-
-  if(step === 1){
-    show('step-1'); setDots(1);
-  } else if(step === 2){
-    if(totalSteps === 2){ showFinalStep(); return; }
-    show('step-2'); updatePrefillPill(); setDots(2);
-  } else if(step === 3){
-    if(totalSteps <= 3){ showFinalStep(); return; }
-    show('step-3-extra'); setDots(3);
-  } else if(step === 'final'){
-    showFinalStep();
-  }
+  hideAllSteps();currentStep=step;
+  if(step===1){show('step-1');setDots(1)}
+  else if(step===2){if(totalSteps===2){showFinalStep();return}show('step-2');updatePrefillPill();setDots(2)}
+  else if(step===3){if(totalSteps<=3){showFinalStep();return}show('step-3-extra');setDots(3)}
+  else if(step==='final'){showFinalStep()}
   scrollToFunnel();
 }
-
-function advanceFromStep2(){
-  totalSteps === 4 ? goToStep(3) : showFinalStep();
-}
-
+function advanceFromStep2(){totalSteps===4?goToStep(3):showFinalStep()}
 function showFinalStep(){
-  currentStep = 'final';
+  currentStep='final';
   show('step-final');
   renderEndState();
   setDots(totalSteps);
+  if(endState==='book'){ghlInit()}
   scrollToFunnel();
 }
+function goBackFromFinal(){if(totalSteps===4)goToStep(3);else if(totalSteps===3)goToStep(2);else goToStep(1)}
 
-function goBackFromFinal(){
-  if(totalSteps === 4) goToStep(3);
-  else if(totalSteps === 3) goToStep(2);
-  else goToStep(1);
-}
-
-// ════════════════════════════════
-// STEP DOTS
-// ════════════════════════════════
+// ── DOTS ──
 function setDots(active){
-  for(let i = 1; i <= 4; i++){
-    const dot = document.getElementById('dot-' + i);
-    if(!dot || dot.classList.contains('hidden')) continue;
-    dot.classList.remove('active','done');
-    if(i < active) dot.classList.add('done');
-    else if(i === active) dot.classList.add('active');
+  for(let i=1;i<=4;i++){const dot=document.getElementById('dot-'+i);if(!dot||dot.classList.contains('hidden'))continue;dot.classList.remove('active','done');if(i<active)dot.classList.add('done');else if(i===active)dot.classList.add('active')}
+  [['line-12',1],['line-23',2],['line-34',3]].forEach(([id,idx])=>{const el=document.getElementById(id);if(!el||el.classList.contains('hidden'))return;el.classList.toggle('done',idx<active)})
+}
+
+// ── OPT BUTTONS ──
+function selectOpt(el,groupId){document.getElementById(groupId).querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected')}
+
+// ── PREFILL ──
+function updatePrefillPill(){
+  const first=document.getElementById('f-first').value;
+  const pill=document.getElementById('prefill-pill');
+  if(first){pill.textContent=`✓ Welcome back, ${first} — your info from Step 1 is saved`;pill.classList.remove('hidden')}
+  else pill.classList.add('hidden')
+}
+
+// ── CHECKOUT CONFIRM ──
+function confirmCheckout(){
+  const first=document.getElementById('f-first').value;
+  const email=document.getElementById('f-email').value||'your email';
+  document.getElementById('confirm-headline').textContent=first?`All set, ${first}!`:"You're all set!";
+  document.getElementById('confirm-line1').textContent='Your service is confirmed and scheduled.';
+  document.getElementById('confirm-email-display').textContent=email;
+  document.getElementById('confirm-next-3').textContent="🗓️ Service date confirmed — we'll reach out 24 hours before.";
+  hide('step-final');show('step-confirm');
+}
+
+// ── PIPELINE TOGGLE ──
+function showPipeline(type){
+  const isLead=type==='lead';
+  document.getElementById('ptog-lead').classList.toggle('active',isLead);
+  document.getElementById('ptog-hiring').classList.toggle('active',!isLead);
+  document.getElementById('pipeline-lead').classList.toggle('hidden',!isLead);
+  document.getElementById('pipeline-hiring').classList.toggle('hidden',isLead);
+  document.getElementById('ctx-lead').classList.toggle('hidden',!isLead);
+  document.getElementById('ctx-hiring').classList.toggle('hidden',isLead);
+}
+
+// ══════════════════════════════════════
+// GHL CALENDAR WIDGET
+// ══════════════════════════════════════
+const GHL_TIMES = ['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','12:00 PM','12:45 PM','1:00 PM','1:15 PM','1:30 PM','1:45 PM','2:00 PM','2:15 PM','2:30 PM','3:00 PM','3:30 PM'];
+// Available days in Jun 2026 (weekdays, some blocked)
+const GHL_AVAIL = {5:[2,3,4,5,8,9,10,11,12,15,16,17,18,19,22,23,24,25,26,29,30]};
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+let ghlMonth = 5, ghlYear = 2026, ghlSelDate = null, ghlSelTime = null;
+
+function ghlInit(){
+  ghlSelDate = null; ghlSelTime = null;
+  hide('ghl-view-details'); show('ghl-view-cal');
+  hide('ghl-slots-panel'); hide('ghl-sidebar-date-row');
+  ghlRender();
+}
+
+function ghlRender(){
+  document.getElementById('ghl-month-label').textContent = `${MONTH_NAMES[ghlMonth]} ${ghlYear}`;
+  const firstDay = new Date(ghlYear, ghlMonth, 1).getDay();
+  const daysInMonth = new Date(ghlYear, ghlMonth+1, 0).getDate();
+  const avail = (GHL_AVAIL[ghlMonth] || []);
+  const grid = document.getElementById('ghl-days');
+  grid.innerHTML = '';
+  for(let i=0;i<firstDay;i++){const e=document.createElement('div');e.className='ghl-day ghl-empty';grid.appendChild(e)}
+  for(let d=1;d<=daysInMonth;d++){
+    const cell=document.createElement('div');
+    cell.className='ghl-day';
+    cell.textContent=d;
+    if(avail.includes(d)){
+      cell.classList.add('ghl-avail');
+      if(ghlSelDate===d)cell.classList.add('ghl-selected');
+      cell.onclick=()=>ghlPickDate(d);
+    } else {
+      cell.classList.add('ghl-unavail');
+    }
+    grid.appendChild(cell);
   }
-  [['line-12',1],['line-23',2],['line-34',3]].forEach(([id, idx]) => {
-    const el = document.getElementById(id);
-    if(!el || el.classList.contains('hidden')) return;
-    el.classList.toggle('done', idx < active);
+}
+
+function ghlPickDate(day){
+  ghlSelDate = day;
+  ghlSelTime = null;
+  ghlRender();
+  // Update sidebar
+  const label = ghlDateLabel(day);
+  document.getElementById('ghl-sidebar-date').textContent = label;
+  show('ghl-sidebar-date-row');
+  // Populate time slots
+  const slotsList = document.getElementById('ghl-slots-list');
+  slotsList.innerHTML = '';
+  GHL_TIMES.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='ghl-slot';
+    btn.textContent=t;
+    btn.onclick=()=>ghlPickTime(t,label);
+    slotsList.appendChild(btn);
   });
+  document.getElementById('ghl-slots-dayname').textContent = label;
+  show('ghl-slots-panel');
 }
 
-// ════════════════════════════════
-// OPT BUTTONS / CALENDAR
-// ════════════════════════════════
-function selectOpt(el, groupId){
-  document.getElementById(groupId).querySelectorAll('.opt-btn')
-    .forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
+function ghlPickTime(time, dateLabel){
+  ghlSelTime = time;
+  const endTime = ghlAddMins(time, 35);
+  // Fill details sidebar
+  document.getElementById('ghl-details-time-text').textContent = `${time} – ${endTime}, ${dateLabel}, ${ghlYear}`;
+  // Pre-fill email
+  const email = localStorage.getItem('demo_email') || document.getElementById('f-email').value || '';
+  document.getElementById('ghl-email-input').value = email;
+  hide('ghl-email-err');
+  // Transition
+  hide('ghl-view-cal');
+  show('ghl-view-details');
 }
 
-function selectSlot(el){
-  document.querySelectorAll('.cal-slot').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedSlot = el.textContent.replace('🗓','').trim();
-  const btn = document.getElementById('confirm-book-btn');
-  btn.disabled = false;
-  btn.textContent = `Confirm — ${selectedSlot} →`;
-}
+function ghlShowCalendar(){hide('ghl-view-details');show('ghl-view-cal')}
 
-// ════════════════════════════════
-// CONFIRM
-// ════════════════════════════════
-function confirmBooking(){
-  if(!selectedSlot) return;
+function ghlSchedule(){
+  const email = document.getElementById('ghl-email-input').value.trim();
+  if(!email){show('ghl-email-err');return}
+  hide('ghl-email-err');
   const first = document.getElementById('f-first').value;
-  const email = document.getElementById('f-email').value || 'your email';
-  document.getElementById('confirm-headline').textContent = first ? `You're booked, ${first}!` : 'You\'re booked!';
-  document.getElementById('confirm-line1').textContent = `We'll see you ${selectedSlot}.`;
+  const dateLabel = ghlDateLabel(ghlSelDate);
+  document.getElementById('confirm-headline').textContent = first?`You're booked, ${first}!`:"You're booked!";
+  document.getElementById('confirm-line1').textContent = `We'll see you ${ghlSelTime} on ${dateLabel}.`;
   document.getElementById('confirm-email-display').textContent = email;
   document.getElementById('confirm-next-3').textContent = '📅 Calendar invite on its way — see you soon!';
   hide('step-final'); show('step-confirm');
 }
 
-function confirmCheckout(){
-  const first = document.getElementById('f-first').value;
-  const email = document.getElementById('f-email').value || 'your email';
-  document.getElementById('confirm-headline').textContent = first ? `All set, ${first}!` : 'You\'re all set!';
-  document.getElementById('confirm-line1').textContent = 'Your service is confirmed and scheduled.';
-  document.getElementById('confirm-email-display').textContent = email;
-  document.getElementById('confirm-next-3').textContent = '🗓️ Service date confirmed — we\'ll reach out 24 hours before.';
-  hide('step-final'); show('step-confirm');
+function ghlPrevMonth(){if(ghlMonth===0){ghlMonth=11;ghlYear--}else ghlMonth--;ghlRender()}
+function ghlNextMonth(){if(ghlMonth===11){ghlMonth=0;ghlYear++}else ghlMonth++;ghlRender()}
+
+function ghlDateLabel(day){
+  if(!day)return'—';
+  const d=new Date(ghlYear,ghlMonth,day);
+  return`${DAY_NAMES[d.getDay()]}, ${MONTH_NAMES[ghlMonth].slice(0,3)} ${day}`;
 }
 
-// ════════════════════════════════
-// PREFILL PILL
-// ════════════════════════════════
-function updatePrefillPill(){
-  const first = document.getElementById('f-first').value;
-  const pill = document.getElementById('prefill-pill');
-  if(first){
-    pill.textContent = `✓ Welcome back, ${first} — your info from Step 1 is saved`;
-    pill.classList.remove('hidden');
-  } else {
-    pill.classList.add('hidden');
-  }
+function ghlAddMins(timeStr, mins){
+  const[timePart,period]=timeStr.split(' ');
+  let[h,m]=timePart.split(':').map(Number);
+  if(period==='PM'&&h!==12)h+=12;
+  if(period==='AM'&&h===12)h=0;
+  const total=h*60+m+mins;
+  let nh=Math.floor(total/60)%24,nm=total%60;
+  const np=nh>=12?'PM':'AM';
+  if(nh>12)nh-=12;if(nh===0)nh=12;
+  return`${nh}:${String(nm).padStart(2,'0')} ${np}`;
 }
 
-// ════════════════════════════════
-// PIPELINE TOGGLE
-// ════════════════════════════════
-function showPipeline(type){
-  const isLead = type === 'lead';
-  document.getElementById('ptog-lead').classList.toggle('active', isLead);
-  document.getElementById('ptog-hiring').classList.toggle('active', !isLead);
-  document.getElementById('pipeline-lead').classList.toggle('hidden', !isLead);
-  document.getElementById('pipeline-hiring').classList.toggle('hidden', isLead);
-  document.getElementById('ctx-lead').classList.toggle('hidden', !isLead);
-  document.getElementById('ctx-hiring').classList.toggle('hidden', isLead);
-}
-
-// ════════════════════════════════
+// ══════════════════════════════════════
 // RESET
-// ════════════════════════════════
+// ══════════════════════════════════════
 function resetDemo(){
-  ['demo_first','demo_email','demo_service'].forEach(k => localStorage.removeItem(k));
-  ['f-first','f-email','f-last','f-phone','f-sqft','f-areas','f-notes'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
-  });
-  ['f-service','f-timeline'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.selectedIndex = 0;
-  });
-  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-  document.querySelectorAll('.cal-slot').forEach(b => b.classList.remove('selected'));
-  selectedSlot = null;
-  const btn = document.getElementById('confirm-book-btn');
-  btn.disabled = true;
-  btn.textContent = 'Select a time above to confirm';
-  totalSteps = parseInt(document.getElementById('flow-select').value);
+  ['demo_first','demo_email','demo_service'].forEach(k=>localStorage.removeItem(k));
+  ['f-first','f-email','f-last','f-phone','f-sqft','f-areas','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+  ['f-service','f-timeline'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0});
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  totalSteps=parseInt(document.getElementById('flow-select').value);
   goToStep(1);
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════
 // BOOT
-// ════════════════════════════════
+// ══════════════════════════════════════
 initDemo();
 </script>
 </body>
